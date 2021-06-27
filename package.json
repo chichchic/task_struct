@@ -6,7 +6,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "lint:style": "stylelint src/**/*.{css,scss}",
+    "lint:style": "stylelint src/**/*.{css,scss} --aei",
     "prepare": "husky install"
   },
   "dependencies": {

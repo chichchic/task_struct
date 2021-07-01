@@ -40,7 +40,7 @@ export default {
     },
     actionBlur() {
       this.focus = false;
-      this.$emit('updateList');
+      this.$emit('itemBlur');
     },
   },
 };

@@ -11,6 +11,7 @@
       ref="input"
       @blur="actionBlur"
       @focus="actionFocus"
+      :class="{ 'line-through': lineThrough }"
     />
   </div>
 </template>
@@ -20,6 +21,7 @@ export default {
     check: Boolean,
     input: String,
     tab: String,
+    lineThrough: Boolean,
   },
   mounted() {
     if (this.input === '') {
@@ -79,6 +81,12 @@ export default {
 
   & .el-input__inner {
     border: none;
+  }
+
+  & .line-through {
+    & .el-input__inner {
+      text-decoration: line-through;
+    }
   }
 
   & .checkbox {

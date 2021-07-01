@@ -8,6 +8,7 @@
           :check="check"
           :input="input"
           :tab="activeName"
+          :lineThrough="activeName === 'done'"
           @updateCheck="(value) => updateCheck(value, index)"
           @updateInput="(value) => updateInput(value, index)"
           @itemBlur="updateList(index)"

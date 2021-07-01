@@ -1,20 +1,19 @@
 <template>
   <section class="todo">
     <el-tabs :class="activeName" v-model="activeName" @tab-click="handleClick" :stretch="true">
-      <el-tab-pane v-for="{ label, name } in tabs" :key="name" :label="label" :name="name">
-        <TodoItem
-          v-for="({ check, input }, index) in todoList"
-          :key="index"
-          :check="check"
-          :input="input"
-          :tab="activeName"
-          :lineThrough="activeName === 'done'"
-          @updateCheck="(value) => updateCheck(value, index)"
-          @updateInput="(value) => updateInput(value, index)"
-          @itemBlur="updateList(index)"
-        />
-      </el-tab-pane>
+      <el-tab-pane v-for="{ label, name } in tabs" :key="name" :label="label" :name="name"> </el-tab-pane>
     </el-tabs>
+    <TodoItem
+      v-for="({ check, input }, index) in todoList"
+      :key="index"
+      :check="check"
+      :input="input"
+      :tab="activeName"
+      :lineThrough="activeName === 'done'"
+      @updateCheck="(value) => updateCheck(value, index)"
+      @updateInput="(value) => updateInput(value, index)"
+      @itemBlur="updateList(index)"
+    />
     <el-button
       v-show="activeName === 'todo'"
       class="add-button"

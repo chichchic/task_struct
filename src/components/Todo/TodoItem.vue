@@ -7,6 +7,7 @@
       @input="updateInput"
       clearable
       @clear="$emit('updateInput', '')"
+      :disabled="check"
     />
   </section>
 </template>

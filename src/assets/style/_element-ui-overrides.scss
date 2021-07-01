@@ -9,3 +9,7 @@
 .el-drawer.btt {
   border-radius: 1.5rem 1.5rem 0 0;
 }
+
+.el-button .el-icon-plus::before {
+  font-weight: bold;
+}

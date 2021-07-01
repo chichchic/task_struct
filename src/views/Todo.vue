@@ -115,10 +115,6 @@ export default {
     &.is-active {
       color: $color;
 
-      &::after {
-        content: attr(remain);
-      }
-
       &:hover {
         color: $color;
       }

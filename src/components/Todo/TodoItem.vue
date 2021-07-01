@@ -1,5 +1,5 @@
 <template>
-  <section class="todo-item" :class="{ focus: focus }">
+  <div class="todo-item" :class="{ [tab]: true, focus: focus }">
     <el-checkbox class="checkbox" :modelValue="check" @change="updateCheck" />
     <el-input
       placeholder="할 일을 입력해보세요"
@@ -12,13 +12,14 @@
       @blur="actionBlur"
       @focus="actionFocus"
     />
-  </section>
+  </div>
 </template>
 <script>
 export default {
   props: {
     check: Boolean,
     input: String,
+    tab: String,
   },
   mounted() {
     if (this.input === '') {
@@ -46,6 +47,23 @@ export default {
 };
 </script>
 <style lang="scss">
+@mixin checkbox-color($color) {
+  & .el-checkbox__input {
+    &.is-checked .el-checkbox__inner {
+      background-color: $color;
+      border-color: $color;
+    }
+
+    &.is-focus .el-checkbox__inner {
+      border-color: $color;
+    }
+
+    &:hover .el-checkbox__inner {
+      border-color: $color;
+    }
+  }
+}
+
 .todo-item {
   display: flex;
   justify-content: center;
@@ -65,6 +83,14 @@ export default {
 
   & .checkbox {
     margin: 0 1rem 0 1rem;
+  }
+
+  &.todo {
+    @include checkbox-color(#f56e71);
+  }
+
+  &.done {
+    @include checkbox-color(#6880ff);
   }
 }
 </style>

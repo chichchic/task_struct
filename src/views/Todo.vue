@@ -7,6 +7,7 @@
           :key="index"
           :check="check"
           :input="input"
+          :tab="activeName"
           @updateCheck="(value) => updateCheck(value, index)"
           @updateInput="(value) => updateInput(value, index)"
           @itemBlur="updateList(index)"

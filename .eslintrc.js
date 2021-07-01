@@ -38,7 +38,7 @@ module.exports = {
         tabWidth: 2,
         semi: true,
         singleQuote: true,
-        endOfLine: 'auto',
+        endOfLine: 'lf',
         trailingComma: 'es5',
         bracketSpacing: true,
         printWidth: 120,

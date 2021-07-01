@@ -9,26 +9,28 @@
           :input="input"
           @updateCheck="(value) => updateCheck(value, index)"
           @updateInput="(value) => updateInput(value, index)"
+          @updateList="updateList"
         />
       </el-tab-pane>
     </el-tabs>
+    <el-button class="add-button" icon="el-icon-plus" type="primary" circle @click.prevent="addTodoList"></el-button>
   </section>
 </template>
 <script>
 import TodoItem from '@/components/Todo/TodoItem.vue';
 import useTodoList from '@/components/Todo/useTodoList';
 import useElTabs from '@/components/elementPlus/useElTabs';
-import { ref } from 'vue';
+
 export default {
   components: {
     TodoItem,
   },
   setup() {
-    const todoList = ref([
+    const { todoList, updateCheck, updateInput, addTodoList, updateList } = useTodoList([
       { check: true, input: '123' },
       { check: true, input: '123' },
+      { check: false, input: '123' },
     ]);
-    const { updateCheck, updateInput } = useTodoList(todoList);
     const { tabs, activeName, handleClick } = useElTabs(
       [
         { label: 'TODO', name: 'todo' },
@@ -36,7 +38,20 @@ export default {
       ],
       'todo'
     );
-    return { tabs, activeName, handleClick, todoList, updateCheck, updateInput };
+    return { tabs, activeName, handleClick, todoList, updateCheck, updateInput, addTodoList, updateList };
   },
 };
 </script>
+<style lang="scss" scoped>
+.todo {
+  position: relative;
+  height: 100%;
+
+  & .add-button {
+    position: absolute;
+    right: 3rem;
+    bottom: 3rem;
+    z-index: 3;
+  }
+}
+</style>

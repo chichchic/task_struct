@@ -1,7 +1,9 @@
 <template>
   <section class="todo">
-    <el-tabs :class="activeName" v-model="activeName" @tab-click="handleClick" :stretch="true">
-      <el-tab-pane v-for="{ label, name } in tabs" :key="name" :label="label" :name="name"> </el-tab-pane>
+    <el-tabs :class="activeName" v-model="activeName" @tab-click="handleClick" stretch>
+      <el-tab-pane v-for="{ label, name } in tabs" :key="name" :label="label" :name="name">
+        <p class="static-text">{{ staticText }}</p>
+      </el-tab-pane>
     </el-tabs>
     <TodoItem
       v-for="({ check, input }, index) in todoList"
@@ -87,6 +89,15 @@ export default {
       { backgroundColor: '#ffc678', value: 'Low', icon: 'L', label: '낮음', size: '6rem', fontSize: '2rem' },
     ],
   }),
+  computed: {
+    staticText() {
+      const prefix = {
+        todo: '남은 할 일: ',
+        done: '완료한 일: ',
+      };
+      return prefix[this.activeName] + this.todoList.filter(({ check }) => check).length + '개';
+    },
+  },
 };
 </script>
 
@@ -103,6 +114,10 @@ export default {
 
     &.is-active {
       color: $color;
+
+      &::after {
+        content: attr(remain);
+      }
 
       &:hover {
         color: $color;
@@ -128,6 +143,32 @@ export default {
     right: 3rem;
     bottom: 3rem;
     z-index: 3;
+  }
+
+  & .el-tab-pane {
+    position: relative;
+  }
+
+  & .static-text {
+    color: #a7a7a7;
+    position: relative;
+    top: 0;
+    font-size: 1.5rem;
+    display: inline-block;
+  }
+
+  & .todo {
+    & .static-text {
+      left: calc(25% - 1rem);
+      transform: translateX(-50%);
+    }
+  }
+
+  & .done {
+    & .static-text {
+      left: calc(75% + 1rem);
+      transform: translateX(-50%);
+    }
   }
 
   & .priority-description {

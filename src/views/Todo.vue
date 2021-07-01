@@ -14,7 +14,14 @@
         />
       </el-tab-pane>
     </el-tabs>
-    <el-button class="add-button" icon="el-icon-plus" type="primary" circle @click.prevent="addTodoList"></el-button>
+    <el-button
+      v-show="activeName === 'todo'"
+      class="add-button"
+      icon="el-icon-plus"
+      type="primary"
+      circle
+      @click.prevent="addTodoList"
+    ></el-button>
     <el-drawer v-model="prDrawer" direction="btt">
       <template v-slot:title>
         <p class="priority-description">

@@ -6,10 +6,11 @@
       </el-tab-pane>
     </el-tabs>
     <TodoItem
-      v-for="({ check, input }, index) in todoList"
+      v-for="({ check, input, priority }, index) in todoList"
       :key="index"
       :check="check"
       :input="input"
+      :priority="priority"
       :tab="activeName"
       :lineThrough="activeName === 'done'"
       @updateCheck="(value) => updateCheck(value, index)"
@@ -59,8 +60,8 @@ export default {
   setup() {
     const { todoList, prDrawer, updateCheck, updateInput, addTodoList, updateList, setPriority } = useTodoList([
       { check: true, input: '123', priority: 'High' },
-      { check: true, input: '123', priority: 'High' },
-      { check: false, input: '123', priority: 'High' },
+      { check: true, input: '123', priority: 'Mid' },
+      { check: false, input: '123', priority: 'Low' },
     ]);
     const { tabs, activeName, handleClick } = useElTabs(
       [

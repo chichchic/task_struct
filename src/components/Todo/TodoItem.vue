@@ -12,7 +12,9 @@
       @blur="actionBlur"
       @focus="actionFocus"
       :class="{ 'line-through': lineThrough }"
+      class="input"
     />
+    <p class="priority" :class="priority.toLowerCase()">{{ priority }}</p>
   </div>
 </template>
 <script>
@@ -20,6 +22,7 @@ export default {
   props: {
     check: Boolean,
     input: String,
+    priority: String,
     tab: String,
     lineThrough: Boolean,
   },
@@ -70,6 +73,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
 
   &:hover {
     background-color: #ebebeb;
@@ -77,6 +81,24 @@ export default {
 
   &.focus {
     background-color: #ebebeb;
+  }
+
+  & .priority {
+    position: absolute;
+    left: 4rem;
+    bottom: 0;
+
+    &.high {
+      color: #f56e71;
+    }
+
+    &.mid {
+      color: #6880ff;
+    }
+
+    &.low {
+      color: #ffc678;
+    }
   }
 
   & .el-input__inner {

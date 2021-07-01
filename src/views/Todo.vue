@@ -44,11 +44,8 @@ export default {
 </script>
 <style lang="scss" scoped>
 .todo {
-  position: relative;
-  height: 100%;
-
   & .add-button {
-    position: absolute;
+    position: fixed;
     right: 3rem;
     bottom: 3rem;
     z-index: 3;

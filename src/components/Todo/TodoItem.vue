@@ -1,6 +1,6 @@
 <template>
   <section class="todo-item" :class="{ focus: focus }">
-    <el-checkbox class="checkbox" :modelValue="check" @change="updateCheck" size="medium" />
+    <el-checkbox class="checkbox" :modelValue="check" @change="updateCheck" />
     <el-input
       placeholder="할 일을 입력해보세요"
       :modelValue="input"

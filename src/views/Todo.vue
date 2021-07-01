@@ -1,6 +1,6 @@
 <template>
   <section class="todo">
-    <el-tabs v-model="activeName" @tab-click="handleClick" :stretch="true">
+    <el-tabs :class="activeName" v-model="activeName" @tab-click="handleClick" :stretch="true">
       <el-tab-pane v-for="{ label, name } in tabs" :key="name" :label="label" :name="name">
         <TodoItem
           v-for="({ check, input }, index) in todoList"
@@ -42,6 +42,38 @@ export default {
   },
 };
 </script>
+
+<style lang="scss">
+@mixin el-tabs-color($color, $hover) {
+  & .el-tabs__active-bar {
+    background-color: $color;
+  }
+
+  & .el-tabs__item {
+    &:hover {
+      color: $hover;
+    }
+
+    &.is-active {
+      color: $color;
+
+      &:hover {
+        color: $color;
+      }
+    }
+  }
+}
+
+.todo {
+  & .todo {
+    @include el-tabs-color(#f56e71, #6880ff);
+  }
+
+  & .done {
+    @include el-tabs-color(#6880ff, #f56e71);
+  }
+}
+</style>
 <style lang="scss" scoped>
 .todo {
   & .add-button {

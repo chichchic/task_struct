@@ -1,4 +1,4 @@
-import { ElCheckbox, ElCheckboxButton, ElCheckboxGroup, ElInput, ElTabs, ElTabPane } from 'element-plus';
+import { ElCheckbox, ElCheckboxButton, ElCheckboxGroup, ElInput, ElTabs, ElTabPane, ElButton } from 'element-plus';
 import lang from 'element-plus/lib/locale/lang/ko';
 import locale from 'element-plus/lib/locale';
 import '@/assets/style/element-variables.scss';
@@ -11,4 +11,5 @@ export default (app) => {
   app.use(ElInput);
   app.use(ElTabs);
   app.use(ElTabPane);
+  app.use(ElButton);
 };

@@ -1,7 +1,8 @@
 .DS_Store
 node_modules
 /dist
-
+s=about
+tore.state.fireUser
 
 # local env files
 .env

@@ -2,7 +2,7 @@
   <section class="todo">
     <el-tabs :class="activeName" v-model="activeName" @tab-click="handleClick" stretch>
       <el-tab-pane v-for="{ label, name } in tabs" :key="name" :label="label" :name="name">
-        <p class="static-text">{{ staticText }}</p>
+        <p class="subtitle_task">{{ $t(subtitleTaskText, { task_count }) }}</p>
       </el-tab-pane>
     </el-tabs>
     <TodoItem
@@ -28,20 +28,20 @@
     <el-drawer v-model="prDrawer" direction="btt">
       <template v-slot:title>
         <p class="priority-description">
-          이번 할 일의 <br />
-          <strong> 우선순위 </strong>
-          를 알려주세요.
+          {{ $t('default.guide_priority_body_front') }} <br />
+          <strong> {{ $t('default.guide_priority_bold') }} </strong>
+          {{ $t('default.guide_priority_body_back') }}
         </p>
       </template>
       <article class="drawer">
         <el-button
-          v-for="{ backgroundColor, value, icon, size, fontSize, label } in priorities"
+          v-for="{ backgroundColor, value, icon, size, fontSize } in priorities"
           :key="value"
           class="priority-button"
           :style="{ backgroundColor, height: size, width: size, fontSize }"
           circle
           @click="setPriority(value)"
-          :data-label="label"
+          :data-label="$t(guidePriorityText(value))"
           >{{ icon }}</el-button
         >
       </article>
@@ -85,18 +85,31 @@ export default {
   },
   data: () => ({
     priorities: [
-      { backgroundColor: '#f56e71', value: 'High', icon: 'H', label: '매우 중요', size: '10rem', fontSize: '6rem' },
-      { backgroundColor: '#6880ff', value: 'Mid', icon: 'M', label: '보통', size: '8rem', fontSize: '4rem' },
-      { backgroundColor: '#ffc678', value: 'Low', icon: 'L', label: '낮음', size: '6rem', fontSize: '2rem' },
+      { backgroundColor: '#f56e71', value: 'High', icon: 'H', size: '10rem', fontSize: '6rem' },
+      { backgroundColor: '#6880ff', value: 'Mid', icon: 'M', size: '8rem', fontSize: '4rem' },
+      { backgroundColor: '#ffc678', value: 'Low', icon: 'L', size: '6rem', fontSize: '2rem' },
     ],
   }),
   computed: {
-    staticText() {
-      const prefix = {
-        todo: '남은 할 일: ',
-        done: '완료한 일: ',
+    task_count() {
+      return this.todoList.filter(({ check }) => check).length;
+    },
+    subtitleTaskText() {
+      const list = {
+        todo: 'default.subtitle_task_incomplete',
+        done: 'default.subtitle_task_completed',
       };
-      return prefix[this.activeName] + this.todoList.filter(({ check }) => check).length + '개';
+      return list[this.activeName];
+    },
+  },
+  methods: {
+    guidePriorityText(value) {
+      const list = {
+        High: 'default.guide_priority_high',
+        Mid: 'default.guide_priority_mid',
+        Low: 'default.guide_priority_low',
+      };
+      return list[value];
     },
   },
 };
@@ -146,7 +159,7 @@ export default {
     position: relative;
   }
 
-  & .static-text {
+  & .subtitle_task {
     color: #a7a7a7;
     position: relative;
     top: 0;
@@ -155,14 +168,14 @@ export default {
   }
 
   & .todo {
-    & .static-text {
+    & .subtitle_task {
       left: calc(25% - 1rem);
       transform: translateX(-50%);
     }
   }
 
   & .done {
-    & .static-text {
+    & .subtitle_task {
       left: calc(75% + 1rem);
       transform: translateX(-50%);
     }

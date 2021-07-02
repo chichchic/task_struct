@@ -14,7 +14,7 @@
       :class="{ 'line-through': lineThrough }"
       class="input"
     />
-    <p class="priority" :class="priority.toLowerCase()">{{ priority }}</p>
+    <p class="priority" :class="priority.toLowerCase()">{{ $t(priorityText) }}</p>
   </div>
 </template>
 <script>
@@ -25,6 +25,16 @@ export default {
     priority: String,
     tab: String,
     lineThrough: Boolean,
+  },
+  computed: {
+    priorityText() {
+      const list = {
+        High: 'default.priority_high',
+        Mid: 'default.priority_mid',
+        Low: 'default.priority_low',
+      };
+      return list[this.priority];
+    },
   },
   mounted() {
     if (this.input === '') {

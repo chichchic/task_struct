@@ -7,6 +7,7 @@ import {
   ElTabPane,
   ElButton,
   ElDrawer,
+  ElSpace,
 } from 'element-plus';
 import lang from 'element-plus/lib/locale/lang/ko';
 import locale from 'element-plus/lib/locale';
@@ -22,4 +23,5 @@ export default (app) => {
   app.use(ElTabPane);
   app.use(ElButton);
   app.use(ElDrawer);
+  app.use(ElSpace);
 };

@@ -1,6 +1,8 @@
 <template>
   <div class="about">
     <h1>This is an account page</h1>
+    <button @click="verify">Verify</button> <br />
+    {{ verifyState }}
     <button @click="loginWithGoogle" v-if="!$store.state.fireUser">Login</button>
     <br />
     <br />
@@ -18,7 +20,9 @@
 import firebase from 'firebase';
 export default {
   data() {
-    return {};
+    return {
+      verifyState: 'not verified',
+    };
   },
   methods: {
     async loginWithGoogle() {
@@ -37,8 +41,21 @@ export default {
     signOut() {
       firebase.auth().signOut();
     },
-    test() {
+    async verify() {
       console.log(this.$store.state.fireUser);
+      try {
+        const tk = await firebase.auth().currentUser.getIdToken(false);
+        if (tk) {
+          console.log('verified', tk);
+          this.verifyState = 'verified';
+        } else {
+          console.log('can not verify');
+        }
+      } catch (err) {
+        console.log('failed to verify user token: ', err);
+      } finally {
+        console.log('finally');
+      }
     },
   },
 };

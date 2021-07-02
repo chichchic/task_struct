@@ -6,6 +6,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
+    "i18n:report": "vue-cli-service i18n:report --src \"./src/**/*.?(js|vue)\" --locales \"./src/locales/**/*.json\"",
     "lint:style": "stylelint src/**/*.{css,scss} --aei",
     "prepare": "husky install"
   },
@@ -13,12 +14,14 @@
     "core-js": "^3.6.5",
     "element-plus": "^1.0.2-beta.28",
     "vue": "^3.0.0",
+    "vue-i18n": "^9.1.0",
     "vue-router": "^4.0.0-0",
     "vuex": "^4.0.0-0"
   },
   "devDependencies": {
     "@commitlint/cli": "^12.1.4",
     "@commitlint/config-angular": "^12.1.4",
+    "@intlify/vue-i18n-loader": "^2.1.0",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-eslint": "~4.5.0",
     "@vue/cli-plugin-router": "~4.5.0",
@@ -40,7 +43,8 @@
     "stylelint": "^13.13.1",
     "stylelint-config-standard": "^22.0.0",
     "stylelint-order": "^4.1.0",
-    "vue-cli-plugin-element-plus": "0.0.13"
+    "vue-cli-plugin-element-plus": "0.0.13",
+    "vue-cli-plugin-i18n": "~2.1.1"
   },
   "lint-staged": {
     "**/*.{js,jsx,vue}": [

@@ -16,7 +16,6 @@ function loadLocaleMessages() {
       messages[locale] = locales(key);
     }
   });
-  console.log('messages', messages);
   return messages;
 }
 export default createI18n({

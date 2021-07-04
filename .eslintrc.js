@@ -19,16 +19,6 @@ module.exports = {
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     semi: 0,
     'import/no-unresolved': 'off',
-    'comma-dangle': [
-      'error',
-      {
-        arrays: 'always-multiline',
-        objects: 'always-multiline',
-        imports: 'never',
-        exports: 'never',
-        functions: 'never',
-      },
-    ],
     'no-new': 0,
     indent: ['error', 2],
     'import/extensions': 'off',

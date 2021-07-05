@@ -32,7 +32,7 @@ export default {
       try {
         await firebase.auth().signInWithPopup(provider);
       } catch (error) {
-        console.log(error);
+        console.error(error);
       } finally {
         this.loading = false;
         console.log('login');
@@ -52,7 +52,7 @@ export default {
           console.log('can not verify');
         }
       } catch (err) {
-        console.log('failed to verify user token: ', err);
+        console.error('failed to verify user token: ', err);
       } finally {
         console.log('finally');
       }

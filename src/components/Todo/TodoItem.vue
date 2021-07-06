@@ -132,11 +132,11 @@ export default {
     text-decoration: line-through;
   }
 
-  &.todo {
+  &.tab-todo {
     @include checkbox-color(#f56e71);
   }
 
-  &.done {
+  &.tab-done {
     @include checkbox-color(#6880ff);
   }
 

@@ -1,22 +1,24 @@
 <template>
   <section class="todo">
-    <el-tabs :class="activeName" v-model="activeName" @tab-click="handleClick" stretch>
+    <el-tabs :class="`tab-${activeName}`" v-model="activeName" @tab-click="handleClick" stretch>
       <el-tab-pane v-for="{ label, name } in tabs" :key="name" :label="label" :name="name">
         <p class="subtitle_task">{{ $t(subtitleTaskText, { task_count }) }}</p>
       </el-tab-pane>
     </el-tabs>
-    <TodoItem
-      v-for="({ check, input, priority }, index) in todoList"
-      :key="index"
-      :check="check"
-      :input="input"
-      :priority="priority"
-      :tab="activeName"
-      :lineThrough="activeName === 'done'"
-      @updateCheck="(value) => updateCheck(value, index)"
-      @updateInput="(value) => updateInput(value, index)"
-      @itemBlur="updateList(index)"
-    />
+    <article class="todo-list">
+      <TodoItem
+        v-for="({ check, input, priority }, index) in todoList"
+        :key="index"
+        :check="check"
+        :input="input"
+        :priority="priority"
+        :tab="'tab-' + activeName"
+        :lineThrough="activeName === 'done'"
+        @updateCheck="(value) => updateCheck(value, index)"
+        @updateInput="(value) => updateInput(value, index)"
+        @itemBlur="updateList(index)"
+      />
+    </article>
     <el-button
       v-show="activeName === 'todo'"
       class="add-button"
@@ -86,7 +88,7 @@ export default {
   data: () => ({
     priorities: [
       { backgroundColor: '#f56e71', value: 'High', icon: 'H', size: '10rem', fontSize: '6rem' },
-      { backgroundColor: '#6880ff', value: 'Mid', icon: 'M', size: '8rem', fontSize: '4rem' },
+      { backgroundColor: '#84d9a0', value: 'Mid', icon: 'M', size: '8rem', fontSize: '4rem' },
       { backgroundColor: '#ffc678', value: 'Low', icon: 'L', size: '6rem', fontSize: '2rem' },
     ],
   }),
@@ -117,11 +119,11 @@ export default {
 
 <style lang="scss">
 @mixin el-tabs-color($color, $hover) {
-  & .el-tabs__active-bar {
+  .el-tabs__active-bar {
     background-color: $color;
   }
 
-  & .el-tabs__item {
+  .el-tabs__item {
     &:hover {
       color: $hover;
     }
@@ -137,66 +139,77 @@ export default {
 }
 
 .todo {
-  & .todo {
+  .el-tabs__header {
+    margin: 0;
+  }
+
+  .tab-todo {
     @include el-tabs-color(#f56e71, #6880ff);
   }
 
-  & .done {
+  .tab-done {
     @include el-tabs-color(#6880ff, #f56e71);
   }
 }
 </style>
 <style lang="scss" scoped>
 .todo {
-  & .add-button {
+  height: 100%;
+
+  .add-button {
     position: fixed;
     right: 3rem;
     bottom: 3rem;
     z-index: 3;
   }
 
-  & .el-tab-pane {
+  .el-tab-pane {
     position: relative;
   }
 
-  & .subtitle_task {
+  .subtitle_task {
     color: #a7a7a7;
     position: relative;
-    top: 0;
-    font-size: 1.5rem;
+    padding: 0.5rem;
+    font-size: 1.2rem;
     display: inline-block;
   }
 
-  & .todo {
-    & .subtitle_task {
+  .tab-todo {
+    .subtitle_task {
       left: calc(25% - 1rem);
       transform: translateX(-50%);
     }
   }
 
-  & .done {
-    & .subtitle_task {
+  .tab-done {
+    .subtitle_task {
       left: calc(75% + 1rem);
       transform: translateX(-50%);
     }
   }
 
-  & .priority-description {
+  .todo-list {
+    height: calc(100% - 64px);
+    overflow: scroll;
+  }
+
+  .priority-description {
     font-size: 2rem;
     color: black;
 
-    & strong {
+    strong {
       font-size: 2.5rem;
     }
   }
 
-  & .drawer {
+  .drawer {
     display: flex;
     width: 100%;
     justify-content: space-evenly;
     align-items: flex-end;
 
-    & .priority-button {
+    .priority-button {
       display: flex;
       justify-content: center;
       align-items: center;

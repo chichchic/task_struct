@@ -1,8 +1,8 @@
-.el-input__inner {
+.el-textarea__inner {
   background-color: transparent;
 }
 
-.el-input.is-disabled .el-input__inner {
+.el-textarea.is-disabled .el-textarea__inner {
   background-color: transparent;
 }
 
@@ -16,4 +16,14 @@
 
 .el-button--text {
   color: #333;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
 }

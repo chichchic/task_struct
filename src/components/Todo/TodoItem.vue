@@ -1,20 +1,24 @@
 <template>
   <div class="todo-item" :class="{ [tab]: true, focus: focus }">
-    <el-checkbox class="checkbox" :modelValue="check" @change="updateCheck" />
-    <el-input
-      placeholder="할 일을 입력해보세요"
-      :modelValue="input"
-      @input="updateInput"
-      clearable
-      @clear="updateInput('')"
-      :disabled="check"
-      ref="input"
-      @blur="actionBlur"
-      @focus="actionFocus"
-      :class="{ 'line-through': lineThrough }"
-      class="input"
-    />
-    <p class="priority" :class="priority.toLowerCase()">{{ $t(priorityText) }}</p>
+    <el-checkbox class="checkbox" :modelValue="check" @change="updateCheck" :disabled="lineThrough" />
+    <div class="input">
+      <el-input
+        placeholder="할 일을 입력해보세요"
+        :modelValue="input"
+        @input="updateInput"
+        clearable
+        @clear="updateInput('')"
+        :disabled="check"
+        ref="input"
+        @blur="actionBlur"
+        @focus="actionFocus"
+        :class="{ 'line-through': lineThrough }"
+        :autosize="true"
+        type="textarea"
+      />
+      <p class="priority" :class="priority.toLowerCase()">{{ $t(priorityText) }}</p>
+    </div>
+    <i class="el-icon-arrow-right"></i>
   </div>
 </template>
 <script>
@@ -81,9 +85,8 @@ export default {
 
 .todo-item {
   display: flex;
-  justify-content: center;
   align-items: center;
-  position: relative;
+  padding: 1rem;
 
   &:hover {
     background-color: #ebebeb;
@@ -93,17 +96,15 @@ export default {
     background-color: #ebebeb;
   }
 
-  & .priority {
-    position: absolute;
-    left: 4rem;
-    bottom: 0;
+  .priority {
+    font-size: 1.2rem;
 
     &.high {
       color: #f56e71;
     }
 
     &.mid {
-      color: #6880ff;
+      color: #84d9a0;
     }
 
     &.low {
@@ -111,18 +112,24 @@ export default {
     }
   }
 
-  & .el-input__inner {
+  .input {
+    margin: 0 0.5rem;
+    flex-grow: 1;
+  }
+
+  .el-textarea__inner {
     border: none;
+    padding: 0;
+    font-size: 1.8rem;
+    resize: none;
   }
 
-  & .line-through {
-    & .el-input__inner {
-      text-decoration: line-through;
-    }
+  .el-textarea.is-disabled .el-textarea__inner {
+    color: inherit;
   }
 
-  & .checkbox {
-    margin: 0 1rem 0 1rem;
+  .line-through {
+    text-decoration: line-through;
   }
 
   &.todo {
@@ -131,6 +138,10 @@ export default {
 
   &.done {
     @include checkbox-color(#6880ff);
+  }
+
+  i {
+    color: rgb(196, 196, 196);
   }
 }
 </style>

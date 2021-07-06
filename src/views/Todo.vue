@@ -5,7 +5,7 @@
         <p class="subtitle_task">{{ $t(subtitleTaskText, { task_count }) }}</p>
       </el-tab-pane>
     </el-tabs>
-    <article class="todo-list">
+    <ul class="todo-list">
       <TodoItem
         v-for="({ check, input, priority }, index) in todoList"
         :key="index"
@@ -18,7 +18,7 @@
         @updateInput="(value) => updateInput(value, index)"
         @itemBlur="updateList(index)"
       />
-    </article>
+    </ul>
     <el-button
       v-show="activeName === 'todo'"
       class="add-button"
@@ -27,7 +27,7 @@
       circle
       @click.prevent="addTodoList"
     ></el-button>
-    <el-drawer v-model="prDrawer" direction="btt">
+    <el-drawer v-model="prDrawer" direction="btt" size="50%">
       <template v-slot:title>
         <p class="priority-description">
           {{ $t('default.guide_priority_body_front') }} <br />
@@ -35,18 +35,20 @@
           {{ $t('default.guide_priority_body_back') }}
         </p>
       </template>
-      <article class="drawer">
-        <el-button
-          v-for="{ backgroundColor, value, icon, size, fontSize } in priorities"
-          :key="value"
-          class="priority-button"
-          :style="{ backgroundColor, height: size, width: size, fontSize }"
-          circle
-          @click="setPriority(value)"
-          :data-label="$t(guidePriorityText(value))"
-          >{{ icon }}</el-button
-        >
-      </article>
+      <div class="vertical-align-center">
+        <article class="drawer">
+          <el-button
+            v-for="{ backgroundColor, value, icon, size, fontSize } in priorities"
+            :key="value"
+            class="priority-button"
+            :style="{ backgroundColor, height: size, width: size, fontSize }"
+            circle
+            @click="setPriority(value)"
+            :data-label="$t(guidePriorityText(value))"
+            >{{ icon }}</el-button
+          >
+        </article>
+      </div>
     </el-drawer>
   </section>
 </template>
@@ -61,6 +63,27 @@ export default {
   },
   setup() {
     const { todoList, prDrawer, updateCheck, updateInput, addTodoList, updateList, setPriority } = useTodoList([
+      { check: true, input: '123', priority: 'High' },
+      { check: true, input: '123', priority: 'Mid' },
+      { check: false, input: '123', priority: 'Low' },
+      { check: true, input: '123', priority: 'High' },
+      { check: true, input: '123', priority: 'Mid' },
+      { check: false, input: '123', priority: 'Low' },
+      { check: true, input: '123', priority: 'High' },
+      { check: true, input: '123', priority: 'Mid' },
+      { check: false, input: '123', priority: 'Low' },
+      { check: true, input: '123', priority: 'High' },
+      { check: true, input: '123', priority: 'Mid' },
+      { check: false, input: '123', priority: 'Low' },
+      { check: true, input: '123', priority: 'High' },
+      { check: true, input: '123', priority: 'Mid' },
+      { check: false, input: '123', priority: 'Low' },
+      { check: true, input: '123', priority: 'High' },
+      { check: true, input: '123', priority: 'Mid' },
+      { check: false, input: '123', priority: 'Low' },
+      { check: true, input: '123', priority: 'High' },
+      { check: true, input: '123', priority: 'Mid' },
+      { check: false, input: '123', priority: 'Low' },
       { check: true, input: '123', priority: 'High' },
       { check: true, input: '123', priority: 'Mid' },
       { check: false, input: '123', priority: 'Low' },
@@ -143,6 +166,10 @@ export default {
     margin: 0;
   }
 
+  .el-drawer__header {
+    margin-bottom: 0;
+  }
+
   .tab-todo {
     @include el-tabs-color(#f56e71, #6880ff);
   }
@@ -191,7 +218,8 @@ export default {
 
   .todo-list {
     height: calc(100% - 64px);
-    overflow: scroll;
+    width: 100%;
+    overflow-y: scroll;
   }
 
   .priority-description {
@@ -226,6 +254,12 @@ export default {
         color: black;
       }
     }
+  }
+
+  .vertical-align-center {
+    height: 100%;
+    display: flex;
+    align-items: center;
   }
 }
 </style>

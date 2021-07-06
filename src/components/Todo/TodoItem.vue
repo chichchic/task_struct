@@ -1,5 +1,5 @@
 <template>
-  <div class="todo-item" :class="{ [tab]: true, focus: focus }">
+  <li class="todo-item" :class="{ [tab]: true, focus: focus }">
     <el-checkbox class="checkbox" :modelValue="check" @change="updateCheck" :disabled="lineThrough" />
     <div class="input">
       <el-input
@@ -19,7 +19,7 @@
       <p class="priority" :class="priority.toLowerCase()">{{ $t(priorityText) }}</p>
     </div>
     <i class="el-icon-arrow-right"></i>
-  </div>
+  </li>
 </template>
 <script>
 export default {

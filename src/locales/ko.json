@@ -1,0 +1,20 @@
+{
+  "title_todo": "",
+  "title_done": "",
+  "subtitle_task_incomplete": "남은 할 일: {task_count}개",
+  "subtitle_task_completed": "완료한 일: {task_count}개",
+  "priority_high": "매우 높음",
+  "priority_mid": "보통",
+  "priority_low": "낮음",
+  "guide_priority_body_front": "이번 할 일의",
+  "guide_priority_bold": "우선순위",
+  "guide_priority_body_back": "를 알려주세요",
+  "guide_priority_high": "매우 중요",
+  "guide_priority_mid": "보통",
+  "guide_priority_low": "낮음",
+  "language_kr": "한국어",
+  "language_en": "영어",
+  "set_inquiry": "문의하기",
+  "set_withdraw": "계정 삭제",
+  "menu_todo": ""
+}

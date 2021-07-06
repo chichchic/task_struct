@@ -1,0 +1,19 @@
+.el-input__inner {
+  background-color: transparent;
+}
+
+.el-input.is-disabled .el-input__inner {
+  background-color: transparent;
+}
+
+.el-drawer.btt {
+  border-radius: 1.5rem 1.5rem 0 0;
+}
+
+.el-button .el-icon-plus::before {
+  font-weight: bold;
+}
+
+.el-button--text {
+  color: #333;
+}

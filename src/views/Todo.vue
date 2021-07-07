@@ -6,18 +6,30 @@
       </el-tab-pane>
     </el-tabs>
     <ul class="todo-list">
-      <TodoItem
+      <Swiper
         v-for="({ check, input, priority }, index) in todoList"
         :key="index"
-        :check="check"
-        :input="input"
-        :priority="priority"
-        :tab="'tab-' + activeName"
-        :lineThrough="activeName === 'done'"
-        @updateCheck="(value) => updateCheck(value, index)"
-        @updateInput="(value) => updateInput(value, index)"
-        @itemBlur="updateList(index)"
-      />
+        tailWidth="124px"
+        :isOpen="toggleIndex === index"
+      >
+        <template v-slot:main>
+          <TodoItem
+            :check="check"
+            :input="input"
+            :priority="priority"
+            :tab="'tab-' + activeName"
+            :lineThrough="activeName === 'done'"
+            @updateCheck="(value) => updateCheck(value, index)"
+            @updateInput="(value) => updateInput(value, index)"
+            @itemBlur="updateList(index)"
+            @toggleSlider="(status) => toggleSlider(status, index)"
+          />
+        </template>
+        <template v-slot:tail>
+          <div class="swiper-button edit" data-icon="&#9997;"></div>
+          <div class="swiper-button delete" data-icon="&#215;"></div>
+        </template>
+      </Swiper>
     </ul>
     <el-button
       v-show="activeName === 'todo'"
@@ -56,10 +68,12 @@
 import TodoItem from '@/components/Todo/TodoItem.vue';
 import useTodoList from '@/components/Todo/useTodoList';
 import useElTabs from '@/components/elementPlus/useElTabs';
+import Swiper from '@/components/common/Swiper.vue';
 
 export default {
   components: {
     TodoItem,
+    Swiper,
   },
   setup() {
     const { todoList, prDrawer, updateCheck, updateInput, addTodoList, updateList, setPriority } = useTodoList([
@@ -114,6 +128,7 @@ export default {
       { backgroundColor: '#84d9a0', value: 'Mid', icon: 'M', size: '8rem', fontSize: '4rem' },
       { backgroundColor: '#ffc678', value: 'Low', icon: 'L', size: '6rem', fontSize: '2rem' },
     ],
+    toggleIndex: null,
   }),
   computed: {
     task_count() {
@@ -135,6 +150,13 @@ export default {
         Low: 'default.guide_priority_low',
       };
       return list[value];
+    },
+    toggleSlider(status, index) {
+      if (status) {
+        this.toggleIndex = null;
+        return;
+      }
+      this.toggleIndex = index;
     },
   },
 };
@@ -213,6 +235,30 @@ export default {
     .subtitle_task {
       left: calc(75% + 1rem);
       transform: translateX(-50%);
+    }
+  }
+
+  .swiper-button {
+    height: 100%;
+    width: 62px;
+    position: relative;
+
+    &::after {
+      content: attr(data-icon);
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 3rem;
+    }
+
+    &.edit {
+      background-color: #6880ff;
+    }
+
+    &.delete {
+      background-color: #f56e71;
+      color: white;
     }
   }
 

@@ -1,5 +1,5 @@
 <template>
-  <li class="todo-item" :class="{ [tab]: true, focus: focus }">
+  <div class="todo-item" :class="{ [tab]: true, focus: focus }">
     <el-checkbox class="checkbox" :modelValue="check" @change="updateCheck" :disabled="lineThrough" />
     <div class="input">
       <el-input
@@ -18,8 +18,9 @@
       />
       <p class="priority" :class="priority.toLowerCase()">{{ $t(priorityText) }}</p>
     </div>
-    <i class="el-icon-arrow-right"></i>
-  </li>
+    <i v-if="isOpen" class="el-icon-arrow-right" @click.prevent="toggleSlider"></i>
+    <i v-else class="el-icon-arrow-left" @click.prevent="toggleSlider"></i>
+  </div>
 </template>
 <script>
 export default {
@@ -47,6 +48,7 @@ export default {
   },
   data: () => ({
     focus: false,
+    isOpen: false,
   }),
   methods: {
     updateCheck(value) {
@@ -61,6 +63,10 @@ export default {
     actionBlur() {
       this.focus = false;
       this.$emit('itemBlur');
+    },
+    toggleSlider() {
+      this.$emit('toggleSlider', this.isOpen);
+      this.isOpen = !this.isOpen;
     },
   },
 };
@@ -141,6 +147,9 @@ export default {
   }
 
   i {
+    height: 42px;
+    line-height: 42px;
+    display: inline-block;
     color: rgb(196, 196, 196);
   }
 }

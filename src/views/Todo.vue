@@ -9,7 +9,7 @@
       <Swiper
         v-for="({ check, input, priority }, index) in todoList"
         :key="index"
-        tailWidth="124px"
+        :tailWidth="124"
         :isOpen="toggleIndex === index"
       >
         <template v-slot:main>

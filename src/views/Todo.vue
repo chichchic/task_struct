@@ -5,12 +5,12 @@
         <p class="subtitle_task">{{ $t(subtitleTaskText, { task_count }) }}</p>
       </el-tab-pane>
     </el-tabs>
-    <ul class="todo-list">
+    <ul class="todo-list" ref="swipeListener">
       <Swiper
         v-for="({ check, input, priority }, index) in todoList"
         :key="index"
-        :tailWidth="124"
-        :isOpen="toggleIndex === index"
+        :tailWidth="toggleIndex == index ? tailWidth : 0"
+        :data-index="index"
       >
         <template v-slot:main>
           <TodoItem
@@ -22,7 +22,7 @@
             @updateCheck="(value) => updateCheck(value, index)"
             @updateInput="(value) => updateInput(value, index)"
             @itemBlur="updateList(index)"
-            @toggleSlider="(status) => toggleSlider(status, index)"
+            @toggleSlider="toggleSlider(index)"
           />
         </template>
         <template v-slot:tail>
@@ -129,7 +129,31 @@ export default {
       { backgroundColor: '#ffc678', value: 'Low', icon: 'L', size: '6rem', fontSize: '2rem' },
     ],
     toggleIndex: null,
+    tailWidth: 0,
   }),
+  mounted() {
+    let startPoint = null;
+    const touchmove = (e) => {
+      const dif = Math.floor(e.touches[0].pageX - startPoint);
+      this.tailWidth = dif < -124 ? -124 : dif;
+    };
+    const throttelTouchMove = this.throttle(touchmove, 100);
+    this.$refs.swipeListener.addEventListener('touchstart', (e) => {
+      startPoint = e.touches[0].pageX;
+      this.$refs.swipeListener.addEventListener('touchmove', throttelTouchMove);
+      const index = e.target.closest('li').dataset.index;
+      this.toggleIndex = index;
+      this.tailWidth = 0;
+    });
+    this.$refs.swipeListener.addEventListener('touchend', () => {
+      this.$refs.swipeListener.removeEventListener('touchmove', touchmove);
+      if (this.tailWidth < -30) {
+        this.tailWidth = -124;
+      } else {
+        this.tailWidth = 0;
+      }
+    });
+  },
   computed: {
     task_count() {
       return this.todoList.filter(({ check }) => check).length;
@@ -151,12 +175,26 @@ export default {
       };
       return list[value];
     },
-    toggleSlider(status, index) {
-      if (status) {
+    toggleSlider(index) {
+      if (this.toggleIndex === index) {
         this.toggleIndex = null;
-        return;
+        this.tailWidth = 0;
+      } else {
+        this.toggleIndex = index;
+        this.tailWidth = -124;
       }
-      this.toggleIndex = index;
+    },
+    throttle(fn, delay) {
+      let timeout = false;
+      return (...rest) => {
+        if (!timeout) {
+          timeout = true;
+          fn.apply(this, rest);
+          setTimeout(() => {
+            timeout = false;
+          }, delay);
+        }
+      };
     },
   },
 };

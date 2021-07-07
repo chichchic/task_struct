@@ -18,8 +18,7 @@
       />
       <p class="priority" :class="priority.toLowerCase()">{{ $t(priorityText) }}</p>
     </div>
-    <i v-if="isOpen" class="el-icon-arrow-right" @click.prevent="toggleSlider"></i>
-    <i v-else class="el-icon-arrow-left" @click.prevent="toggleSlider"></i>
+    <i class="el-icon-arrow-right" @click.prevent="toggleSlider"></i>
   </div>
 </template>
 <script>
@@ -48,7 +47,6 @@ export default {
   },
   data: () => ({
     focus: false,
-    isOpen: false,
   }),
   methods: {
     updateCheck(value) {
@@ -65,8 +63,7 @@ export default {
       this.$emit('itemBlur');
     },
     toggleSlider() {
-      this.$emit('toggleSlider', this.isOpen);
-      this.isOpen = !this.isOpen;
+      this.$emit('toggleSlider');
     },
   },
 };

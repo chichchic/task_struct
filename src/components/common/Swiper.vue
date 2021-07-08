@@ -37,8 +37,9 @@ export default {
 .swiper {
   width: 100%;
   height: 62px;
-  overflow: hidden;
   position: relative;
+  overflow-y: visible;
+  overflow-x: hidden;
 
   .container {
     width: 100%;
@@ -50,7 +51,7 @@ export default {
     will-change: transform;
 
     .main {
-      flex: 1 0 calc(100%);
+      flex: 1 0 calc(100% + 1px);
     }
 
     .tail {

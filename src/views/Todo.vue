@@ -6,11 +6,11 @@
       </el-tab-pane>
     </el-tabs>
     <ul class="todo-list" ref="swipeListener">
-      <li v-for="({ check, input, priority }, index) in todoList" :key="index">
+      <li v-for="({ check, input, priority }, index) in todoList" :key="index" :data-index="index">
         <el-button class="enroll enroll-top" v-show="addNewItem && editIndex === index" @click="enroll(index)"
           >등록</el-button
         >
-        <Swiper :tailWidth="toggleIndex == index ? tailWidth : 0" :data-index="index">
+        <Swiper :tailWidth="toggleIndex == index ? tailWidth : 0">
           <template v-slot:main>
             <TodoItem
               :check="check"
@@ -21,7 +21,6 @@
               @updateCheck="(value) => updateCheck(value, index)"
               @updateInput="(value) => updateInput(value, index)"
               @toggleSlider="toggleSlider(index)"
-              @setEdit="setEditIndex"
               :edit="editIndex === index"
             />
           </template>
@@ -153,7 +152,7 @@ export default {
     this.$refs.swipeListener.addEventListener('touchstart', (e) => {
       startPoint = e.touches[0].pageX;
       this.$refs.swipeListener.addEventListener('touchmove', throttelTouchMove);
-      const index = e.target.closest('.swiper').dataset.index;
+      const index = e.target.closest('li').dataset.index;
       //FIXME: editmode 해제시키는 부분 분리해서 관리하기
       if (this.editIndex !== null && !e.target.closest('.enroll')) {
         this.updateList(this.editIndex, false);
@@ -231,7 +230,11 @@ export default {
       this.toggleIndex = null;
       this.tailWidth = 0;
       this.addNewItem = false;
-      this.updateList(index);
+      //FIXME: 나중에 등록 관련된 로직을 수정할 필요가 있음
+      //NOTE: TodoItem 내부에 edit watch가 먼저 동작해야하는데 updateList가 먼저 동작해서 에러 수정을 위해 nextTick사용.
+      this.$nextTick(() => {
+        this.updateList(index);
+      });
     },
     addItem() {
       this.activeName = 'todo';

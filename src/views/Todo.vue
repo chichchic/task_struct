@@ -6,56 +6,46 @@
       </el-tab-pane>
     </el-tabs>
     <ul class="todo-list" ref="swipeListener">
-      <Swiper
-        v-for="({ check, input, priority }, index) in todoList"
-        :key="index"
-        :tailWidth="toggleIndex == index ? tailWidth : 0"
-        :data-index="index"
-      >
-        <template v-slot:main>
-          <TodoItem
-            :check="check"
-            :input="input"
-            :priority="priority"
-            :tab="'tab-' + activeName"
-            :lineThrough="activeName === 'done'"
-            @updateCheck="(value) => updateCheck(value, index)"
-            @updateInput="(value) => updateInput(value, index)"
-            @enroll="enroll(index)"
-            @toggleSlider="toggleSlider(index)"
-            @setEdit="setEditIndex"
-            :edit="editIndex === index"
-          />
-        </template>
-        <template v-slot:tail>
-          <div
-            v-if="activeName === 'todo'"
-            class="swiper-button edit"
-            data-icon="&#9997;"
-            @click="setEditIndex(index)"
-          ></div>
-          <div v-else class="swiper-button edit">
-            <i class="el-icon-refresh"></i>
-          </div>
-          <div class="swiper-button delete" @click="removeList(index)">
-            <i class="el-icon-close"></i>
-          </div>
-        </template>
-      </Swiper>
+      <li v-for="({ check, input, priority }, index) in todoList" :key="index">
+        <el-button class="enroll enroll-top" v-show="addNewItem && editIndex === index" @click="enroll(index)"
+          >등록</el-button
+        >
+        <Swiper :tailWidth="toggleIndex == index ? tailWidth : 0" :data-index="index">
+          <template v-slot:main>
+            <TodoItem
+              :check="check"
+              :input="input"
+              :priority="priority"
+              :tab="'tab-' + activeName"
+              :lineThrough="activeName === 'done'"
+              @updateCheck="(value) => updateCheck(value, index)"
+              @updateInput="(value) => updateInput(value, index)"
+              @toggleSlider="toggleSlider(index)"
+              @setEdit="setEditIndex"
+              :edit="editIndex === index"
+            />
+          </template>
+          <template v-slot:tail>
+            <div
+              v-if="activeName === 'todo'"
+              class="swiper-button edit"
+              data-icon="&#9997;"
+              @click="setEditIndex(index)"
+            ></div>
+            <div v-else class="swiper-button edit">
+              <i class="el-icon-refresh"></i>
+            </div>
+            <div class="swiper-button delete" @click="removeList(index)">
+              <i class="el-icon-close"></i>
+            </div>
+          </template>
+        </Swiper>
+        <el-button class="enroll enroll-bottom" v-show="!addNewItem && editIndex === index" @click="enroll(index)"
+          >등록</el-button
+        >
+      </li>
     </ul>
-    <el-button
-      class="add-button"
-      icon="el-icon-plus"
-      type="primary"
-      circle
-      @click.prevent="
-        () => {
-          activeName = 'todo';
-          addTodoList();
-          editIndex = todoList.length - 1;
-        }
-      "
-    ></el-button>
+    <el-button class="add-button" icon="el-icon-plus" type="primary" circle @click.prevent="addItem"></el-button>
     <el-drawer v-model="prDrawer" direction="btt" size="50%">
       <template v-slot:title>
         <p class="priority-description">
@@ -151,6 +141,7 @@ export default {
     toggleIndex: null,
     tailWidth: 0,
     editIndex: null,
+    addNewItem: false,
   }),
   mounted() {
     let startPoint = null;
@@ -162,10 +153,12 @@ export default {
     this.$refs.swipeListener.addEventListener('touchstart', (e) => {
       startPoint = e.touches[0].pageX;
       this.$refs.swipeListener.addEventListener('touchmove', throttelTouchMove);
-      const index = e.target.closest('li').dataset.index;
+      const index = e.target.closest('.swiper').dataset.index;
+      //FIXME: editmode 해제시키는 부분 분리해서 관리하기
       if (this.editIndex !== null && !e.target.closest('.enroll')) {
         this.updateList(this.editIndex, false);
         this.editIndex = null;
+        this.addNewItem = false;
       }
       this.toggleIndex = index;
       this.tailWidth = 0;
@@ -225,6 +218,7 @@ export default {
       this.toggleIndex = null;
       this.tailWidth = 0;
       this.editIndex = null;
+      this.addNewItem = false;
       this.handleClick();
     },
     setEditIndex(index) {
@@ -236,7 +230,14 @@ export default {
       this.editIndex = null;
       this.toggleIndex = null;
       this.tailWidth = 0;
+      this.addNewItem = false;
       this.updateList(index);
+    },
+    addItem() {
+      this.activeName = 'todo';
+      this.addTodoList();
+      this.editIndex = this.todoList.length - 1;
+      this.addNewItem = true;
     },
   },
 };
@@ -354,6 +355,23 @@ export default {
     height: calc(100% - 64px);
     width: 100%;
     overflow-y: scroll;
+  }
+
+  .enroll {
+    background-color: rgb(217, 217, 217);
+    width: 12rem;
+    padding: 5px 20px;
+    min-height: 2rem;
+    border-radius: 30px;
+    display: block;
+
+    &-top {
+      margin: 0 auto 10px auto;
+    }
+
+    &-bottom {
+      margin: 10px auto 0 auto;
+    }
   }
 
   .priority-description {

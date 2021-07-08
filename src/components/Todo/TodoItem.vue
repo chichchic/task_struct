@@ -1,5 +1,5 @@
 <template>
-  <div class="todo-item" :class="{ [tab]: true, focus: focus }">
+  <div class="todo-item" :class="{ [tab]: true, focus: edit }">
     <el-checkbox class="checkbox" :modelValue="check" @change="updateCheck" :disabled="lineThrough" />
     <div class="input">
       <el-input
@@ -15,7 +15,6 @@
       <p class="input-text" v-else :class="{ 'line-through': lineThrough }">{{ input }}</p>
       <p class="priority" :class="priority.toLowerCase()">{{ $t(priorityText) }}</p>
     </div>
-    <el-button v-if="edit" class="enroll" @click="enroll">등록</el-button>
     <i class="el-icon-arrow-right" @click.prevent="toggleSlider"></i>
   </div>
 </template>
@@ -30,13 +29,14 @@ export default {
     edit: Boolean,
   },
   watch: {
-    edit(newVal) {
+    edit(newVal, prevVal) {
       if (newVal) {
         this.$nextTick(() => {
           this.$refs.input.focus();
         });
-      } else {
-        this.focus = false;
+      }
+      if (prevVal && !newVal) {
+        this.updateInput(this.innerInput);
       }
     },
   },
@@ -57,7 +57,6 @@ export default {
     }
   },
   data: () => ({
-    focus: false,
     innerInput: '',
   }),
   methods: {
@@ -68,16 +67,10 @@ export default {
       this.$emit('updateInput', value);
     },
     actionFocus() {
-      this.focus = true;
       this.innerInput = this.input;
     },
     toggleSlider() {
       this.$emit('toggleSlider');
-    },
-    enroll() {
-      this.updateInput(this.innerInput);
-      this.$emit('enroll');
-      this.focus = false;
     },
   },
 };
@@ -167,10 +160,6 @@ export default {
     line-height: 42px;
     display: inline-block;
     color: rgb(196, 196, 196);
-  }
-
-  .enroll {
-    background-color: #c4c4c4;
   }
 }
 </style>

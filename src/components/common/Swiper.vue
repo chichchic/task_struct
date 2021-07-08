@@ -1,5 +1,5 @@
 <template>
-  <li class="swiper">
+  <div class="swiper">
     <div class="container" ref="container">
       <div class="main">
         <slot name="main"></slot>
@@ -9,7 +9,7 @@
         <slot name="tail"></slot>
       </div>
     </div>
-  </li>
+  </div>
 </template>
 <script>
 export default {

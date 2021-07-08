@@ -11,22 +11,30 @@ export default function useTodoList(initList) {
     todoList.value[index].input = value;
   };
   const addTodoList = () => {
-    todoList.value.push({ check: false, input: '', priority: 'Low' });
+    todoList.value.push({ check: false, input: '', priority: 'Empty' });
   };
-  const updateList = (index) => {
+  //FIXME: 너무 여러 역할을 가지고 있음. 추후에 분리할 것!
+  const updateList = (index, enroll = true) => {
     const { input } = todoList.value[index];
     const trimedInput = input.trim();
     if (trimedInput === '') {
       todoList.value.splice(index, 1);
       return;
     }
+    if (!enroll) {
+      return;
+    }
     curIndex = index;
     todoList.value[index].input = trimedInput;
+    todoList.value[curIndex].priority = 'Mid';
     prDrawer.value = true;
+  };
+  const removeList = (index) => {
+    todoList.value.splice(index, 1);
   };
   const setPriority = (value) => {
     todoList.value[curIndex].priority = value;
     prDrawer.value = false;
   };
-  return { todoList, prDrawer, updateCheck, updateInput, addTodoList, updateList, setPriority };
+  return { todoList, prDrawer, updateCheck, updateInput, addTodoList, updateList, removeList, setPriority };
 }

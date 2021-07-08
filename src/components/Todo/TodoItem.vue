@@ -3,21 +3,19 @@
     <el-checkbox class="checkbox" :modelValue="check" @change="updateCheck" :disabled="lineThrough" />
     <div class="input">
       <el-input
+        v-if="edit"
         placeholder="할 일을 입력해보세요"
-        :modelValue="input"
-        @input="updateInput"
-        clearable
-        @clear="updateInput('')"
-        :disabled="check"
+        v-model="innerInput"
         ref="input"
-        @blur="actionBlur"
         @focus="actionFocus"
         :class="{ 'line-through': lineThrough }"
         :autosize="true"
         type="textarea"
       />
+      <p class="input-text" v-else :class="{ 'line-through': lineThrough }">{{ input }}</p>
       <p class="priority" :class="priority.toLowerCase()">{{ $t(priorityText) }}</p>
     </div>
+    <el-button v-if="edit" class="enroll" @click="enroll">등록</el-button>
     <i class="el-icon-arrow-right" @click.prevent="toggleSlider"></i>
   </div>
 </template>
@@ -29,6 +27,18 @@ export default {
     priority: String,
     tab: String,
     lineThrough: Boolean,
+    edit: Boolean,
+  },
+  watch: {
+    edit(newVal) {
+      if (newVal) {
+        this.$nextTick(() => {
+          this.$refs.input.focus();
+        });
+      } else {
+        this.focus = false;
+      }
+    },
   },
   computed: {
     priorityText() {
@@ -36,6 +46,7 @@ export default {
         High: 'default.priority_high',
         Mid: 'default.priority_mid',
         Low: 'default.priority_low',
+        Empty: 'default.priority',
       };
       return list[this.priority];
     },
@@ -47,6 +58,7 @@ export default {
   },
   data: () => ({
     focus: false,
+    innerInput: '',
   }),
   methods: {
     updateCheck(value) {
@@ -57,13 +69,15 @@ export default {
     },
     actionFocus() {
       this.focus = true;
-    },
-    actionBlur() {
-      this.focus = false;
-      this.$emit('itemBlur');
+      this.innerInput = this.input;
     },
     toggleSlider() {
       this.$emit('toggleSlider');
+    },
+    enroll() {
+      this.updateInput(this.innerInput);
+      this.$emit('enroll');
+      this.focus = false;
     },
   },
 };
@@ -127,6 +141,11 @@ export default {
     resize: none;
   }
 
+  .input-text {
+    padding: 0;
+    font-size: 1.8rem;
+  }
+
   .el-textarea.is-disabled .el-textarea__inner {
     color: inherit;
   }
@@ -148,6 +167,10 @@ export default {
     line-height: 42px;
     display: inline-block;
     color: rgb(196, 196, 196);
+  }
+
+  .enroll {
+    background-color: #c4c4c4;
   }
 }
 </style>

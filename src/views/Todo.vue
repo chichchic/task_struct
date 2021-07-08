@@ -1,6 +1,6 @@
 <template>
   <section class="todo">
-    <el-tabs :class="`tab-${activeName}`" v-model="activeName" @tab-click="handleClick" stretch>
+    <el-tabs :class="`tab-${activeName}`" v-model="activeName" @tab-click="changeTab" stretch>
       <el-tab-pane v-for="{ label, name } in tabs" :key="name" :label="label" :name="name">
         <p class="subtitle_task">{{ $t(subtitleTaskText, { task_count }) }}</p>
       </el-tab-pane>
@@ -21,23 +21,40 @@
             :lineThrough="activeName === 'done'"
             @updateCheck="(value) => updateCheck(value, index)"
             @updateInput="(value) => updateInput(value, index)"
-            @itemBlur="updateList(index)"
+            @enroll="enroll(index)"
             @toggleSlider="toggleSlider(index)"
+            @setEdit="setEditIndex"
+            :edit="editIndex === index"
           />
         </template>
         <template v-slot:tail>
-          <div class="swiper-button edit" data-icon="&#9997;"></div>
-          <div class="swiper-button delete" data-icon="&#215;"></div>
+          <div
+            v-if="activeName === 'todo'"
+            class="swiper-button edit"
+            data-icon="&#9997;"
+            @click="setEditIndex(index)"
+          ></div>
+          <div v-else class="swiper-button edit">
+            <i class="el-icon-refresh"></i>
+          </div>
+          <div class="swiper-button delete" @click="removeList(index)">
+            <i class="el-icon-close"></i>
+          </div>
         </template>
       </Swiper>
     </ul>
     <el-button
-      v-show="activeName === 'todo'"
       class="add-button"
       icon="el-icon-plus"
       type="primary"
       circle
-      @click.prevent="addTodoList"
+      @click.prevent="
+        () => {
+          activeName = 'todo';
+          addTodoList();
+          editIndex = todoList.length - 1;
+        }
+      "
     ></el-button>
     <el-drawer v-model="prDrawer" direction="btt" size="50%">
       <template v-slot:title>
@@ -70,38 +87,40 @@ import useTodoList from '@/components/Todo/useTodoList';
 import useElTabs from '@/components/elementPlus/useElTabs';
 import Swiper from '@/components/common/Swiper.vue';
 
+//NOTE: 데이터베이스와 연결한 후 refresh button 로직 구현하기.
 export default {
   components: {
     TodoItem,
     Swiper,
   },
   setup() {
-    const { todoList, prDrawer, updateCheck, updateInput, addTodoList, updateList, setPriority } = useTodoList([
-      { check: true, input: '123', priority: 'High' },
-      { check: true, input: '123', priority: 'Mid' },
-      { check: false, input: '123', priority: 'Low' },
-      { check: true, input: '123', priority: 'High' },
-      { check: true, input: '123', priority: 'Mid' },
-      { check: false, input: '123', priority: 'Low' },
-      { check: true, input: '123', priority: 'High' },
-      { check: true, input: '123', priority: 'Mid' },
-      { check: false, input: '123', priority: 'Low' },
-      { check: true, input: '123', priority: 'High' },
-      { check: true, input: '123', priority: 'Mid' },
-      { check: false, input: '123', priority: 'Low' },
-      { check: true, input: '123', priority: 'High' },
-      { check: true, input: '123', priority: 'Mid' },
-      { check: false, input: '123', priority: 'Low' },
-      { check: true, input: '123', priority: 'High' },
-      { check: true, input: '123', priority: 'Mid' },
-      { check: false, input: '123', priority: 'Low' },
-      { check: true, input: '123', priority: 'High' },
-      { check: true, input: '123', priority: 'Mid' },
-      { check: false, input: '123', priority: 'Low' },
-      { check: true, input: '123', priority: 'High' },
-      { check: true, input: '123', priority: 'Mid' },
-      { check: false, input: '123', priority: 'Low' },
-    ]);
+    const { todoList, prDrawer, updateCheck, updateInput, addTodoList, updateList, removeList, setPriority } =
+      useTodoList([
+        { check: true, input: '1', priority: 'High' },
+        { check: true, input: '2', priority: 'Mid' },
+        { check: false, input: '3', priority: 'Low' },
+        { check: true, input: '4', priority: 'High' },
+        { check: true, input: '5', priority: 'Mid' },
+        { check: false, input: '6', priority: 'Low' },
+        { check: true, input: '7', priority: 'High' },
+        { check: true, input: '8', priority: 'Mid' },
+        { check: false, input: '9', priority: 'Low' },
+        { check: true, input: '10', priority: 'High' },
+        { check: true, input: '11', priority: 'Mid' },
+        { check: false, input: '12', priority: 'Low' },
+        { check: true, input: '13', priority: 'High' },
+        { check: true, input: '14', priority: 'Mid' },
+        { check: false, input: '15', priority: 'Low' },
+        { check: true, input: '16', priority: 'High' },
+        { check: true, input: '17', priority: 'Mid' },
+        { check: false, input: '18', priority: 'Low' },
+        { check: true, input: '19', priority: 'High' },
+        { check: true, input: '20', priority: 'Mid' },
+        { check: false, input: '21', priority: 'Low' },
+        { check: true, input: '22', priority: 'High' },
+        { check: true, input: '23', priority: 'Mid' },
+        { check: false, input: '24', priority: 'Low' },
+      ]);
     const { tabs, activeName, handleClick } = useElTabs(
       [
         { label: 'TODO', name: 'todo' },
@@ -116,10 +135,11 @@ export default {
       updateInput,
       addTodoList,
       updateList,
+      removeList,
+      setPriority,
       tabs,
       activeName,
       handleClick,
-      setPriority,
     };
   },
   data: () => ({
@@ -130,6 +150,7 @@ export default {
     ],
     toggleIndex: null,
     tailWidth: 0,
+    editIndex: null,
   }),
   mounted() {
     let startPoint = null;
@@ -137,11 +158,15 @@ export default {
       const dif = Math.floor(e.touches[0].pageX - startPoint);
       this.tailWidth = dif < -124 ? -124 : dif;
     };
-    const throttelTouchMove = this.throttle(touchmove, 100);
+    const throttelTouchMove = this.throttle(touchmove, 50);
     this.$refs.swipeListener.addEventListener('touchstart', (e) => {
       startPoint = e.touches[0].pageX;
       this.$refs.swipeListener.addEventListener('touchmove', throttelTouchMove);
       const index = e.target.closest('li').dataset.index;
+      if (this.editIndex !== null && !e.target.closest('.enroll')) {
+        this.updateList(this.editIndex, false);
+        this.editIndex = null;
+      }
       this.toggleIndex = index;
       this.tailWidth = 0;
     });
@@ -195,6 +220,23 @@ export default {
           }, delay);
         }
       };
+    },
+    changeTab() {
+      this.toggleIndex = null;
+      this.tailWidth = 0;
+      this.editIndex = null;
+      this.handleClick();
+    },
+    setEditIndex(index) {
+      this.editIndex = index;
+      this.toggleIndex = null;
+      this.tailWidth = 0;
+    },
+    enroll(index) {
+      this.editIndex = null;
+      this.toggleIndex = null;
+      this.tailWidth = 0;
+      this.updateList(index);
     },
   },
 };
@@ -281,6 +323,15 @@ export default {
     width: 62px;
     position: relative;
 
+    i {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 3rem;
+      color: white;
+    }
+
     &::after {
       content: attr(data-icon);
       position: absolute;
@@ -296,7 +347,6 @@ export default {
 
     &.delete {
       background-color: #f56e71;
-      color: white;
     }
   }
 

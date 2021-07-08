@@ -26,7 +26,9 @@ export default function useTodoList(initList) {
     }
     curIndex = index;
     todoList.value[index].input = trimedInput;
-    todoList.value[curIndex].priority = 'Mid';
+    if (todoList.value[curIndex].priority === 'Empty') {
+      todoList.value[curIndex].priority = 'Mid';
+    }
     prDrawer.value = true;
   };
   const removeList = (index) => {

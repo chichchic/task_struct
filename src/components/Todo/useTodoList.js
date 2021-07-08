@@ -1,7 +1,14 @@
 import { ref } from 'vue';
 export default function useTodoList(initList) {
-  const todoList = ref(initList);
+  const priorityTable = {
+    High: 0,
+    Mid: 1,
+    Low: 2,
+  };
+  const sorting = ({ value }) => value.sort((a, b) => priorityTable[a.priority] - priorityTable[b.priority]);
+  const todoList = ref(sorting({ value: initList }));
   const prDrawer = ref(false);
+
   //FIXME: curIndex를 사용하지 않는 방법으로 priority 설정할 수 있도록 수정해야 함
   let curIndex = null;
   const updateCheck = (value, index) => {
@@ -36,7 +43,9 @@ export default function useTodoList(initList) {
   };
   const setPriority = (value) => {
     todoList.value[curIndex].priority = value;
+    sorting(todoList);
     prDrawer.value = false;
   };
+
   return { todoList, prDrawer, updateCheck, updateInput, addTodoList, updateList, removeList, setPriority };
 }

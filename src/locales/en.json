@@ -3,6 +3,7 @@
   "title_done": "",
   "subtitle_task_incomplete": "incomplete: {task_count}",
   "subtitle_task_completed": "complete: {task_count}개",
+  "priority": "priority",
   "priority_high": "High",
   "priority_mid": "Mid",
   "priority_low": "Low",

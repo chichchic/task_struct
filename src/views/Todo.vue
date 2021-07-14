@@ -296,10 +296,6 @@ export default {
     z-index: 3;
   }
 
-  .el-tab-pane {
-    position: relative;
-  }
-
   .subtitle_task {
     color: #a7a7a7;
     position: relative;

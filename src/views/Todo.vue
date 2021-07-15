@@ -41,7 +41,7 @@
     <el-button class="add-button" type="primary" @click.prevent="addItem">{{
       editIndex === null ? '+ 추가하기' : '등록하기'
     }}</el-button>
-    <el-drawer v-model="prDrawer" direction="btt" size="50%">
+    <el-drawer v-model="prDrawer" @close="sorting" direction="btt" size="50%">
       <template v-slot:title>
         <p class="priority-description">
           {{ $t('default.guide_priority_body_front') }} <br />
@@ -79,7 +79,7 @@ export default {
     Swiper,
   },
   setup() {
-    const { todoList, prDrawer, updateCheck, updateInput, addTodoList, updateList, removeList, setPriority } =
+    const { todoList, prDrawer, updateCheck, updateInput, addTodoList, updateList, removeList, setPriority, sorting } =
       useTodoList([
         { check: true, input: '1', priority: 'High' },
         { check: true, input: '2', priority: 'Mid' },
@@ -122,6 +122,7 @@ export default {
       updateList,
       removeList,
       setPriority,
+      sorting,
       tabs,
       activeName,
       handleClick,

@@ -152,7 +152,7 @@ export default {
     this.$refs.swipeListener.addEventListener('touchstart', (e) => {
       startPoint = e.touches[0].pageX;
       this.$refs.swipeListener.addEventListener('touchmove', throttelTouchMove);
-      const index = e.target.closest('li').dataset.index;
+      const index = e.target.closest('li')?.dataset.index;
       //FIXME: editmode 해제시키는 부분 분리해서 관리하기
       if (this.editIndex !== null && !e.target.closest('.enroll')) {
         this.updateList(this.editIndex, false);

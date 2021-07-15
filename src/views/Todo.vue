@@ -7,9 +7,6 @@
     </el-tabs>
     <ul class="todo-list" ref="swipeListener">
       <li v-for="({ check, input, priority }, index) in todoList" :key="index" :data-index="index">
-        <el-button class="enroll enroll-top" v-show="addNewItem && editIndex === index" @click="enroll(index)"
-          >등록</el-button
-        >
         <Swiper :tailWidth="toggleIndex == index ? tailWidth : 0">
           <template v-slot:main>
             <TodoItem
@@ -39,12 +36,11 @@
             </div>
           </template>
         </Swiper>
-        <el-button class="enroll enroll-bottom" v-show="!addNewItem && editIndex === index" @click="enroll(index)"
-          >등록</el-button
-        >
       </li>
     </ul>
-    <el-button class="add-button" icon="el-icon-plus" type="primary" circle @click.prevent="addItem"></el-button>
+    <el-button class="add-button" type="primary" @click.prevent="addItem">{{
+      editIndex === null ? '+ 추가하기' : '등록하기'
+    }}</el-button>
     <el-drawer v-model="prDrawer" direction="btt" size="50%">
       <template v-slot:title>
         <p class="priority-description">
@@ -140,7 +136,6 @@ export default {
     toggleIndex: null,
     tailWidth: 0,
     editIndex: null,
-    addNewItem: false,
   }),
   mounted() {
     let startPoint = null;
@@ -157,7 +152,6 @@ export default {
       if (this.editIndex !== null && !e.target.closest('.enroll')) {
         this.updateList(this.editIndex, false);
         this.editIndex = null;
-        this.addNewItem = false;
       }
       this.toggleIndex = index;
       this.tailWidth = 0;
@@ -217,7 +211,6 @@ export default {
       this.toggleIndex = null;
       this.tailWidth = 0;
       this.editIndex = null;
-      this.addNewItem = false;
       this.handleClick();
     },
     setEditIndex(index) {
@@ -225,22 +218,22 @@ export default {
       this.toggleIndex = null;
       this.tailWidth = 0;
     },
-    enroll(index) {
-      this.editIndex = null;
-      this.toggleIndex = null;
-      this.tailWidth = 0;
-      this.addNewItem = false;
-      //FIXME: 나중에 등록 관련된 로직을 수정할 필요가 있음
-      //NOTE: TodoItem 내부에 edit watch가 먼저 동작해야하는데 updateList가 먼저 동작해서 에러 수정을 위해 nextTick사용.
-      this.$nextTick(() => {
-        this.updateList(index);
-      });
-    },
     addItem() {
-      this.activeName = 'todo';
-      this.addTodoList();
-      this.editIndex = this.todoList.length - 1;
-      this.addNewItem = true;
+      if (this.editIndex === null) {
+        this.activeName = 'todo';
+        this.addTodoList();
+        this.editIndex = this.todoList.length - 1;
+      } else {
+        const curIndex = this.editIndex;
+        this.editIndex = null;
+        this.toggleIndex = null;
+        this.tailWidth = 0;
+        //FIXME: 나중에 등록 관련된 로직을 수정할 필요가 있음
+        //NOTE: TodoItem 내부에 edit watch가 먼저 동작해야하는데 updateList가 먼저 동작해서 에러 수정을 위해 nextTick사용.
+        this.$nextTick(() => {
+          this.updateList(curIndex);
+        });
+      }
     },
   },
 };
@@ -290,10 +283,10 @@ export default {
   height: calc(100% - 30px);
 
   .add-button {
-    position: fixed;
-    right: 3rem;
-    bottom: 3rem;
-    z-index: 3;
+    width: 100%;
+    height: 5rem;
+    margin-top: 1rem;
+    font-size: 2rem;
   }
 
   .subtitle_task {
@@ -351,7 +344,7 @@ export default {
   }
 
   .todo-list {
-    height: calc(100% - 64px);
+    height: calc(100% - 64px - 6rem);
     width: 100%;
     overflow-y: scroll;
   }

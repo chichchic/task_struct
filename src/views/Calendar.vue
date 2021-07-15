@@ -12,34 +12,78 @@
       :masks="{ weekdays: 'WWW' }"
       is-expanded
     />
-    <ul class="todo-list">
-      <li v-for="({ check, input, priority }, index) in todoList" :key="index">
-        <TodoItem
-          :check="check"
-          :input="input"
-          :priority="priority"
-          :tab="'tab-' + activeName"
-          :lineThrough="activeName === 'done'"
-          @updateCheck="(value) => updateCheck(value, index)"
-          @updateInput="(value) => updateInput(value, index)"
-          @toggleSlider="() => {}"
-          :edit="false"
-        />
+    <ul class="todo-list" ref="swipeListener">
+      <li v-for="({ check, input, priority }, index) in todoList" :key="index" :data-index="index">
+        <Swiper :tailWidth="toggleIndex == index ? tailWidth : 0">
+          <template v-slot:main>
+            <TodoItem
+              :check="check"
+              :input="input"
+              :priority="priority"
+              :tab="'tab-' + activeName"
+              :lineThrough="activeName === 'done'"
+              @updateCheck="(value) => updateCheck(value, index)"
+              @updateInput="(value) => updateInput(value, index)"
+              @toggleSlider="toggleSlider(index)"
+              :edit="editIndex === index"
+            />
+          </template>
+          <template v-slot:tail>
+            <div
+              v-if="activeName === 'todo'"
+              class="swiper-button edit"
+              data-icon="&#9997;"
+              @click="setEditIndex(index)"
+            ></div>
+            <div v-else class="swiper-button edit">
+              <i class="el-icon-refresh"></i>
+            </div>
+            <div class="swiper-button delete" @click="removeList(index)">
+              <i class="el-icon-close"></i>
+            </div>
+          </template>
+        </Swiper>
       </li>
     </ul>
+    <button class="todo-btn" @click.prevent="addItem">{{ editIndex === null ? '+추가하기' : '등록하기' }}</button>
+    <el-drawer v-model="prDrawer" @close="sorting" direction="btt" size="50%">
+      <template v-slot:title>
+        <p class="priority-description">
+          {{ $t('default.guide_priority_body_front') }} <br />
+          <strong> {{ $t('default.guide_priority_bold') }} </strong>
+          {{ $t('default.guide_priority_body_back') }}
+        </p>
+      </template>
+      <div class="vertical-align-center">
+        <article class="drawer">
+          <el-button
+            v-for="{ backgroundColor, value, icon, size, fontSize } in priorities"
+            :key="value"
+            class="priority-button"
+            :style="{ backgroundColor, height: size, width: size, fontSize }"
+            circle
+            @click="setPriority(value)"
+            :data-label="$t(guidePriorityText(value))"
+            >{{ icon }}</el-button
+          >
+        </article>
+      </div>
+    </el-drawer>
   </section>
 </template>
 <script>
 import TodoItem from '@/components/Todo/TodoItem.vue';
+import Swiper from '@/components/common/Swiper.vue';
 import useElTabs from '@/components/elementPlus/useElTabs';
 import useTodoList from '@/components/Todo/useTodoList';
 
 export default {
   components: {
     TodoItem,
+    Swiper,
   },
   setup() {
-    const { todoList, prDrawer, updateCheck, updateInput, addTodoList, updateList, removeList, setPriority } =
+    const { todoList, prDrawer, updateCheck, updateInput, addTodoList, updateList, removeList, setPriority, sorting } =
       useTodoList([
         { check: true, input: '1', priority: 'High' },
         { check: true, input: '2', priority: 'Mid' },
@@ -63,6 +107,7 @@ export default {
       updateList,
       removeList,
       setPriority,
+      sorting,
       tabs,
       activeName,
       handleClick,
@@ -70,6 +115,15 @@ export default {
   },
   data: () => ({
     selectedDate: null,
+    priorities: [
+      { backgroundColor: '#f56e71', value: 'High', icon: 'H', size: '10rem', fontSize: '6rem' },
+      { backgroundColor: '#84d9a0', value: 'Mid', icon: 'M', size: '8rem', fontSize: '4rem' },
+      { backgroundColor: '#ffc678', value: 'Low', icon: 'L', size: '6rem', fontSize: '2rem' },
+    ],
+    toggleIndex: null,
+    tailWidth: 0,
+    editIndex: null,
+    addNewItem: false,
   }),
   computed: {
     attributes() {
@@ -108,13 +162,61 @@ export default {
       return list[this.activeName];
     },
   },
+  mounted() {
+    this.$refs.swipeListener.addEventListener('touchstart', (e) => {
+      const index = e.target.closest('li')?.dataset.index;
+      if (this.editIndex !== null) {
+        this.updateList(this.editIndex, false);
+        this.editIndex = null;
+      }
+      this.toggleIndex = index;
+      this.tailWidth = 0;
+    });
+  },
   methods: {
+    guidePriorityText(value) {
+      const list = {
+        High: 'default.guide_priority_high',
+        Mid: 'default.guide_priority_mid',
+        Low: 'default.guide_priority_low',
+      };
+      return list[value];
+    },
+    setEditIndex(index) {
+      this.editIndex = index;
+      this.toggleIndex = null;
+      this.tailWidth = 0;
+    },
+    toggleSlider(index) {
+      if (this.toggleIndex === index) {
+        this.toggleIndex = null;
+        this.tailWidth = 0;
+      } else {
+        this.toggleIndex = index;
+        this.tailWidth = -124;
+      }
+    },
     changeTab() {
-      // this.toggleIndex = null;
-      // this.tailWidth = 0;
-      // this.editIndex = null;
-      // this.addNewItem = false;
+      this.toggleIndex = null;
+      this.tailWidth = 0;
+      this.editIndex = null;
+      this.addNewItem = false;
       this.handleClick();
+    },
+    addItem() {
+      if (this.editIndex === null) {
+        this.activeName = 'todo';
+        this.addTodoList();
+        this.editIndex = this.todoList.length - 1;
+      } else {
+        const curIndex = this.editIndex;
+        this.editIndex = null;
+        this.toggleIndex = null;
+        this.tailWidth = 0;
+        this.$nextTick(() => {
+          this.updateList(curIndex);
+        });
+      }
     },
   },
 };
@@ -171,8 +273,8 @@ export default {
   }
 
   .todo-list {
-    height: calc(100% - 310px - 1.5rem);
-    margin-top: 1rem;
+    height: calc(100% - 310px - 7.5rem);
+    margin: 1rem 0;
     width: 100%;
     overflow-y: scroll;
     -ms-overflow-style: none; /* IE and Edge */
@@ -181,6 +283,87 @@ export default {
     &::-webkit-scrollbar {
       display: none;
     }
+  }
+
+  .todo-btn {
+    width: 100%;
+    height: 5rem;
+    border: none;
+    background-color: #fc9a9d;
+    color: white;
+    font-size: 2rem;
+  }
+
+  .swiper-button {
+    height: 100%;
+    width: 62px;
+    position: relative;
+
+    i {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 3rem;
+      color: white;
+    }
+
+    &::after {
+      content: attr(data-icon);
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 3rem;
+    }
+
+    &.edit {
+      background-color: #6880ff;
+    }
+
+    &.delete {
+      background-color: #f56e71;
+    }
+  }
+
+  .drawer {
+    display: flex;
+    width: 100%;
+    justify-content: space-evenly;
+    align-items: flex-end;
+
+    .priority-button {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      border: none;
+      position: relative;
+
+      &::after {
+        position: absolute;
+        bottom: 0;
+        transform: translateY(120%);
+        content: attr(data-label);
+        font-size: 1.5rem;
+        color: black;
+      }
+    }
+  }
+
+  .priority-description {
+    font-size: 2rem;
+    color: black;
+
+    strong {
+      font-size: 2.5rem;
+    }
+  }
+
+  .vertical-align-center {
+    height: 100%;
+    display: flex;
+    align-items: center;
   }
 }
 </style>

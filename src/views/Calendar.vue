@@ -1,10 +1,17 @@
 <template>
-  <section class="todo">
+  <section class="calendar">
     <el-tabs :class="`tab-${activeName}`" v-model="activeName" @tab-click="changeTab" stretch>
       <el-tab-pane v-for="{ label, name } in tabs" :key="name" :label="label" :name="name">
-        <p class="subtitle_task">{{ $t(subtitleTaskText, { task_count }) }}</p>
+        <div class="el-tab-pane-space"></div>
       </el-tab-pane>
     </el-tabs>
+    <DatePicker
+      :select-attribute="selectAttribute"
+      v-model="selectedDate"
+      :attributes="attributes"
+      :masks="{ weekdays: 'WWW' }"
+      is-expanded
+    />
     <ul class="todo-list" ref="swipeListener">
       <li v-for="({ check, input, priority }, index) in todoList" :key="index" :data-index="index">
         <Swiper :tailWidth="toggleIndex == index ? tailWidth : 0">
@@ -38,9 +45,7 @@
         </Swiper>
       </li>
     </ul>
-    <el-button class="add-button" type="primary" @click.prevent="addItem">{{
-      editIndex === null ? '+ 추가하기' : '등록하기'
-    }}</el-button>
+    <button class="todo-btn" @click.prevent="addItem">{{ editIndex === null ? '+추가하기' : '등록하기' }}</button>
     <el-drawer v-model="prDrawer" @close="sorting" direction="btt" size="50%">
       <template v-slot:title>
         <p class="priority-description">
@@ -68,11 +73,10 @@
 </template>
 <script>
 import TodoItem from '@/components/Todo/TodoItem.vue';
-import useTodoList from '@/components/Todo/useTodoList';
-import useElTabs from '@/components/elementPlus/useElTabs';
 import Swiper from '@/components/common/Swiper.vue';
+import useElTabs from '@/components/elementPlus/useElTabs';
+import useTodoList from '@/components/Todo/useTodoList';
 
-//NOTE: 데이터베이스와 연결한 후 refresh button 로직 구현하기.
 export default {
   components: {
     TodoItem,
@@ -86,25 +90,6 @@ export default {
         { check: false, input: '3', priority: 'Low' },
         { check: true, input: '4', priority: 'High' },
         { check: true, input: '5', priority: 'Mid' },
-        { check: false, input: '6', priority: 'Low' },
-        { check: true, input: '7', priority: 'High' },
-        { check: true, input: '8', priority: 'Mid' },
-        { check: false, input: '9', priority: 'Low' },
-        { check: true, input: '10', priority: 'High' },
-        { check: true, input: '11', priority: 'Mid' },
-        { check: false, input: '12', priority: 'Low' },
-        { check: true, input: '13', priority: 'High' },
-        { check: true, input: '14', priority: 'Mid' },
-        { check: false, input: '15', priority: 'Low' },
-        { check: true, input: '16', priority: 'High' },
-        { check: true, input: '17', priority: 'Mid' },
-        { check: false, input: '18', priority: 'Low' },
-        { check: true, input: '19', priority: 'High' },
-        { check: true, input: '20', priority: 'Mid' },
-        { check: false, input: '21', priority: 'Low' },
-        { check: true, input: '22', priority: 'High' },
-        { check: true, input: '23', priority: 'Mid' },
-        { check: false, input: '24', priority: 'Low' },
       ]);
     const { tabs, activeName, handleClick } = useElTabs(
       [
@@ -129,6 +114,7 @@ export default {
     };
   },
   data: () => ({
+    selectedDate: null,
     priorities: [
       { backgroundColor: '#f56e71', value: 'High', icon: 'H', size: '10rem', fontSize: '6rem' },
       { backgroundColor: '#84d9a0', value: 'Mid', icon: 'M', size: '8rem', fontSize: '4rem' },
@@ -137,36 +123,34 @@ export default {
     toggleIndex: null,
     tailWidth: 0,
     editIndex: null,
+    addNewItem: false,
   }),
-  mounted() {
-    let startPoint = null;
-    const touchmove = (e) => {
-      const dif = Math.floor(e.touches[0].pageX - startPoint);
-      this.tailWidth = dif < -124 ? -124 : dif;
-    };
-    const throttelTouchMove = this.throttle(touchmove, 50);
-    this.$refs.swipeListener.addEventListener('touchstart', (e) => {
-      startPoint = e.touches[0].pageX;
-      this.$refs.swipeListener.addEventListener('touchmove', throttelTouchMove);
-      const index = e.target.closest('li')?.dataset.index;
-      //FIXME: editmode 해제시키는 부분 분리해서 관리하기
-      if (this.editIndex !== null && !e.target.closest('.enroll')) {
-        this.updateList(this.editIndex, false);
-        this.editIndex = null;
-      }
-      this.toggleIndex = index;
-      this.tailWidth = 0;
-    });
-    this.$refs.swipeListener.addEventListener('touchend', () => {
-      this.$refs.swipeListener.removeEventListener('touchmove', touchmove);
-      if (this.tailWidth < -30) {
-        this.tailWidth = -124;
-      } else {
-        this.tailWidth = 0;
-      }
-    });
-  },
   computed: {
+    attributes() {
+      const today = new Date();
+      const isTodaySelected =
+        today.getFullYear() === this.selectedDate?.getFullYear() &&
+        today.getMonth() === this.selectedDate?.getMonth() &&
+        today.getDate() === this.selectedDate?.getDate();
+      return [
+        {
+          highlight: {
+            contentStyle: { border: '1px solid #F6797C', color: isTodaySelected ? 'white' : 'inherit' },
+          },
+          order: 1,
+          dates: new Date(),
+        },
+      ];
+    },
+    selectAttribute() {
+      const backgroundColor = this.activeName === 'todo' ? '#FC9A9D' : '#7389FF';
+      return {
+        highlight: {
+          style: { backgroundColor },
+          contentStyle: { color: 'white' },
+        },
+      };
+    },
     task_count() {
       return this.todoList.filter(({ check }) => check).length;
     },
@@ -178,6 +162,17 @@ export default {
       return list[this.activeName];
     },
   },
+  mounted() {
+    this.$refs.swipeListener.addEventListener('touchstart', (e) => {
+      const index = e.target.closest('li')?.dataset.index;
+      if (this.editIndex !== null) {
+        this.updateList(this.editIndex, false);
+        this.editIndex = null;
+      }
+      this.toggleIndex = index;
+      this.tailWidth = 0;
+    });
+  },
   methods: {
     guidePriorityText(value) {
       const list = {
@@ -186,6 +181,11 @@ export default {
         Low: 'default.guide_priority_low',
       };
       return list[value];
+    },
+    setEditIndex(index) {
+      this.editIndex = index;
+      this.toggleIndex = null;
+      this.tailWidth = 0;
     },
     toggleSlider(index) {
       if (this.toggleIndex === index) {
@@ -196,28 +196,12 @@ export default {
         this.tailWidth = -124;
       }
     },
-    throttle(fn, delay) {
-      let timeout = false;
-      return (...rest) => {
-        if (!timeout) {
-          timeout = true;
-          fn.apply(this, rest);
-          setTimeout(() => {
-            timeout = false;
-          }, delay);
-        }
-      };
-    },
     changeTab() {
       this.toggleIndex = null;
       this.tailWidth = 0;
       this.editIndex = null;
+      this.addNewItem = false;
       this.handleClick();
-    },
-    setEditIndex(index) {
-      this.editIndex = index;
-      this.toggleIndex = null;
-      this.tailWidth = 0;
     },
     addItem() {
       if (this.editIndex === null) {
@@ -229,8 +213,6 @@ export default {
         this.editIndex = null;
         this.toggleIndex = null;
         this.tailWidth = 0;
-        //FIXME: 나중에 등록 관련된 로직을 수정할 필요가 있음
-        //NOTE: TodoItem 내부에 edit watch가 먼저 동작해야하는데 updateList가 먼저 동작해서 에러 수정을 위해 nextTick사용.
         this.$nextTick(() => {
           this.updateList(curIndex);
         });
@@ -239,7 +221,6 @@ export default {
   },
 };
 </script>
-
 <style lang="scss">
 @mixin el-tabs-color($color, $hover) {
   .el-tabs__active-bar {
@@ -261,7 +242,11 @@ export default {
   }
 }
 
-.todo {
+.calendar {
+  .vc-day-content:focus {
+    background-color: inherit !important;
+  }
+
   .el-tabs__header {
     margin: 0;
   }
@@ -280,36 +265,33 @@ export default {
 }
 </style>
 <style lang="scss" scoped>
-.todo {
+.calendar {
   height: calc(100% - 30px);
 
-  .add-button {
+  .el-tab-pane-space {
+    padding-bottom: 0.5rem;
+  }
+
+  .todo-list {
+    height: calc(100% - 310px - 7.5rem);
+    margin: 1rem 0;
+    width: 100%;
+    overflow-y: scroll;
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  .todo-btn {
     width: 100%;
     height: 5rem;
-    margin-top: 1rem;
+    border: none;
+    background-color: #fc9a9d;
+    color: white;
     font-size: 2rem;
-  }
-
-  .subtitle_task {
-    color: #a7a7a7;
-    position: relative;
-    padding: 0.5rem;
-    font-size: 1.2rem;
-    display: inline-block;
-  }
-
-  .tab-todo {
-    .subtitle_task {
-      left: calc(25% - 1rem);
-      transform: translateX(-50%);
-    }
-  }
-
-  .tab-done {
-    .subtitle_task {
-      left: calc(75% + 1rem);
-      transform: translateX(-50%);
-    }
   }
 
   .swiper-button {
@@ -344,38 +326,6 @@ export default {
     }
   }
 
-  .todo-list {
-    height: calc(100% - 64px - 6rem);
-    width: 100%;
-    overflow-y: scroll;
-  }
-
-  .enroll {
-    background-color: rgb(217, 217, 217);
-    width: 12rem;
-    padding: 5px 20px;
-    min-height: 2rem;
-    border-radius: 30px;
-    display: block;
-
-    &-top {
-      margin: 0 auto 10px auto;
-    }
-
-    &-bottom {
-      margin: 10px auto 0 auto;
-    }
-  }
-
-  .priority-description {
-    font-size: 2rem;
-    color: black;
-
-    strong {
-      font-size: 2.5rem;
-    }
-  }
-
   .drawer {
     display: flex;
     width: 100%;
@@ -398,6 +348,15 @@ export default {
         font-size: 1.5rem;
         color: black;
       }
+    }
+  }
+
+  .priority-description {
+    font-size: 2rem;
+    color: black;
+
+    strong {
+      font-size: 2.5rem;
     }
   }
 

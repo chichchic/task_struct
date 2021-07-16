@@ -1,14 +1,17 @@
 import { createStore } from 'vuex';
 
+const moduleList = ['base', 'firebase'];
+
+const modules = {};
+
+moduleList.forEach((val) => {
+  const path = require(`./modules/${val}.js`);
+  modules[val] = path.default;
+});
+
 export default createStore({
-  state: {
-    fireUser: null,
-  },
-  mutations: {
-    setFireUser(state, fu) {
-      state.fireUser = fu;
-    },
-  },
+  state: {},
+  mutations: {},
   actions: {},
-  modules: {},
+  modules,
 });

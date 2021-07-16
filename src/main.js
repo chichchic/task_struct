@@ -20,7 +20,7 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
-firebase.auth().onAuthStateChanged((fu) => store.commit('setFireUser', fu));
+firebase.auth().onAuthStateChanged((fu) => store.commit('firebase/setFireUser', fu));
 
 const app = createApp(App);
 app.use(store).use(router).use(i18n);

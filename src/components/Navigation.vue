@@ -1,9 +1,9 @@
 <template>
   <section class="navigation">
     <div class="logo">LOGO</div>
-    <i icon class="el-icon-date" v-show="currentRouteName === 'Todo'" @click.prevent="$router.push('Calendar')"></i>
-    <i icon class="el-icon-tickets" v-show="currentRouteName === 'Calendar'" @click.prevent="$router.push('Todo')"></i>
-    <i icon class="el-icon-user-solid" :class="{ disable: !$store.state.user.isSigned }"></i>
+    <i icon class="el-icon-date" v-if="currentRouteName === 'Todo'" @click.prevent="$router.push('Calendar')"></i>
+    <i icon class="el-icon-tickets" v-else @click.prevent="$router.push('Todo')"></i>
+    <i icon class="el-icon-user-solid" :class="{ disable: $store.state.user.uid === null }"></i>
   </section>
 </template>
 <script>

@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Home from '../views/Home.vue';
-import Account from '../views/Account.vue';
 import Todo from '../views/Todo.vue';
 import Calendar from '../views/Calendar.vue';
 import Setting from '../views/Setting.vue';
@@ -11,11 +10,6 @@ const routes = [
     path: '/',
     name: 'Home',
     component: Home,
-  },
-  {
-    path: '/account',
-    name: 'Account',
-    component: Account,
   },
   {
     path: '/todo',

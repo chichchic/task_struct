@@ -1,6 +1,6 @@
 import { createStore } from 'vuex';
 
-const moduleList = ['base', 'firebase'];
+const moduleList = ['base', 'firebase', 'user'];
 
 const modules = {};
 

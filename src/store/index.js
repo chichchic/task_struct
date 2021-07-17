@@ -1,4 +1,5 @@
 import { createStore } from 'vuex';
+import createPersistedState from 'vuex-persistedstate';
 
 const moduleList = ['base', 'user'];
 
@@ -14,4 +15,9 @@ export default createStore({
   mutations: {},
   actions: {},
   modules,
+  plugins: [
+    createPersistedState({
+      paths: ['user'],
+    }),
+  ],
 });

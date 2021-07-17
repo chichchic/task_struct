@@ -1,12 +1,19 @@
 <template>
   <section class="navigation">
     <div class="logo">LOGO</div>
-    <i icon class="el-icon-date"></i>
+    <i icon class="el-icon-date" v-show="currentRouteName === 'Todo'" @click.prevent="$router.push('Calendar')"></i>
+    <i icon class="el-icon-tickets" v-show="currentRouteName === 'Calendar'" @click.prevent="$router.push('Todo')"></i>
     <i icon class="el-icon-user-solid"></i>
   </section>
 </template>
 <script>
-export default {};
+export default {
+  computed: {
+    currentRouteName() {
+      return this.$route.name;
+    },
+  },
+};
 </script>
 <style lang="scss" scoped>
 .navigation {

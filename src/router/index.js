@@ -4,6 +4,8 @@ import Todo from '../views/Todo.vue';
 import Calendar from '../views/Calendar.vue';
 import Setting from '../views/Setting.vue';
 import Withdraw from '../views/Withdraw.vue';
+import SignIn from '../views/SignIn.vue';
+import store from '@/store/index.js';
 
 const routes = [
   {
@@ -30,6 +32,19 @@ const routes = [
     path: '/withdraw',
     name: 'Withdraw',
     component: Withdraw,
+  },
+  {
+    path: '/signin',
+    name: 'SignIn',
+    component: SignIn,
+    beforeEnter: (to, from, next) => {
+      const { uid } = store.state.user;
+      if (!uid) {
+        next();
+      } else {
+        next('/todo');
+      }
+    },
   },
 ];
 

@@ -17,11 +17,27 @@ const routes = [
     path: '/todo',
     name: 'Todo',
     component: Todo,
+    beforeEnter: (to, from, next) => {
+      const { uid } = store.state.user;
+      if (uid) {
+        next();
+      } else {
+        next('/signin');
+      }
+    },
   },
   {
     path: '/calendar',
     name: 'Calendar',
     component: Calendar,
+    beforeEnter: (to, from, next) => {
+      const { uid } = store.state.user;
+      if (uid) {
+        next();
+      } else {
+        next('/signin');
+      }
+    },
   },
   {
     path: '/setting',

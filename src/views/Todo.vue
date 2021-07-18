@@ -28,7 +28,7 @@
               data-icon="&#9997;"
               @click="setEditIndex(index)"
             ></div>
-            <div v-else class="swiper-button edit">
+            <div v-else class="swiper-button edit" @click="repeatTodoList(index)">
               <i class="el-icon-refresh"></i>
             </div>
             <div class="swiper-button delete" @click="removeList(index)">
@@ -41,7 +41,17 @@
     <el-button class="add-button" type="primary" @click.prevent="addItem">{{
       editIndex === null ? '+ 추가하기' : '등록하기'
     }}</el-button>
-    <el-drawer v-model="prDrawer" @close="sorting" direction="btt" size="50%">
+    <el-drawer
+      v-model="prDrawer"
+      @close="
+        () => {
+          pushTodoList();
+          sorting();
+        }
+      "
+      direction="btt"
+      size="50%"
+    >
       <template v-slot:title>
         <p class="priority-description">
           {{ $t('default.guide_priority_body_front') }} <br />
@@ -79,34 +89,21 @@ export default {
     Swiper,
   },
   setup() {
-    const { todoList, prDrawer, updateCheck, updateInput, addTodoList, updateList, removeList, setPriority, sorting } =
-      useTodoList([
-        { check: true, input: '1', priority: 'High' },
-        { check: true, input: '2', priority: 'Mid' },
-        { check: false, input: '3', priority: 'Low' },
-        { check: true, input: '4', priority: 'High' },
-        { check: true, input: '5', priority: 'Mid' },
-        { check: false, input: '6', priority: 'Low' },
-        { check: true, input: '7', priority: 'High' },
-        { check: true, input: '8', priority: 'Mid' },
-        { check: false, input: '9', priority: 'Low' },
-        { check: true, input: '10', priority: 'High' },
-        { check: true, input: '11', priority: 'Mid' },
-        { check: false, input: '12', priority: 'Low' },
-        { check: true, input: '13', priority: 'High' },
-        { check: true, input: '14', priority: 'Mid' },
-        { check: false, input: '15', priority: 'Low' },
-        { check: true, input: '16', priority: 'High' },
-        { check: true, input: '17', priority: 'Mid' },
-        { check: false, input: '18', priority: 'Low' },
-        { check: true, input: '19', priority: 'High' },
-        { check: true, input: '20', priority: 'Mid' },
-        { check: false, input: '21', priority: 'Low' },
-        { check: true, input: '22', priority: 'High' },
-        { check: true, input: '23', priority: 'Mid' },
-        { check: false, input: '24', priority: 'Low' },
-      ]);
-    const { tabs, activeName, handleClick } = useElTabs(
+    const {
+      todoList,
+      prDrawer,
+      fetchTodoList,
+      pushTodoList,
+      repeatTodoList,
+      updateCheck,
+      updateInput,
+      addTodoList,
+      updateList,
+      removeList,
+      setPriority,
+      sorting,
+    } = useTodoList();
+    const { tabs, activeName } = useElTabs(
       [
         { label: 'TODO', name: 'todo' },
         { label: 'DONE', name: 'done' },
@@ -116,7 +113,10 @@ export default {
     return {
       todoList,
       prDrawer,
+      fetchTodoList,
+      pushTodoList,
       updateCheck,
+      repeatTodoList,
       updateInput,
       addTodoList,
       updateList,
@@ -125,7 +125,6 @@ export default {
       sorting,
       tabs,
       activeName,
-      handleClick,
     };
   },
   data: () => ({
@@ -165,6 +164,7 @@ export default {
         this.tailWidth = 0;
       }
     });
+    this.fetchTodoList(this.activeName === 'todo' ? 1 : 2);
   },
   computed: {
     task_count() {
@@ -212,7 +212,7 @@ export default {
       this.toggleIndex = null;
       this.tailWidth = 0;
       this.editIndex = null;
-      this.handleClick();
+      this.fetchTodoList(this.activeName === 'todo' ? 1 : 2);
     },
     setEditIndex(index) {
       this.editIndex = index;

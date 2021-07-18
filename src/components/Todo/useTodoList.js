@@ -20,18 +20,24 @@ export default function useTodoList() {
   //FIXME: curIndex를 사용하지 않는 방법으로 priority 설정할 수 있도록 수정해야 함
   let curIndex = null;
 
-  const fetchTodoList = async (status) => {
+  const fetchTodoList = async (status, date) => {
     const { uid } = store.state.user;
     if (uid === null) {
       return [];
     }
     try {
-      const todoListItem = await $firestore
-        .collection('users')
-        .doc(uid)
-        .collection('todoListItem')
-        .where('status', '==', status)
-        .get();
+      let query = $firestore.collection('users').doc(uid).collection('todoListItem').where('status', '==', status);
+      if (date instanceof Date) {
+        const beginTime = new Date(date.toDateString());
+        const nextDay = beginTime.getTime() + 24 * 60 * 60 * 1000;
+        const endTime = new Date(nextDay);
+        if (status === 1) {
+          query = query.where('createAt', '>', beginTime).where('createAt', '<', endTime);
+        } else if (status === 2) {
+          query = query.where('lastDoneAt', '>', beginTime).where('lastDoneAt', '<', endTime);
+        }
+      }
+      const todoListItem = await query.get();
       todoList.value = [];
       todoListItem.forEach((doc) => {
         const { priority, todoValue, status, repeat, edit } = doc.data();
@@ -71,6 +77,7 @@ export default function useTodoList() {
           todoValue: input,
           priority: priorityTable[priority],
           repeat: 0,
+          lastDoneAt: null,
           createAt: new Date(),
           edit: 0,
           deletedAt: null,
@@ -99,7 +106,11 @@ export default function useTodoList() {
         .doc(uid)
         .collection('todoListItem')
         .doc(id)
-        .update({ status: value ? 2 : 1, doneAt: firebase.firestore.FieldValue.arrayUnion(new Date()) });
+        .update({
+          status: value ? 2 : 1,
+          doneAt: firebase.firestore.FieldValue.arrayUnion(new Date()),
+          lastDoneAt: new Date(),
+        });
       todoList.value.splice(index, 1);
     } catch (error) {
       console.error(error);
@@ -152,7 +163,6 @@ export default function useTodoList() {
   };
 
   const addTodoList = () => {
-    console.log('add');
     todoList.value.push({ check: false, input: '', priority: 'Empty' });
   };
   //FIXME: 너무 여러 역할을 가지고 있음. 추후에 분리할 것!

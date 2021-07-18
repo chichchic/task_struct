@@ -35,7 +35,7 @@
               data-icon="&#9997;"
               @click="setEditIndex(index)"
             ></div>
-            <div v-else class="swiper-button edit">
+            <div v-else class="swiper-button edit" @click="repeatTodoList(index)">
               <i class="el-icon-refresh"></i>
             </div>
             <div class="swiper-button delete" @click="removeList(index)">
@@ -46,7 +46,17 @@
       </li>
     </ul>
     <button class="todo-btn" @click.prevent="addItem">{{ editIndex === null ? '+추가하기' : '등록하기' }}</button>
-    <el-drawer v-model="prDrawer" @close="sorting" direction="btt" size="50%">
+    <el-drawer
+      v-model="prDrawer"
+      @close="
+        () => {
+          pushTodoList();
+          sorting();
+        }
+      "
+      direction="btt"
+      size="50%"
+    >
       <template v-slot:title>
         <p class="priority-description">
           {{ $t('default.guide_priority_body_front') }} <br />
@@ -83,14 +93,26 @@ export default {
     Swiper,
   },
   setup() {
-    const { todoList, prDrawer, updateCheck, updateInput, addTodoList, updateList, removeList, setPriority, sorting } =
-      useTodoList([
-        { check: true, input: '1', priority: 'High' },
-        { check: true, input: '2', priority: 'Mid' },
-        { check: false, input: '3', priority: 'Low' },
-        { check: true, input: '4', priority: 'High' },
-        { check: true, input: '5', priority: 'Mid' },
-      ]);
+    const {
+      todoList,
+      prDrawer,
+      fetchTodoList,
+      pushTodoList,
+      repeatTodoList,
+      updateCheck,
+      updateInput,
+      addTodoList,
+      updateList,
+      removeList,
+      setPriority,
+      sorting,
+    } = useTodoList([
+      { check: true, input: '1', priority: 'High' },
+      { check: true, input: '2', priority: 'Mid' },
+      { check: false, input: '3', priority: 'Low' },
+      { check: true, input: '4', priority: 'High' },
+      { check: true, input: '5', priority: 'Mid' },
+    ]);
     const { tabs, activeName } = useElTabs(
       [
         { label: 'TODO', name: 'todo' },
@@ -101,6 +123,9 @@ export default {
     return {
       todoList,
       prDrawer,
+      fetchTodoList,
+      pushTodoList,
+      repeatTodoList,
       updateCheck,
       updateInput,
       addTodoList,
@@ -112,8 +137,16 @@ export default {
       activeName,
     };
   },
+  watch: {
+    selectedDate() {
+      this.fetchTodoList(this.activeName === 'todo' ? 1 : 2, this.selectedDate);
+    },
+    activeName() {
+      this.fetchTodoList(this.activeName === 'todo' ? 1 : 2, this.selectedDate);
+    },
+  },
   data: () => ({
-    selectedDate: null,
+    selectedDate: new Date(),
     priorities: [
       { backgroundColor: '#f56e71', value: 'High', icon: 'H', size: '10rem', fontSize: '6rem' },
       { backgroundColor: '#84d9a0', value: 'Mid', icon: 'M', size: '8rem', fontSize: '4rem' },
@@ -171,6 +204,7 @@ export default {
       this.toggleIndex = index;
       this.tailWidth = 0;
     });
+    this.fetchTodoList(this.activeName === 'todo' ? 1 : 2, new Date());
   },
   methods: {
     guidePriorityText(value) {

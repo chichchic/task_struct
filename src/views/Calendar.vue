@@ -91,7 +91,7 @@ export default {
         { check: true, input: '4', priority: 'High' },
         { check: true, input: '5', priority: 'Mid' },
       ]);
-    const { tabs, activeName, handleClick } = useElTabs(
+    const { tabs, activeName } = useElTabs(
       [
         { label: 'TODO', name: 'todo' },
         { label: 'DONE', name: 'done' },
@@ -110,7 +110,6 @@ export default {
       sorting,
       tabs,
       activeName,
-      handleClick,
     };
   },
   data: () => ({
@@ -201,7 +200,6 @@ export default {
       this.tailWidth = 0;
       this.editIndex = null;
       this.addNewItem = false;
-      this.handleClick();
     },
     addItem() {
       if (this.editIndex === null) {

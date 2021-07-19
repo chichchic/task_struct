@@ -1,10 +1,12 @@
 import { createApp } from 'vue';
-import App from './App.vue';
+import App from '@/App.vue';
 import router from './router';
 import store from './store';
+import installElementPlus from './plugins/element';
+import { DatePicker } from 'v-calendar';
+import '@/assets/style/main.scss';
+import i18n from './i18n';
 import firebase from 'firebase';
-
-createApp(App).use(store).use(router).mount('#app');
 
 const firebaseConfig = {
   apiKey: process.env.VUE_APP_API_KEY,
@@ -19,3 +21,9 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 firebase.auth().onAuthStateChanged((fu) => store.commit('setFireUser', fu));
+
+const app = createApp(App);
+app.use(store).use(router).use(i18n);
+app.component('DatePicker', DatePicker);
+installElementPlus(app);
+app.mount('#app');

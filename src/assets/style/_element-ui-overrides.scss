@@ -1,0 +1,29 @@
+.el-textarea__inner {
+  background-color: transparent;
+}
+
+.el-textarea.is-disabled .el-textarea__inner {
+  background-color: transparent;
+}
+
+.el-drawer.btt {
+  border-radius: 1.5rem 1.5rem 0 0;
+}
+
+.el-button .el-icon-plus::before {
+  font-weight: bold;
+}
+
+.el-button--text {
+  color: #333;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+}

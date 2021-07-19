@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Home from '../views/Home.vue';
 import Account from '../views/Account.vue';
+import Error404 from '../views/404.vue';
 
 const routes = [
   {
@@ -12,6 +13,10 @@ const routes = [
     path: '/account',
     name: 'Account',
     component: Account,
+  },
+  {
+    path: '/:catchAll(.*)*',
+    component: Error404,
   },
 ];
 

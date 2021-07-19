@@ -1,18 +1,13 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import Home from '../views/Home.vue';
 import Todo from '../views/Todo.vue';
 import Calendar from '../views/Calendar.vue';
 import Setting from '../views/Setting.vue';
 import Withdraw from '../views/Withdraw.vue';
 import SignIn from '../views/SignIn.vue';
 import store from '@/store/index.js';
+import Error404 from '../views/404.vue';
 
 const routes = [
-  {
-    path: '/',
-    name: 'Home',
-    component: Home,
-  },
   {
     path: '/todo',
     name: 'Todo',
@@ -61,6 +56,10 @@ const routes = [
         next('/todo');
       }
     },
+  },
+  {
+    path: '/:catchAll(.*)*',
+    component: Error404,
   },
 ];
 

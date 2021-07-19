@@ -1,12 +1,19 @@
 <template>
   <section class="navigation">
     <div class="logo">LOGO</div>
-    <i icon class="el-icon-date"></i>
-    <i icon class="el-icon-user-solid"></i>
+    <i icon class="el-icon-date" v-if="currentRouteName === 'Todo'" @click.prevent="$router.push('Calendar')"></i>
+    <i icon class="el-icon-tickets" v-else @click.prevent="$router.push('Todo')"></i>
+    <i icon class="el-icon-user-solid" :class="{ disable: $store.state.user.uid === null }"></i>
   </section>
 </template>
 <script>
-export default {};
+export default {
+  computed: {
+    currentRouteName() {
+      return this.$route.name;
+    },
+  },
+};
 </script>
 <style lang="scss" scoped>
 .navigation {
@@ -27,6 +34,13 @@ export default {};
 
     &:not(:last-child) {
       margin-right: 10px;
+    }
+
+    cursor: pointer;
+
+    &.disable {
+      cursor: inherit;
+      color: #c2c9d1;
     }
   }
 }

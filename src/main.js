@@ -20,10 +20,10 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
-firebase.auth().onAuthStateChanged((fu) => store.commit('setFireUser', fu));
 
 const app = createApp(App);
 app.use(store).use(router).use(i18n);
 app.component('DatePicker', DatePicker);
+app.config.globalProperties.$firestore = firebase.firestore();
 installElementPlus(app);
 app.mount('#app');

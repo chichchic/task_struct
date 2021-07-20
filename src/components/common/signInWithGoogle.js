@@ -20,8 +20,7 @@ export default function signInWithGoogle() {
           phoneNumber,
           providerId,
           createdAt: new Date(),
-          withdraw: false,
-          withdrawTime: null,
+          doneCount: 0,
         });
       } else {
         const userData = doc.data();

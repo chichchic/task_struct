@@ -3,16 +3,30 @@
     <div class="logo">LOGO</div>
     <i icon class="el-icon-date" v-if="currentRouteName === 'Todo'" @click.prevent="$router.push('Calendar')"></i>
     <i icon class="el-icon-tickets" v-else @click.prevent="$router.push('Todo')"></i>
-    <i icon class="el-icon-user-solid" :class="{ disable: $store.state.user.uid === null }"></i>
+    <i
+      icon
+      class="el-icon-user-solid"
+      @click="drawerSetting = true"
+      :class="{ disable: $store.state.user.uid === null }"
+    ></i>
+    <Setting :drawerSetting="drawerSetting" @update:modelValue="drawerSetting = false" />
   </section>
 </template>
 <script>
+import Setting from '@/components/Setting.vue';
+
 export default {
+  components: {
+    Setting,
+  },
   computed: {
     currentRouteName() {
       return this.$route.name;
     },
   },
+  data: () => ({
+    drawerSetting: true,
+  }),
 };
 </script>
 <style lang="scss" scoped>

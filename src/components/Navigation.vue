@@ -25,7 +25,7 @@ export default {
     },
   },
   data: () => ({
-    drawerSetting: true,
+    drawerSetting: false,
   }),
 };
 </script>

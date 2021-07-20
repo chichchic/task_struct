@@ -38,7 +38,7 @@
           <i class="el-icon-arrow-right"></i>
         </span>
       </p>
-      <p>
+      <p @click="doSignOut">
         로그아웃
         <span>
           <i class="el-icon-arrow-right"></i>
@@ -52,12 +52,18 @@
   </el-drawer>
 </template>
 <script>
+import signInWithGoogle from '@/components/common/signInWithGoogle.js';
+
 export default {
   props: {
     drawerSetting: {
       type: Boolean,
       required: true,
     },
+  },
+  setup() {
+    const { signOut } = signInWithGoogle();
+    return { signOut };
   },
   data: () => ({
     doneCount: 33,
@@ -76,6 +82,11 @@ export default {
   methods: {
     changeLang(lang) {
       this.$i18n.locale = lang;
+    },
+    doSignOut() {
+      this.$emit('close');
+      this.signOut();
+      this.$router.push('SignIn');
     },
   },
 };

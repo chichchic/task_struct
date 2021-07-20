@@ -82,9 +82,10 @@ export default {
 </script>
 <style lang="scss">
 .setting {
-  padding: 1rem;
+  padding: 2rem 1rem 1rem;
 
   .el-drawer__header {
+    padding: 0;
     flex-direction: row-reverse;
     color: #212121;
   }

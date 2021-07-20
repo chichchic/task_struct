@@ -77,8 +77,13 @@ export default {
     const { signOut } = signInWithGoogle();
     return { signOut };
   },
+  computed: {
+    uid() {
+      return this.$store.state.user.uid;
+    },
+  },
   data: () => ({
-    doneCount: 33,
+    doneCount: 0,
     langList: [
       { label: '한국어', lang: 'ko' },
       { label: 'English', lang: 'en' },
@@ -86,9 +91,15 @@ export default {
     deleteDrawer: false,
   }),
   watch: {
-    drawerSetting(val) {
+    async drawerSetting(val) {
       if (val) {
-        this.doneCount++;
+        try {
+          const { $firestore, uid } = this;
+          const userData = await $firestore.collection('users').doc(uid).get();
+          this.doneCount = userData.data().doneCount;
+        } catch (error) {
+          console.error(error);
+        }
       }
     },
   },

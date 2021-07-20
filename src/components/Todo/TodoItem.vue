@@ -97,6 +97,20 @@ export default {
   display: flex;
   align-items: center;
   padding: 1rem;
+  padding-left: 1.8rem;
+
+  .checkbox {
+    position: relative;
+
+    &::before {
+      padding: 31px 25px;
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translate(10px, -50%);
+    }
+  }
 
   &:hover {
     background-color: #ebebeb;
@@ -123,7 +137,7 @@ export default {
   }
 
   .input {
-    margin: 0 0.5rem;
+    margin: 0 0 0 1rem;
     flex-grow: 1;
   }
 

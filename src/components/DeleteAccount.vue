@@ -22,7 +22,7 @@
       계정이 <span class="red">바로 삭제</span>됩니다.
     </p>
     <p class="button-content">
-      <button>계정 삭제하기</button>
+      <button @click="deleteUserCollection">계정 삭제하기</button>
     </p>
   </el-drawer>
 </template>
@@ -35,6 +35,38 @@ export default {
     },
   },
   emits: ['close'],
+  computed: {
+    uid() {
+      return this.$store.state.user.uid;
+    },
+  },
+  methods: {
+    async getWithdrawStatic() {
+      const { $firestore, uid } = this;
+      const userInfo = await $firestore.collection('users').doc(uid).get();
+      const todoList = await $firestore.collection('users').doc(uid).collection('todoListItem').get();
+      const createdAt = new Date(userInfo.data().createdAt.seconds);
+      const withdrawAt = new Date();
+      const doneCount = userInfo.data().doneCount;
+      const listCount = todoList.size;
+      await $firestore.collection('withdrawStatic').doc().set({ createdAt, withdrawAt, doneCount, listCount });
+    },
+    async deleteUserCollection() {
+      const { $firestore, uid, $store } = this;
+      $store.commit('base/setLoading', true);
+      try {
+        await this.getWithdrawStatic();
+        //NOTE: 하위 collection은 지워지지 않음(todolistItem).
+        //NOTE: 작업하지 못한 이유: https://firebase.google.com/docs/firestore/solutions/delete-collections.
+        await $firestore.collection('users').doc(uid).delete();
+        this.$router.push('SignIn');
+      } catch (e) {
+        console.error(e);
+      } finally {
+        $store.commit('base/setLoading', false);
+      }
+    },
+  },
 };
 </script>
 <style lang="scss">

@@ -112,6 +112,10 @@ export default function useTodoList() {
           lastDoneAt: new Date(),
         });
       todoList.value.splice(index, 1);
+      $firestore
+        .collection('users')
+        .doc(uid)
+        .update({ doneCount: firebase.firestore.FieldValue.increment(1) });
     } catch (error) {
       console.error(error);
     }

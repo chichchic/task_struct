@@ -7,7 +7,19 @@
       <p>
         계정 <span>{{ $store.state.user.email }}</span>
       </p>
-      <p>언어 <span>한국어 / 영어</span></p>
+      <p>
+        언어
+        <el-space spacer="|">
+          <el-button
+            type="text"
+            v-for="{ label, lang } in langList"
+            :key="lang"
+            :class="{ 'selected-lang': $i18n.locale === lang }"
+            @click="changeLang(lang)"
+            >{{ label }}</el-button
+          >
+        </el-space>
+      </p>
       <p>
         문의하기
         <span>
@@ -49,12 +61,21 @@ export default {
   },
   data: () => ({
     doneCount: 33,
+    langList: [
+      { label: '한국어', lang: 'ko' },
+      { label: 'English', lang: 'en' },
+    ],
   }),
   watch: {
     drawerSetting(val) {
       if (val) {
         this.doneCount++;
       }
+    },
+  },
+  methods: {
+    changeLang(lang) {
+      this.$i18n.locale = lang;
     },
   },
 };
@@ -102,6 +123,10 @@ export default {
       display: flex;
       justify-content: space-between;
     }
+  }
+
+  .selected-lang {
+    color: #f56e71;
   }
 }
 </style>

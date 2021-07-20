@@ -22,6 +22,7 @@ export default function signInWithGoogle() {
           createdAt: new Date(),
           doneCount: 0,
         });
+        store.commit('user/setUserInfo', { ...providerData });
       } else {
         const userData = doc.data();
         store.commit('user/setUserInfo', { ...userData, uid });

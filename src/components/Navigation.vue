@@ -9,7 +9,7 @@
       @click="drawerSetting = true"
       :class="{ disable: $store.state.user.uid === null }"
     ></i>
-    <Setting :drawerSetting="drawerSetting" @update:modelValue="drawerSetting = false" @close="drawerSetting = false" />
+    <Setting :drawerSetting="drawerSetting" @close="drawerSetting = false" />
   </section>
 </template>
 <script>

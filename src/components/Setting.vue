@@ -1,5 +1,11 @@
 <template>
-  <el-drawer custom-class="setting" :model-value="drawerSetting" direction="ltr" size="100%">
+  <el-drawer
+    custom-class="setting"
+    :model-value="drawerSetting"
+    @update:modelValue="$emit('close')"
+    direction="ltr"
+    size="100%"
+  >
     <template v-slot:title>
       <h1>설정</h1>
     </template>
@@ -32,7 +38,7 @@
           <i class="el-icon-arrow-right"></i>
         </span>
       </p>
-      <p>
+      <p @click="deleteDrawer = true">
         계정삭제
         <span>
           <i class="el-icon-arrow-right"></i>
@@ -50,11 +56,17 @@
       완료한 할 일 총 <span>{{ doneCount }}</span> 개
     </p>
   </el-drawer>
+  <DeleteAccount :deleteDrawer="deleteDrawer" @close="deleteDrawer = false" />
 </template>
 <script>
 import signInWithGoogle from '@/components/common/signInWithGoogle.js';
 
+import DeleteAccount from '@/components/DeleteAccount.vue';
 export default {
+  components: {
+    DeleteAccount,
+  },
+  emits: ['close'],
   props: {
     drawerSetting: {
       type: Boolean,
@@ -71,6 +83,7 @@ export default {
       { label: '한국어', lang: 'ko' },
       { label: 'English', lang: 'en' },
     ],
+    deleteDrawer: false,
   }),
   watch: {
     drawerSetting(val) {

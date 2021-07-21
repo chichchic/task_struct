@@ -4,6 +4,7 @@ import Calendar from '../views/Calendar.vue';
 import Setting from '../views/Setting.vue';
 import Withdraw from '../views/Withdraw.vue';
 import SignIn from '../views/SignIn.vue';
+import Desktop from '../views/Desktop.vue';
 import store from '@/store/index.js';
 import Error404 from '../views/404.vue';
 
@@ -12,6 +13,19 @@ const routes = [
     path: '/todo',
     name: 'Todo',
     component: Todo,
+    beforeEnter: (to, from, next) => {
+      const { uid } = store.state.user;
+      if (uid) {
+        next();
+      } else {
+        next('/signin');
+      }
+    },
+  },
+  {
+    path: '/desktop',
+    name: 'Desktop',
+    component: Desktop,
     beforeEnter: (to, from, next) => {
       const { uid } = store.state.user;
       if (uid) {

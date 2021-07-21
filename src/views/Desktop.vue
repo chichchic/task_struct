@@ -9,6 +9,7 @@
         title-position="left"
         :attributes="attributes"
         :masks="{ weekdays: 'WWW' }"
+        @dayclick="onDayClick"
       />
     </article>
     <article>
@@ -17,16 +18,20 @@
           <p class="subtitle_task">{{ $t(subtitleTaskText, { task_count }) }}</p>
         </el-tab-pane>
       </el-tabs>
-      <DesktopTodoItem
-        :check="false"
-        input="1"
-        priority="High"
-        :tab="'tab-' + activeName"
-        :lineThrough="activeName === 'done'"
-        :edit="true"
-        :selectedPriority="selectedPriority"
-        @changeSelectedPriority="(val) => (selectedPriority = val)"
-      />
+      <ul class="todo-list">
+        <li v-for="({ check, input, priority }, index) in todoList" :key="index" :data-index="index">
+          <DesktopTodoItem
+            :check="check"
+            :input="input"
+            :priority="priority"
+            :tab="'tab-' + activeName"
+            :lineThrough="activeName === 'done'"
+            :edit="null"
+            :selectedPriority="selectedPriority"
+            @changeSelectedPriority="(val) => (selectedPriority = val)"
+          />
+        </li>
+      </ul>
     </article>
   </section>
 </template>
@@ -40,7 +45,7 @@ export default {
     DesktopTodoItem,
   },
   data: () => ({
-    selectedDate: new Date(),
+    selectedDate: null,
     selectedPriority: 'Mid',
   }),
   computed: {
@@ -82,6 +87,32 @@ export default {
           contentStyle: { color: 'white' },
         },
       };
+    },
+  },
+  watch: {
+    // XXX: 2번 호출 될 수 있음.
+    selectedDate() {
+      if (this.activeName === 'todo') {
+        this.fetchTodoList(1);
+      } else if (this.activeName === 'done') {
+        this.fetchTodoList(2, this.selectedDate);
+      }
+    },
+    activeName() {
+      if (this.activeName === 'todo') {
+        this.selectedDate = null;
+        this.fetchTodoList(1);
+      } else if (this.activeName === 'done') {
+        this.fetchTodoList(2, this.selectedDate);
+      }
+    },
+  },
+  mounted() {
+    this.fetchTodoList(1);
+  },
+  methods: {
+    onDayClick() {
+      this.activeName = 'done';
     },
   },
   setup() {

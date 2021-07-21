@@ -44,7 +44,6 @@
         >
       </p>
     </div>
-    <i class="el-icon-arrow-right" @click.prevent="toggleSlider"></i>
   </div>
 </template>
 <script>
@@ -98,9 +97,6 @@ export default {
     },
     actionFocus() {
       this.innerInput = this.input;
-    },
-    toggleSlider() {
-      this.$emit('toggleSlider');
     },
     isSelected(value) {
       return this.selectedPriority === value;

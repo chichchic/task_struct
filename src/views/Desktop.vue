@@ -1,5 +1,6 @@
 <template>
   <section class="desktop">
+    <el-button class="add-button" size="mini" type="primary" round plain>추가</el-button>
     <article>
       <DatePicker
         v-model="selectedDate"
@@ -7,6 +8,7 @@
         is-expanded
         title-position="left"
         :attributes="attributes"
+        :masks="{ weekdays: 'WWW' }"
       />
     </article>
     <article>
@@ -15,16 +17,31 @@
           <p class="subtitle_task">{{ $t(subtitleTaskText, { task_count }) }}</p>
         </el-tab-pane>
       </el-tabs>
+      <DesktopTodoItem
+        :check="false"
+        input="1"
+        priority="High"
+        :tab="'tab-' + activeName"
+        :lineThrough="activeName === 'done'"
+        :edit="true"
+        :selectedPriority="selectedPriority"
+        @changeSelectedPriority="(val) => (selectedPriority = val)"
+      />
     </article>
   </section>
 </template>
 <script>
+import DesktopTodoItem from '@/components/Todo/DesktopTodoItem.vue';
 import useTodoList from '@/components/Todo/useTodoList';
 import useElTabs from '@/components/elementPlus/useElTabs';
 
 export default {
+  components: {
+    DesktopTodoItem,
+  },
   data: () => ({
     selectedDate: new Date(),
+    selectedPriority: 'Mid',
   }),
   computed: {
     task_count() {
@@ -180,6 +197,12 @@ export default {
   padding: 7rem 5rem 15rem;
   height: calc(100% - 30px);
   border-top: solid 1px #c4c4c4;
+
+  .add-button {
+    position: fixed;
+    top: 1rem;
+    right: 4rem;
+  }
 
   .vc-container {
     border: none;

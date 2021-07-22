@@ -113,6 +113,9 @@ export default function useTodoList() {
         })
         .then(() => {
           resolve();
+        })
+        .catch((error) => {
+          throw error;
         });
     });
     const increaseDoneCountPromise = new Promise((resolve) => {
@@ -122,6 +125,9 @@ export default function useTodoList() {
         .update({ doneCount: firebase.firestore.FieldValue.increment(1) })
         .then(() => {
           resolve();
+        })
+        .catch((error) => {
+          throw error;
         });
     });
     Promise.all([updateListPromise, increaseDoneCountPromise])

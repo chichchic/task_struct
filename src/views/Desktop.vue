@@ -85,7 +85,6 @@ export default {
           highlight: {
             contentStyle: { border: '1px solid #F6797C', color: isTodaySelected ? 'white' : 'inherit' },
           },
-          order: 1,
           dates: new Date(),
         },
         ...this.monthDotAttrubutes,

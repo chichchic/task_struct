@@ -1,6 +1,6 @@
 <template>
   <section class="desktop">
-    <el-button class="add-button" size="mini" type="primary" round plain>추가</el-button>
+    <el-button class="add-button" size="mini" type="primary" round plain @click="addItem">추가</el-button>
     <article>
       <DatePicker
         v-model="selectedDate"
@@ -12,7 +12,7 @@
         @dayclick="onDayClick"
       />
     </article>
-    <article>
+    <article class="todo-list-content">
       <el-tabs :class="`tab-${activeName}`" v-model="activeName" stretch>
         <el-tab-pane v-for="{ label, name } in tabs" :key="name" :label="label" :name="name">
           <p class="subtitle_task">{{ $t(subtitleTaskText, { task_count }) }}</p>
@@ -26,12 +26,23 @@
             :priority="priority"
             :tab="'tab-' + activeName"
             :lineThrough="activeName === 'done'"
-            :edit="null"
+            :edit="editIndex === index"
             :selectedPriority="selectedPriority"
-            @changeSelectedPriority="(val) => (selectedPriority = val)"
+            @updateCheck="(value) => updateCheck(value, index)"
+            @updateInput="
+              (value) => {
+                doUpdateInput(value, index);
+              }
+            "
+            @setEdit="setEdit(index, priority)"
+            @changeSelectedPriority="changeSelectedPriority"
           />
         </li>
       </ul>
+      <p class="todo-description" v-if="editIndex !== null && task_count <= 3 && activeName === 'todo'">
+        Control + Enter를 통해 할 일을 등록하고<br />Shift + 숫자키(1~3)를 통해<br />
+        우선순위를 입력해보세요
+      </p>
     </article>
   </section>
 </template>
@@ -46,7 +57,8 @@ export default {
   },
   data: () => ({
     selectedDate: null,
-    selectedPriority: 'Mid',
+    selectedPriority: 'Empty',
+    editIndex: null,
   }),
   computed: {
     task_count() {
@@ -109,10 +121,68 @@ export default {
   },
   mounted() {
     this.fetchTodoList(1);
+    this.$el.addEventListener('click', (e) => {
+      if (e.target.classList.contains('todo-list')) {
+        if (this.editIndex !== null) {
+          if (this.selectedPriority === 'Empty') {
+            this.todoList[this.editIndex].input = '';
+          }
+          this.updateList(this.editIndex);
+          this.editIndex = null;
+          this.selectedPriority = 'Empty';
+        } else {
+          this.addItem();
+        }
+      }
+    });
+    // TODO: 1,2,3입력으로 우선 순위 설정하기
+    window.addEventListener('keydown', (e) => {
+      const { code, shiftKey } = e;
+      const keyMatch = { Digit1: 'High', Digit2: 'Mid', Digit3: 'Low' };
+      if (shiftKey && code in keyMatch) {
+        this.changeSelectedPriority(keyMatch[code]);
+      }
+    });
   },
   methods: {
     onDayClick() {
       this.activeName = 'done';
+    },
+    changeSelectedPriority(value) {
+      this.selectedPriority = value;
+      this.setPriority(value);
+      this.updateListData();
+    },
+    doUpdateInput(value, index) {
+      this.updateInput(value, index);
+      this.updateList(index);
+      if (this.selectedPriority === 'Empty') {
+        return;
+      }
+      this.updateListData();
+    },
+    updateListData() {
+      this.pushTodoList();
+      this.sorting();
+      this.editIndex = null;
+      this.selectedPriority = 'Empty';
+    },
+    // NOTE: 수정 실행할 때 사용되는 함수
+    setEdit(index, priority) {
+      if (this.editIndex !== null) {
+        this.updateList(this.editIndex);
+      }
+      this.updateList(index);
+      this.editIndex = index;
+      this.selectedPriority = priority;
+    },
+    addItem() {
+      if (this.editIndex !== null) {
+        this.updateList(this.editIndex);
+      }
+      this.activeName = 'todo';
+      this.addTodoList();
+      this.editIndex = this.todoList.length - 1;
     },
   },
   setup() {
@@ -258,6 +328,37 @@ export default {
   .tab-done {
     .subtitle_task {
       left: calc(75% + 1rem);
+      transform: translateX(-50%);
+    }
+  }
+
+  .todo-list-content {
+    position: relative;
+    overflow-y: hidden;
+
+    .todo-list {
+      height: calc(100% - 60px);
+      overflow-y: scroll;
+      -ms-overflow-style: none; /* IE and Edge */
+      scrollbar-width: none; /* Firefox */
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
+
+    .todo-description {
+      display: block;
+      text-align: center;
+      font-size: 1.5rem;
+      color: white;
+      background-color: #5a5a5a;
+      border-radius: 1rem;
+      padding: 2rem;
+      width: 30rem;
+      position: absolute;
+      left: 50%;
+      bottom: 0;
       transform: translateX(-50%);
     }
   }

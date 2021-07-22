@@ -10,6 +10,7 @@
         :attributes="attributes"
         :masks="{ weekdays: 'WWW' }"
         @dayclick="onDayClick"
+        @update:from-page="page"
       />
     </article>
     <article class="todo-list-content">
@@ -59,6 +60,8 @@ export default {
     selectedDate: null,
     selectedPriority: 'Empty',
     editIndex: null,
+    currentMonth: null,
+    monthDotAttrubutes: [],
   }),
   computed: {
     task_count() {
@@ -85,10 +88,7 @@ export default {
           order: 1,
           dates: new Date(),
         },
-        {
-          dot: 'red',
-          dates: [new Date('2021/07/21')],
-        },
+        ...this.monthDotAttrubutes,
       ];
     },
     selectAttribute() {
@@ -183,6 +183,47 @@ export default {
       this.activeName = 'todo';
       this.addTodoList();
       this.editIndex = this.todoList.length - 1;
+    },
+    async page(page) {
+      const { year, month } = page;
+      if (this.currentMonth === month) {
+        return;
+      }
+      const { uid } = this.$store.state.user;
+      const nextMonth = month === 12 ? 1 : month + 1;
+      const nextYear = month === 12 ? year + 1 : year;
+      this.currentMonth = month;
+      const currentDate = new Date(`${year}/${month}`);
+      const nextDate = new Date(`${nextYear}/${nextMonth}`);
+      const doneList = await this.$firestore
+        .collection('users')
+        .doc(uid)
+        .collection('todoListItem')
+        .where('status', '==', 2)
+        .where('createAt', '>', currentDate)
+        .where('createAt', '<', nextDate)
+        .get();
+      const doneDots = {};
+      const dotStyleList = [
+        { width: '15px', height: '15px', backgroundColor: '#F6797C' },
+        { width: '15px', height: '15px', backgroundColor: '#8FDEAA' },
+        { width: '15px', height: '15px', backgroundColor: '#FFE483' },
+      ];
+      doneList.forEach((doc) => {
+        const { lastDoneAt, priority } = doc.data();
+        const lastDoneDate = lastDoneAt.toDate();
+        const year = lastDoneDate.getFullYear();
+        const month = lastDoneDate.getMonth() + 1;
+        const date = lastDoneDate.getDate();
+        const fullDate = `${year}/${month}/${date}`;
+        if (doneDots[fullDate] === undefined || doneDots[fullDate] > priority) {
+          doneDots[fullDate] = priority;
+        }
+      });
+      this.monthDotAttrubutes = Object.keys(doneDots).map((key) => ({
+        dot: { style: dotStyleList[doneDots[key]] },
+        dates: [new Date(key)],
+      }));
     },
   },
   setup() {

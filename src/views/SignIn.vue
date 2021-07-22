@@ -13,9 +13,14 @@ export default {
   },
   methods: {
     async redirectSignIn() {
+      const ismobild = window.matchMedia('only screen and (max-width: 760px)').matches;
       try {
         await this.signIn();
-        this.$router.push('Todo');
+        if (ismobild) {
+          this.$router.push('Todo');
+        } else {
+          this.$router.push('Desktop');
+        }
       } catch (e) {
         console.error(e);
       }

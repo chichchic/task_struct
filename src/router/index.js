@@ -28,10 +28,13 @@ const routes = [
     component: Desktop,
     beforeEnter: (to, from, next) => {
       const { uid } = store.state.user;
-      if (uid) {
-        next();
-      } else {
+      const ismobild = window.matchMedia('only screen and (max-width: 760px)').matches;
+      if (!uid) {
         next('/signin');
+      } else if (ismobild) {
+        next('/todo');
+      } else {
+        next();
       }
     },
   },
@@ -64,10 +67,13 @@ const routes = [
     component: SignIn,
     beforeEnter: (to, from, next) => {
       const { uid } = store.state.user;
+      const ismobild = window.matchMedia('only screen and (max-width: 760px)').matches;
       if (!uid) {
         next();
-      } else {
+      } else if (ismobild) {
         next('/todo');
+      } else {
+        next('/desktop');
       }
     },
   },

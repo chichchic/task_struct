@@ -20,9 +20,9 @@ export default function signInWithGoogle() {
           phoneNumber,
           providerId,
           createdAt: new Date(),
-          withdraw: false,
-          withdrawTime: null,
+          doneCount: 0,
         });
+        store.commit('user/setUserInfo', { ...providerData });
       } else {
         const userData = doc.data();
         store.commit('user/setUserInfo', { ...userData, uid });

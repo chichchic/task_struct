@@ -1,19 +1,14 @@
 <template>
   <Navigation />
-  <!-- <el-button type="danger" icon="el-icon-s-unfold" circle @click="drawer = true"></el-button> -->
   <router-view />
-  <!-- <Menu :drawer="drawer" @changeDrawer="changeDrawer" /> -->
 </template>
 
 <script>
-// NOTE: side-menu 기획 수정
-// import Menu from '@/components/Menu.vue';
 import Navigation from '@/components/Navigation.vue';
 export default {
   name: 'App',
   components: {
     Navigation,
-    // Menu,
   },
   data: () => ({
     drawer: false,

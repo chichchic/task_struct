@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Todo from '../views/Todo.vue';
 import Calendar from '../views/Calendar.vue';
-import Setting from '../views/Setting.vue';
 import Withdraw from '../views/Withdraw.vue';
 import SignIn from '../views/SignIn.vue';
 import Desktop from '../views/Desktop.vue';
@@ -50,11 +49,6 @@ const routes = [
         next('/signin');
       }
     },
-  },
-  {
-    path: '/setting',
-    name: 'Setting',
-    component: Setting,
   },
   {
     path: '/withdraw',

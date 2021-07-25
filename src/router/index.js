@@ -4,6 +4,7 @@ import Calendar from '../views/Calendar.vue';
 import Setting from '../views/Setting.vue';
 import Withdraw from '../views/Withdraw.vue';
 import SignIn from '../views/SignIn.vue';
+import Desktop from '../views/Desktop.vue';
 import store from '@/store/index.js';
 import Error404 from '../views/404.vue';
 
@@ -18,6 +19,22 @@ const routes = [
         next();
       } else {
         next('/signin');
+      }
+    },
+  },
+  {
+    path: '/desktop',
+    name: 'Desktop',
+    component: Desktop,
+    beforeEnter: (to, from, next) => {
+      const { uid } = store.state.user;
+      const ismobild = window.matchMedia('only screen and (max-width: 760px)').matches;
+      if (!uid) {
+        next('/signin');
+      } else if (ismobild) {
+        next('/todo');
+      } else {
+        next();
       }
     },
   },
@@ -50,10 +67,13 @@ const routes = [
     component: SignIn,
     beforeEnter: (to, from, next) => {
       const { uid } = store.state.user;
+      const ismobild = window.matchMedia('only screen and (max-width: 760px)').matches;
       if (!uid) {
         next();
-      } else {
+      } else if (ismobild) {
         next('/todo');
+      } else {
+        next('/desktop');
       }
     },
   },

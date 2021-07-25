@@ -4,7 +4,7 @@
     <div class="input">
       <el-input
         v-if="edit"
-        placeholder="할 일을 입력해보세요"
+        placeholder="Control + Enter 를 눌러 할 일을 등록해보세요"
         v-model="innerInput"
         ref="input"
         @focus="actionFocus"
@@ -12,10 +12,40 @@
         :autosize="true"
         type="textarea"
       />
-      <p class="input-text" v-else :class="{ 'line-through': lineThrough }">{{ input }}</p>
-      <p class="priority" :class="priority.toLowerCase()">{{ $t(priorityText) }}</p>
+      <p class="input-text" v-else :class="{ 'line-through': lineThrough }" @click="$emit('setEdit')">{{ input }}</p>
+      <p class="priority" v-if="!edit" :class="priority.toLowerCase()">{{ $t(priorityText) }}</p>
+      <p v-else-if="input === ''">할 일을 입력 한 후 우선순위를 등록할 수 있어요!</p>
+      <p v-else>
+        <el-tag
+          @click="changeSelectedPriority('High')"
+          effect="dark"
+          :class="{ 'selected-tag': isSelected('High') }"
+          class="tag"
+          type="danger"
+          size="mini"
+          >1. High</el-tag
+        >
+        <el-tag
+          @click="changeSelectedPriority('Mid')"
+          effect="dark"
+          :class="{ 'selected-tag': isSelected('Mid') }"
+          class="tag mid-tag"
+          type="danger"
+          size="mini"
+          >2. Mid</el-tag
+        >
+        <el-tag
+          @click="changeSelectedPriority('Low')"
+          effect="dark"
+          :class="{ 'selected-tag': isSelected('Low') }"
+          class="tag low-tag"
+          type="danger"
+          size="mini"
+          >3. Low</el-tag
+        >
+      </p>
     </div>
-    <i class="el-icon-arrow-right" @click.prevent="toggleSlider"></i>
+    <el-button v-if="edit" @click="enroll">등록</el-button>
   </div>
 </template>
 <script>
@@ -27,16 +57,14 @@ export default {
     tab: String,
     lineThrough: Boolean,
     edit: Boolean,
+    selectedPriority: [String],
   },
   watch: {
-    edit(newVal, prevVal) {
+    edit(newVal) {
       if (newVal) {
         this.$nextTick(() => {
           this.$refs.input.focus();
         });
-      }
-      if (prevVal && !newVal) {
-        this.updateInput(this.innerInput);
       }
     },
   },
@@ -55,6 +83,12 @@ export default {
     if (this.input === '') {
       this.$refs.input.focus();
     }
+    this.$el.addEventListener('keydown', (e) => {
+      const { code, ctrlKey, metaKey } = e;
+      if ((ctrlKey || metaKey) && code === 'Enter') {
+        this.enroll();
+      }
+    });
   },
   data: () => ({
     innerInput: '',
@@ -63,14 +97,19 @@ export default {
     updateCheck(value) {
       this.$emit('updateCheck', value);
     },
-    updateInput(value) {
-      this.$emit('updateInput', value);
-    },
     actionFocus() {
       this.innerInput = this.input;
     },
-    toggleSlider() {
-      this.$emit('toggleSlider');
+    isSelected(value) {
+      return this.selectedPriority === value;
+    },
+    changeSelectedPriority(value) {
+      this.$emit('updateInput', this.innerInput);
+      this.$emit('changeSelectedPriority', value);
+    },
+    enroll() {
+      this.$emit('updateInput', this.innerInput);
+      this.$refs.input.blur();
     },
   },
 };
@@ -149,6 +188,7 @@ export default {
   }
 
   .input-text {
+    cursor: pointer;
     padding: 0;
     font-size: 1.8rem;
   }
@@ -174,6 +214,28 @@ export default {
     line-height: 42px;
     display: inline-block;
     color: rgb(196, 196, 196);
+  }
+
+  .tag {
+    margin-right: 0.5rem;
+    cursor: pointer;
+  }
+}
+</style>
+<style lang="scss" scoped>
+.todo-item {
+  .mid-tag {
+    border: #6880ff;
+    background-color: #6880ff;
+  }
+
+  .low-tag {
+    border: rgb(248, 206, 141);
+    background-color: rgb(248, 206, 141);
+  }
+
+  .selected-tag {
+    box-shadow: 0 0 0 2px black;
   }
 }
 </style>

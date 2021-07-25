@@ -94,14 +94,14 @@ export default function useTodoList() {
     list.sort((a, b) => priorityTable[a.priority] - priorityTable[b.priority]);
   };
 
-  const updateCheck = async (value, index) => {
-    try {
-      const { uid } = store.state.user;
-      if (uid === null) {
-        throw new Error('push function must have uid');
-      }
-      const { id } = todoList.value[index];
-      await $firestore
+  const updateCheck = (value, index) => {
+    const { uid } = store.state.user;
+    if (uid === null) {
+      throw new Error('push function must have uid');
+    }
+    const { id } = todoList.value[index];
+    const updateListPromise = new Promise((resolve) => {
+      $firestore
         .collection('users')
         .doc(uid)
         .collection('todoListItem')
@@ -110,11 +110,33 @@ export default function useTodoList() {
           status: value ? 2 : 1,
           doneAt: firebase.firestore.FieldValue.arrayUnion(new Date()),
           lastDoneAt: new Date(),
+        })
+        .then(() => {
+          resolve();
+        })
+        .catch((error) => {
+          throw error;
         });
-      todoList.value.splice(index, 1);
-    } catch (error) {
-      console.error(error);
-    }
+    });
+    const increaseDoneCountPromise = new Promise((resolve) => {
+      $firestore
+        .collection('users')
+        .doc(uid)
+        .update({ doneCount: firebase.firestore.FieldValue.increment(1) })
+        .then(() => {
+          resolve();
+        })
+        .catch((error) => {
+          throw error;
+        });
+    });
+    Promise.all([updateListPromise, increaseDoneCountPromise])
+      .then(() => {
+        todoList.value.splice(index, 1);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
   const updateInput = (value, index) => {
     todoList.value[index].input = value;

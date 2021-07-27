@@ -9,8 +9,8 @@ import firebase from 'firebase/app';
 import signInWithGoogle from '@/components/common/signInWithGoogle.js';
 export default {
   setup() {
-    const { signIn, signInRedirect, signOut } = signInWithGoogle();
-    return { signIn, signInRedirect, signOut };
+    const { signIn, signOut } = signInWithGoogle();
+    return { signIn, signOut };
   },
   methods: {
     redirectSignIn() {

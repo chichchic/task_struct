@@ -1,18 +1,8 @@
 <template>
   <section class="navigation">
     <div class="logo">LOGO</div>
-    <i
-      icon
-      class="el-icon-date"
-      v-if="currentRouteName === 'Todo'"
-      @click.prevent="$router.push('Calendar')"
-    ></i>
-    <i
-      icon
-      class="el-icon-tickets"
-      v-else
-      @click.prevent="$router.push('Todo')"
-    ></i>
+    <i icon class="el-icon-date" v-if="currentRouteName === 'Todo'" @click.prevent="$router.push('Calendar')"></i>
+    <i icon class="el-icon-tickets" v-else @click.prevent="$router.push('Todo')"></i>
     <i
       icon
       class="el-icon-user-solid"
@@ -23,8 +13,7 @@
   </section>
 </template>
 <script>
-import Setting from "@/components/Setting.vue";
-
+import Setting from '@/components/Setting.vue';
 export default {
   components: {
     Setting,

@@ -5,25 +5,17 @@
   </section>
 </template>
 <script>
+import firebase from 'firebase/app';
 import signInWithGoogle from '@/components/common/signInWithGoogle.js';
 export default {
   setup() {
-    const { signIn, signOut } = signInWithGoogle();
-    return { signIn, signOut };
+    const { signIn, signInRedirect, signOut } = signInWithGoogle();
+    return { signIn, signInRedirect, signOut };
   },
   methods: {
-    async redirectSignIn() {
-      const ismobild = window.matchMedia('only screen and (max-width: 760px)').matches;
-      try {
-        await this.signIn();
-        if (ismobild) {
-          this.$router.push('Todo');
-        } else {
-          this.$router.push('Desktop');
-        }
-      } catch (e) {
-        console.error(e);
-      }
+    redirectSignIn() {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      firebase.auth().signInWithRedirect(provider);
     },
   },
 };

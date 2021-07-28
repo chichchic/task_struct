@@ -3,8 +3,8 @@
     custom-class="delete-account"
     :model-value="deleteDrawer"
     @update:modelValue="$emit('close')"
-    direction="ltr"
-    size="100%"
+    direction="rtl"
+    size="30%"
   >
     <template v-slot:title>
       <h1>계정 삭제</h1>

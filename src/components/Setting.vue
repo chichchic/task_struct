@@ -3,8 +3,8 @@
     custom-class="setting"
     :model-value="drawerSetting"
     @update:modelValue="$emit('close')"
-    direction="ltr"
-    size="100%"
+    direction="rtl"
+    size="30%"
   >
     <template v-slot:title>
       <h1>설정</h1>

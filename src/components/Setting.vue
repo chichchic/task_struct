@@ -29,7 +29,9 @@
       <a href="https://open.kakao.com/o/spd4owqd" target="_blank">
         <p class="pointer">문의하기</p>
       </a>
-      <p class="pointer">공지사항</p>
+      <a href="https://carrote.notion.site/will-be-done-6543e1180b4847b88554ff63d66cd920" target="_blank">
+        <p class="pointer">공지사항</p>
+      </a>
       <p class="pointer" @click="deleteDrawer = true">계정삭제</p>
       <p class="pointer" @click="doSignOut">로그아웃</p>
     </div>

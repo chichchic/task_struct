@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Todo from '../views/Todo.vue';
 import Calendar from '../views/Calendar.vue';
-import Withdraw from '../views/Withdraw.vue';
 import SignIn from '../views/SignIn.vue';
 import Desktop from '../views/Desktop.vue';
 import store from '@/store/index.js';
@@ -49,11 +48,6 @@ const routes = [
         next('/signin');
       }
     },
-  },
-  {
-    path: '/withdraw',
-    name: 'Withdraw',
-    component: Withdraw,
   },
   {
     path: '/signin',

@@ -281,7 +281,7 @@ export default {
 </style>
 <style lang="scss" scoped>
 .todo {
-  height: calc(100% - 30px);
+  height: calc(100vh - 50px);
 
   .add-button {
     width: 100%;

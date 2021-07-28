@@ -130,7 +130,7 @@ export default function useTodoList() {
           throw error;
         });
     });
-    Promise.all([updateListPromise, increaseDoneCountPromise])
+    return Promise.all([updateListPromise, increaseDoneCountPromise])
       .then(() => {
         todoList.value.splice(index, 1);
       })

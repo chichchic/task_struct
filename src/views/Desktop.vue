@@ -29,7 +29,7 @@
             :lineThrough="activeName === 'done'"
             :edit="editIndex === index"
             :selectedPriority="selectedPriority"
-            @updateCheck="(value) => updateCheck(value, index)"
+            @updateCheck="(value) => doUpdateCheck(value, index)"
             @updateInput="
               (value) => {
                 doUpdateInput(value, index);
@@ -61,6 +61,7 @@ export default {
     selectedPriority: 'Empty',
     editIndex: null,
     currentMonth: null,
+    currentYear: null,
     monthDotAttrubutes: [],
   }),
   computed: {
@@ -160,6 +161,10 @@ export default {
       }
       this.updateListData();
     },
+    async doUpdateCheck(value, index) {
+      await this.updateCheck(value, index);
+      await this.page({ year: this.currentYear, month: this.currentMonth }, true);
+    },
     updateListData() {
       this.pushTodoList();
       this.sorting();
@@ -183,15 +188,16 @@ export default {
       this.addTodoList();
       this.editIndex = this.todoList.length - 1;
     },
-    async page(page) {
+    async page(page, mustUpdate = false) {
       const { year, month } = page;
-      if (this.currentMonth === month) {
+      if (!mustUpdate && this.currentMonth === month) {
         return;
       }
       const { uid } = this.$store.state.user;
       const nextMonth = month === 12 ? 1 : month + 1;
       const nextYear = month === 12 ? year + 1 : year;
       this.currentMonth = month;
+      this.currentYear = year;
       const currentDate = new Date(`${year}/${month}`);
       const nextDate = new Date(`${nextYear}/${nextMonth}`);
       const doneList = await this.$firestore
@@ -223,6 +229,7 @@ export default {
         dot: { style: dotStyleList[doneDots[key]] },
         dates: [new Date(key)],
       }));
+      console.log(this.monthDotAttrubutes);
     },
   },
   setup() {

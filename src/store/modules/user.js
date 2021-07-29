@@ -25,4 +25,13 @@ export default {
     },
   },
   actions: {},
+  getters: {
+    returnUserState: function (state) {
+      if (state.displayName == null) {
+        return null;
+      } else {
+        return state;
+      }
+    },
+  },
 };

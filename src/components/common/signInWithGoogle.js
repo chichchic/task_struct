@@ -1,15 +1,11 @@
 import firebase from 'firebase';
-import { useStore } from 'vuex';
+import store from '@/store/index.js';
 export default function signInWithGoogle() {
-  const store = useStore();
   const $firestore = firebase.firestore();
   const signIn = async () => {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    firebase.auth().languageCode = 'ko';
     store.commit('base/setLoading', true);
     try {
-      const signInResult = await firebase.auth().signInWithPopup(provider);
-      const providerData = signInResult.user.providerData[0];
+      const providerData = firebase.auth().currentUser.providerData[0];
       const { uid, email, displayName, phoneNumber, providerId } = providerData;
       const users = $firestore.collection('users');
       const doc = await users.doc(uid).get();

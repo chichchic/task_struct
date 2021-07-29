@@ -14,6 +14,7 @@
 </template>
 <script>
 import Setting from '@/components/Setting.vue';
+
 export default {
   components: {
     Setting,
@@ -33,6 +34,7 @@ export default {
   height: 30px;
   display: flex;
   align-items: center;
+
   .logo {
     margin-left: 50%;
     margin-right: auto;
@@ -40,12 +42,16 @@ export default {
     transform: translateX(-50%);
     text-align: center;
   }
+
   i {
     font-size: 20px;
+
     &:not(:last-child) {
       margin-right: 10px;
     }
+
     cursor: pointer;
+
     &.disable {
       cursor: inherit;
       color: #c2c9d1;

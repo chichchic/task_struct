@@ -15,7 +15,13 @@ export default {
   methods: {
     redirectSignIn() {
       const provider = new firebase.auth.GoogleAuthProvider();
-      firebase.auth().signInWithRedirect(provider);
+      const ismobild = window.matchMedia('only screen and (max-width: 760px)').matches;
+      firebase.auth().languageCode = 'ko';
+      if (ismobild) {
+        firebase.auth().signInWithRedirect(provider);
+      } else {
+        firebase.auth().signInWithPopup(provider);
+      }
     },
   },
 };

@@ -1,6 +1,6 @@
 <template>
   <section class="navigation">
-    <div class="logo" @click.prevent="$router.push('/')">LOGO</div>
+    <div class="logo" @click.prevent="$router.push('/')">WillBeDone</div>
     <i
       icon
       class="el-icon-date"

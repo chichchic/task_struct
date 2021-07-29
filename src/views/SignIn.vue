@@ -1,6 +1,6 @@
 <template>
   <section class="sign-in">
-    <h1 class="mb-9">logo</h1>
+    <h1 class="mb-9">WillBeDone</h1>
     <p class="mb-9">
       {{ $t('default.login_wecolme_text_top') }}
       <br />

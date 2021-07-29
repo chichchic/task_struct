@@ -52,7 +52,7 @@
       </p>
     </div>
     <p>
-      지금 까지 will be done과 함께<br />
+      지금 까지 WillBeDone과 함께<br />
       완료한 할 일 총 <span>{{ doneCount }}</span> 개
     </p>
   </el-drawer>

@@ -11,6 +11,7 @@
       :attributes="attributes"
       :masks="{ weekdays: 'WWW' }"
       is-expanded
+      @update:from-page="getDotAttributes"
     />
     <ul class="todo-list" ref="swipeListener">
       <li v-for="({ check, input, priority }, index) in todoList" :key="index" :data-index="index">
@@ -86,6 +87,7 @@ import TodoItem from '@/components/Todo/TodoItem.vue';
 import Swiper from '@/components/common/Swiper.vue';
 import useElTabs from '@/components/elementPlus/useElTabs';
 import useTodoList from '@/components/Todo/useTodoList';
+import useCalendar from '@/components/Todo/useCalendar.js';
 
 export default {
   components: {
@@ -120,6 +122,10 @@ export default {
       ],
       'todo'
     );
+    const { selectedDate, currentMonth, currentYear, monthDotAttributes, attributes, getDotAttributes } = useCalendar({
+      dotSize: '4px',
+      initSelectedDate: new Date(),
+    });
     return {
       todoList,
       prDrawer,
@@ -135,6 +141,12 @@ export default {
       sorting,
       tabs,
       activeName,
+      selectedDate,
+      currentMonth,
+      currentYear,
+      monthDotAttributes,
+      attributes,
+      getDotAttributes,
     };
   },
   watch: {
@@ -146,7 +158,6 @@ export default {
     },
   },
   data: () => ({
-    selectedDate: new Date(),
     priorities: [
       { backgroundColor: '#f56e71', value: 'High', icon: 'H', size: '10rem', fontSize: '6rem' },
       { backgroundColor: '#84d9a0', value: 'Mid', icon: 'M', size: '8rem', fontSize: '4rem' },
@@ -158,21 +169,6 @@ export default {
     addNewItem: false,
   }),
   computed: {
-    attributes() {
-      const today = new Date();
-      const isTodaySelected =
-        today.getFullYear() === this.selectedDate?.getFullYear() &&
-        today.getMonth() === this.selectedDate?.getMonth() &&
-        today.getDate() === this.selectedDate?.getDate();
-      return [
-        {
-          highlight: {
-            contentStyle: { border: '1px solid #F6797C', color: isTodaySelected ? 'white' : 'inherit' },
-          },
-          dates: new Date(),
-        },
-      ];
-    },
     selectAttribute() {
       const backgroundColor = this.activeName === 'todo' ? '#FC9A9D' : '#7389FF';
       return {
@@ -248,6 +244,10 @@ export default {
           this.updateList(curIndex);
         });
       }
+    },
+    async doUpdateCheck(value, index) {
+      await this.updateCheck(value, index);
+      await this.getDotAttributes({ year: this.currentYear, month: this.currentMonth }, true);
     },
   },
 };

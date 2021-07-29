@@ -4,7 +4,7 @@ import Calendar from '../views/Calendar.vue';
 import SignIn from '../views/SignIn.vue';
 import Desktop from '../views/Desktop.vue';
 import store from '@/store/index.js';
-import Error404 from '../views/404.vue';
+import Error404 from '../views/Error404.vue';
 
 const routes = [
   {

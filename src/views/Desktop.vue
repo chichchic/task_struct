@@ -67,7 +67,7 @@ export default {
   }),
   computed: {
     task_count() {
-      return this.todoList.filter(({ check }) => check).length;
+      return this.todoList.filter(({ check }) => (this.activeName === 'todo' ? !check : check)).length;
     },
     subtitleTaskText() {
       const list = {

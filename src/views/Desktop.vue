@@ -10,7 +10,7 @@
         :attributes="attributes"
         :masks="{ weekdays: 'WWW' }"
         @dayclick="onDayClick"
-        @update:from-page="page"
+        @update:from-page="getDotAttributes"
       />
     </article>
     <article class="todo-list-content">
@@ -52,18 +52,15 @@
 import DesktopTodoItem from '@/components/Todo/DesktopTodoItem.vue';
 import useTodoList from '@/components/Todo/useTodoList';
 import useElTabs from '@/components/elementPlus/useElTabs';
+import useCalendar from '@/components/Todo/useCalendar.js';
 
 export default {
   components: {
     DesktopTodoItem,
   },
   data: () => ({
-    selectedDate: null,
     selectedPriority: 'Empty',
     editIndex: null,
-    currentMonth: null,
-    currentYear: null,
-    monthDotAttrubutes: [],
   }),
   computed: {
     task_count() {
@@ -76,22 +73,7 @@ export default {
       };
       return list[this.activeName];
     },
-    attributes() {
-      const today = new Date();
-      const isTodaySelected =
-        today.getFullYear() === this.selectedDate?.getFullYear() &&
-        today.getMonth() === this.selectedDate?.getMonth() &&
-        today.getDate() === this.selectedDate?.getDate();
-      return [
-        {
-          highlight: {
-            contentStyle: { border: '1px solid #F6797C', color: isTodaySelected ? 'white' : 'inherit' },
-          },
-          dates: new Date(),
-        },
-        ...this.monthDotAttrubutes,
-      ];
-    },
+
     selectAttribute() {
       const backgroundColor = this.activeName === 'todo' ? '#FC9A9D' : '#7389FF';
       return {
@@ -163,7 +145,7 @@ export default {
     },
     async doUpdateCheck(value, index) {
       await this.updateCheck(value, index);
-      await this.page({ year: this.currentYear, month: this.currentMonth }, true);
+      await this.getDotAttributes({ year: this.currentYear, month: this.currentMonth }, true);
     },
     updateListData() {
       this.pushTodoList();
@@ -188,49 +170,6 @@ export default {
       this.addTodoList();
       this.editIndex = this.todoList.length - 1;
     },
-    async page(page, mustUpdate = false) {
-      const { year, month } = page;
-      if (!mustUpdate && this.currentMonth === month) {
-        return;
-      }
-      const { uid } = this.$store.state.user;
-      const nextMonth = month === 12 ? 1 : month + 1;
-      const nextYear = month === 12 ? year + 1 : year;
-      this.currentMonth = month;
-      this.currentYear = year;
-      const currentDate = new Date(`${year}/${month}`);
-      const nextDate = new Date(`${nextYear}/${nextMonth}`);
-      const doneList = await this.$firestore
-        .collection('users')
-        .doc(uid)
-        .collection('todoListItem')
-        .where('status', '==', 2)
-        .where('createAt', '>', currentDate)
-        .where('createAt', '<', nextDate)
-        .get();
-      const doneDots = {};
-      const dotStyleList = [
-        { width: '15px', height: '15px', backgroundColor: '#F6797C' },
-        { width: '15px', height: '15px', backgroundColor: '#8FDEAA' },
-        { width: '15px', height: '15px', backgroundColor: '#FFE483' },
-      ];
-      doneList.forEach((doc) => {
-        const { lastDoneAt, priority } = doc.data();
-        const lastDoneDate = lastDoneAt.toDate();
-        const year = lastDoneDate.getFullYear();
-        const month = lastDoneDate.getMonth() + 1;
-        const date = lastDoneDate.getDate();
-        const fullDate = `${year}/${month}/${date}`;
-        if (doneDots[fullDate] === undefined || doneDots[fullDate] > priority) {
-          doneDots[fullDate] = priority;
-        }
-      });
-      this.monthDotAttrubutes = Object.keys(doneDots).map((key) => ({
-        dot: { style: dotStyleList[doneDots[key]] },
-        dates: [new Date(key)],
-      }));
-      console.log(this.monthDotAttrubutes);
-    },
   },
   setup() {
     const {
@@ -254,6 +193,7 @@ export default {
       ],
       'todo'
     );
+    const { selectedDate, currentMonth, currentYear, monthDotAttributes, getDotAttributes, attributes } = useCalendar();
     return {
       tabs,
       activeName,
@@ -269,6 +209,12 @@ export default {
       removeList,
       setPriority,
       sorting,
+      selectedDate,
+      currentMonth,
+      currentYear,
+      monthDotAttributes,
+      attributes,
+      getDotAttributes,
     };
   },
 };

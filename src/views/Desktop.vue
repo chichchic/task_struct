@@ -193,7 +193,9 @@ export default {
       ],
       'todo'
     );
-    const { selectedDate, currentMonth, currentYear, monthDotAttributes, getDotAttributes, attributes } = useCalendar();
+    const { selectedDate, currentMonth, currentYear, monthDotAttributes, getDotAttributes, attributes } = useCalendar(
+      {}
+    );
     return {
       tabs,
       activeName,

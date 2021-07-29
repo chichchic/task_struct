@@ -7,6 +7,8 @@ import { DatePicker } from 'v-calendar';
 import '@/assets/style/main.scss';
 import i18n from './i18n';
 import firebase from 'firebase';
+import mdiVue from 'mdi-vue/v3';
+import * as mdijs from '@mdi/js';
 
 const firebaseConfig = {
   apiKey: process.env.VUE_APP_API_KEY,
@@ -23,6 +25,9 @@ firebase.initializeApp(firebaseConfig);
 
 const app = createApp(App);
 app.use(store).use(router).use(i18n);
+app.use(mdiVue, {
+  icons: mdijs,
+});
 app.component('DatePicker', DatePicker);
 app.config.globalProperties.$firestore = firebase.firestore();
 installElementPlus(app);

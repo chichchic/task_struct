@@ -40,7 +40,7 @@ export default function useTodoList() {
       const todoListItem = await query.get();
       todoList.value = [];
       todoListItem.forEach((doc) => {
-        const { priority, todoValue, status, repeat, edit } = doc.data();
+        const { priority, todoValue, status, repeat, edit, createAt, lastDoneAt } = doc.data();
         todoList.value.push({
           check: status === 1 ? false : true,
           input: todoValue,
@@ -48,6 +48,8 @@ export default function useTodoList() {
           repeat,
           edit,
           id: doc.id,
+          createAt: new Date(createAt.seconds),
+          lastDoneAt: lastDoneAt === null ? null : new Date(lastDoneAt.seconds),
         });
       });
       sorting();
@@ -62,7 +64,7 @@ export default function useTodoList() {
       if (uid === null) {
         throw new Error('push function must have uid');
       }
-      const { check, input, priority, id } = todoList.value[curIndex];
+      const { check, input, priority, id, createAt, lastDoneAt } = todoList.value[curIndex];
       if (id !== undefined) {
         fetchUpdateInput(curIndex);
         return;
@@ -77,8 +79,8 @@ export default function useTodoList() {
           todoValue: input,
           priority: priorityTable[priority],
           repeat: 0,
-          lastDoneAt: null,
-          createAt: new Date(),
+          createAt,
+          lastDoneAt,
           edit: 0,
           deletedAt: null,
         });
@@ -86,12 +88,15 @@ export default function useTodoList() {
       console.error(error);
     }
   };
-  // status, doneAt, todoValue, priority, repeat, createAt, edit, deletedAt
-  // check: true, input: '1', priority: 'High'
 
   const sorting = () => {
     const list = todoList.value;
-    list.sort((a, b) => priorityTable[a.priority] - priorityTable[b.priority]);
+    list.sort((a, b) => {
+      if (priorityTable[a.priority] === priorityTable[b.priority]) {
+        return a.createAt - b.createAt;
+      }
+      return priorityTable[a.priority] - priorityTable[b.priority];
+    });
   };
 
   const updateCheck = (value, index) => {
@@ -185,7 +190,7 @@ export default function useTodoList() {
   };
 
   const addTodoList = () => {
-    todoList.value.push({ check: false, input: '', priority: 'Empty' });
+    todoList.value.push({ check: false, input: '', priority: 'Empty', createAt: new Date(), lastDoneAt: null });
   };
   //FIXME: 너무 여러 역할을 가지고 있음. 추후에 분리할 것!
   const updateList = (index, enroll = true) => {

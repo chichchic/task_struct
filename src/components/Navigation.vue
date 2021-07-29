@@ -51,10 +51,10 @@ export default {
   .logo {
     margin-left: 50%;
     margin-right: auto;
-    width: 5rem;
     transform: translateX(-50%);
     text-align: center;
     cursor: pointer;
+    font-size: 2rem;
   }
 
   i {

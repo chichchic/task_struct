@@ -34,6 +34,7 @@
       </p>
     </div>
     <el-button v-if="edit" @click="enroll">등록</el-button>
+    <el-button v-else type="text" icon="el-icon-delete" circle @click="remove"></el-button>
   </div>
 </template>
 <script>
@@ -102,6 +103,9 @@ export default {
     enroll() {
       this.$emit('updateInput', this.innerInput);
       this.$refs.input.blur();
+    },
+    remove() {
+      this.$emit('remove');
     },
   },
 };

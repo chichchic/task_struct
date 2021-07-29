@@ -37,6 +37,7 @@
             "
             @setEdit="setEdit(index, priority)"
             @changeSelectedPriority="changeSelectedPriority"
+            @remove="removeList(index)"
           />
         </li>
       </ul>

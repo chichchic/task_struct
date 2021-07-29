@@ -26,30 +26,14 @@
           >
         </el-space>
       </p>
-      <p>
-        문의하기
-        <span>
-          <i class="el-icon-arrow-right"></i>
-        </span>
-      </p>
-      <p>
-        공지사항
-        <span>
-          <i class="el-icon-arrow-right"></i>
-        </span>
-      </p>
-      <p @click="deleteDrawer = true">
-        계정삭제
-        <span>
-          <i class="el-icon-arrow-right"></i>
-        </span>
-      </p>
-      <p @click="doSignOut">
-        로그아웃
-        <span>
-          <i class="el-icon-arrow-right"></i>
-        </span>
-      </p>
+      <a href="https://open.kakao.com/o/spd4owqd" target="_blank">
+        <p class="pointer">문의하기</p>
+      </a>
+      <a href="https://carrote.notion.site/will-be-done-6543e1180b4847b88554ff63d66cd920" target="_blank">
+        <p class="pointer">공지사항</p>
+      </a>
+      <p class="pointer" @click="deleteDrawer = true">계정삭제</p>
+      <p class="pointer" @click="doSignOut">로그아웃</p>
     </div>
     <p>
       지금 까지 will be done과 함께<br />
@@ -139,6 +123,11 @@ export default {
     text-align: center;
   }
 
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+
   .el-drawer__body > p {
     font-size: 2.2rem;
     text-align: center;
@@ -163,6 +152,10 @@ export default {
 
   .selected-lang {
     color: #f56e71;
+  }
+
+  .pointer {
+    cursor: pointer;
   }
 }
 </style>

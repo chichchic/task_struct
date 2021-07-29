@@ -1,8 +1,18 @@
 <template>
   <section class="navigation">
     <div class="logo">LOGO</div>
-    <i icon class="el-icon-date" v-if="currentRouteName === 'Todo'" @click.prevent="$router.push('Calendar')"></i>
-    <i icon class="el-icon-tickets" v-else @click.prevent="$router.push('Todo')"></i>
+    <i
+      icon
+      class="el-icon-date"
+      v-if="isMobileSize && currentRouteName === 'Todo'"
+      @click.prevent="$router.push('Calendar')"
+    ></i>
+    <i
+      icon
+      class="el-icon-tickets"
+      v-else-if="isMobileSize && currentRouteName === 'Calendar'"
+      @click.prevent="$router.push('Todo')"
+    ></i>
     <i
       icon
       class="el-icon-user-solid"
@@ -22,6 +32,9 @@ export default {
   computed: {
     currentRouteName() {
       return this.$route.name;
+    },
+    isMobileSize() {
+      return window.matchMedia('only screen and (max-width: 760px)').matches;
     },
   },
   data: () => ({

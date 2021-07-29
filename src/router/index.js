@@ -8,6 +8,18 @@ import Error404 from '../views/404.vue';
 
 const routes = [
   {
+    path: '/',
+    name: 'main',
+    beforeEnter: (to, from, next) => {
+      const { uid } = store.state.user;
+      if (uid) {
+        next('/todo');
+      } else {
+        next('/signin');
+      }
+    },
+  },
+  {
     path: '/todo',
     name: 'Todo',
     component: Todo,

@@ -1,6 +1,6 @@
 <template>
   <section class="navigation">
-    <div class="logo">LOGO</div>
+    <div class="logo" @click.prevent="$router.push('/')">LOGO</div>
     <i
       icon
       class="el-icon-date"
@@ -54,6 +54,7 @@ export default {
     width: 5rem;
     transform: translateX(-50%);
     text-align: center;
+    cursor: pointer;
   }
 
   i {

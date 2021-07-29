@@ -136,7 +136,6 @@ export default {
         }
       }
     });
-    // TODO: 1,2,3입력으로 우선 순위 설정하기
     window.addEventListener('keydown', (e) => {
       const { code, shiftKey } = e;
       const keyMatch = { Digit1: 'High', Digit2: 'Mid', Digit3: 'Low' };

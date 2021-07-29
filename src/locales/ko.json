@@ -17,5 +17,9 @@
   "language_en": "영어",
   "set_inquiry": "문의하기",
   "set_withdraw": "계정 삭제",
-  "menu_todo": ""
+  "menu_todo": "",
+  "login_wecolme_text_top": "매일 쏟아지는 할 일",
+  "login_wecolme_text_impress": "우선순위",
+  "login_wecolme_text_impress_postfix": "에 따라",
+  "login_wecolme_text_bottom": "효율적으로 관리해보세요!"
 }

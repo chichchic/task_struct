@@ -17,5 +17,9 @@
   "language_en": "English",
   "set_inquiry": "Inquiry",
   "set_withdraw": "Delete account",
-  "menu_todo": ""
+  "menu_todo": "",
+  "login_wecolme_text_top": "",
+  "login_wecolme_text_impress": "",
+  "login_wecolme_text_impress_postfix": "",
+  "login_wecolme_text_bottom": ""
 }

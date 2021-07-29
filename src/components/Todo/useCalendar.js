@@ -1,10 +1,10 @@
 import firebase from 'firebase';
 import { useStore } from 'vuex';
 import { ref, computed } from 'vue';
-export default function useCalendar() {
+export default function useCalendar({ dotSize = '15px', initSelectedDate = null }) {
   const $store = useStore();
   const $firestore = firebase.firestore();
-  const selectedDate = ref(null);
+  const selectedDate = ref(initSelectedDate);
   const currentMonth = ref(null);
   const currentYear = ref(null);
   const monthDotAttributes = ref([]);
@@ -47,9 +47,9 @@ export default function useCalendar() {
       .get();
     const doneDots = {};
     const dotStyleList = [
-      { width: '15px', height: '15px', backgroundColor: '#F6797C' },
-      { width: '15px', height: '15px', backgroundColor: '#8FDEAA' },
-      { width: '15px', height: '15px', backgroundColor: '#FFE483' },
+      { width: dotSize, height: dotSize, backgroundColor: '#F6797C' },
+      { width: dotSize, height: dotSize, backgroundColor: '#8FDEAA' },
+      { width: dotSize, height: dotSize, backgroundColor: '#FFE483' },
     ];
     doneList.forEach((doc) => {
       const { lastDoneAt, priority } = doc.data();

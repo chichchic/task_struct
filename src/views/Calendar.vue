@@ -23,7 +23,7 @@
               :priority="priority"
               :tab="'tab-' + activeName"
               :lineThrough="activeName === 'done'"
-              @updateCheck="(value) => updateCheck(value, index)"
+              @updateCheck="(value) => doUpdateCheck(value, index)"
               @updateInput="(value) => updateInput(value, index)"
               @toggleSlider="toggleSlider(index)"
               :edit="editIndex === index"

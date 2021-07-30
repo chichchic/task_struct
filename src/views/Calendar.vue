@@ -174,7 +174,7 @@ export default {
       const backgroundColor = this.activeName === 'todo' ? '#FC9A9D' : '#7389FF';
       return {
         highlight: {
-          style: { backgroundColor },
+          style: { backgroundColor, width: '24px', height: '24px' },
           contentStyle: { color: 'white' },
         },
       };
@@ -287,6 +287,10 @@ export default {
 
   .tab-done {
     @include el-tabs-color(#6880ff, #f56e71);
+  }
+
+  .vc-day-layer.vc-day-box-center-bottom {
+    bottom: -2px;
   }
 }
 </style>

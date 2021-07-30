@@ -21,6 +21,7 @@ export default function useTodoList() {
   let curIndex = null;
 
   const fetchTodoList = async (status, date) => {
+    store.commit('base/setLoading', true);
     const { uid } = store.state.user;
     if (uid === null) {
       return [];
@@ -55,6 +56,8 @@ export default function useTodoList() {
       sorting();
     } catch (error) {
       console.error(error);
+    } finally {
+      store.commit('base/setLoading', false);
     }
   };
 

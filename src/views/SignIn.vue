@@ -2,13 +2,13 @@
   <section class="sign-in">
     <h1 class="mb-9">WillBeDone</h1>
     <p class="mb-9">
-      {{ $t('default.login_wecolme_text_top') }}
+      {{ $t('default.login_wecolme_text1') }}
       <br />
       <br />
-      <b>{{ $t('default.login_wecolme_text_impress') }}</b
-      >{{ $t('default.login_wecolme_text_impress_postfix') }}
+      <b>{{ $t('default.login_wecolme_text2_bold') }}</b
+      >{{ $t('default.login_wecolme_text2') }}
       <br />
-      {{ $t('default.login_wecolme_text_bottom') }}
+      {{ $t('default.login_wecolme_text3') }}
     </p>
 
     <button class="sign-in-button" @click="redirectSignIn">

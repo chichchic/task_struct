@@ -149,8 +149,11 @@ export default {
     selectedDate() {
       this.fetchTodoList(this.activeName === 'todo' ? 1 : 2, this.selectedDate);
     },
-    activeName() {
-      this.fetchTodoList(this.activeName === 'todo' ? 1 : 2, this.selectedDate);
+    async activeName() {
+      await this.fetchTodoList(this.activeName === 'todo' ? 1 : 2, this.selectedDate);
+      if (this.newAddItem) {
+        this.addItem();
+      }
     },
   },
   data: () => ({
@@ -163,6 +166,7 @@ export default {
     tailWidth: 0,
     editIndex: null,
     addNewItem: false,
+    newAddItem: false,
   }),
   computed: {
     selectAttribute() {
@@ -217,8 +221,12 @@ export default {
       this.addNewItem = false;
     },
     addItem() {
-      if (this.editIndex === null) {
+      if (this.activeName === 'done') {
+        this.newAddItem = true;
         this.activeName = 'todo';
+        return;
+      }
+      if (this.editIndex === null) {
         this.addTodoList();
         this.editIndex = this.todoList.length - 1;
       } else {

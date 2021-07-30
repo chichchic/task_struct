@@ -4,7 +4,7 @@
     :model-value="deleteDrawer"
     @update:modelValue="$emit('close')"
     direction="rtl"
-    size="30%"
+    size="100%"
   >
     <template v-slot:title>
       <h1>{{ $t('default.delete_account_title') }}</h1>

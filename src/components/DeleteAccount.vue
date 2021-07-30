@@ -87,8 +87,11 @@ export default {
   }
 
   .el-icon-close::before {
-    content: '\2190';
-    font-size: 2.2rem;
+    font-family: 'Material Icons', sans-serif;
+    content: 'arrow_back';
+    -webkit-font-feature-settings: 'liga' 1;
+    -moz-font-feature-settings: 'liga' 1;
+    font-feature-settings: 'liga' 1;
   }
 }
 </style>

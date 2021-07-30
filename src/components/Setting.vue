@@ -7,14 +7,14 @@
     :size="drawerSize"
   >
     <template v-slot:title>
-      <h1>설정</h1>
+      <h1>{{ $t('default.set_title') }}</h1>
     </template>
     <div class="menu">
       <p>
-        계정 <span>{{ $store.state.user.email }}</span>
+        {{ $t('default.set_account') }} <span>{{ $store.state.user.email }}</span>
       </p>
       <p>
-        언어
+        {{ $t('default.set_lang') }}
         <el-space spacer="|">
           <el-button
             type="text"
@@ -27,33 +27,33 @@
         </el-space>
       </p>
       <p>
-        문의하기
+        {{ $t('default.set_inquiry') }}
         <span class="icon">
           <mdicon name="chevron-right" size="20" />
         </span>
       </p>
       <p>
-        공지사항
+        {{ $t('default.set_notice') }}
         <span class="icon">
           <mdicon name="chevron-right" size="20" />
         </span>
       </p>
       <p @click="deleteDrawer = true">
-        계정삭제
+        {{ $t('default.set_withdraw') }}
         <span class="icon">
           <mdicon name="chevron-right" size="20" />
         </span>
       </p>
       <p @click="doSignOut">
-        로그아웃
+        {{ $t('default.set_logout') }}
         <span class="icon">
           <mdicon name="chevron-right" size="20" />
         </span>
       </p>
     </div>
     <p>
-      지금 까지 WillBeDone과 함께<br />
-      완료한 할 일 총 <span>{{ doneCount }}</span> 개
+      {{ $t('default.summary_text') }} <br />
+      {{ $t('default.summary_count', { doneCount }) }}
     </p>
   </el-drawer>
   <DeleteAccount :deleteDrawer="deleteDrawer" @close="deleteDrawer = false" />

@@ -13,7 +13,7 @@
   "set_withdraw": "계정 삭제",
   "set_logout": "로그아웃",
   "summary_text": "지금까지 윌비던과 완료한 할 일 👍",
-  "summary_count": "총 {count}개",
+  "summary_count": "총 {doneCount}개",
   "set_contactus": "윌비던과 소통하기",
   "delete_account_title": "계정 삭제",
   "delete_account_guide_0": "계정을 삭제하시겠습니까?",

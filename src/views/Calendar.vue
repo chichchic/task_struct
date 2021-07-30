@@ -292,7 +292,7 @@ export default {
 </style>
 <style lang="scss" scoped>
 .calendar {
-  height: calc(100% - 30px);
+  height: calc(100% - 65px - 6rem);
 
   .el-tab-pane-space {
     padding-bottom: 0.5rem;

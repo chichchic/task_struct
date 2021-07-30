@@ -283,7 +283,7 @@ export default {
 </style>
 <style lang="scss" scoped>
 .todo {
-  height: calc(100vh - 50px);
+  height: calc(100% - 30px);
 
   .add-button {
     width: 100%;
@@ -347,7 +347,7 @@ export default {
   }
 
   .todo-list {
-    height: calc(100% - 64px - 6rem);
+    height: calc(100% - 65px - 6rem);
     width: 100%;
     overflow-y: scroll;
   }

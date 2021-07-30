@@ -18,5 +18,8 @@ export default {
       this.drawer = status;
     },
   },
+  mounted() {
+    document.documentElement.style.setProperty('--vh', `${window.innerHeight / 100}px`);
+  },
 };
 </script>

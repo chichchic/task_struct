@@ -143,6 +143,12 @@ export default {
       this.tailWidth = dif < -124 ? -124 : dif;
     };
     const throttelTouchMove = this.throttle(touchmove, 50);
+    document.addEventListener('keydown', (e) => {
+      const { key } = e;
+      if (key === 'Enter') {
+        this.addItem();
+      }
+    });
     this.$refs.swipeListener.addEventListener('touchstart', (e) => {
       startPoint = e.touches[0].pageX;
       this.$refs.swipeListener.addEventListener('touchmove', throttelTouchMove);

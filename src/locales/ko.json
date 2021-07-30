@@ -31,6 +31,7 @@
   "title_todo": "TO DO",
   "title_done": "DONE",
   "create_new": "추가하기",
+  "enroll_new": "등록하기",
   "subtitle_task_incomplete": "남은 할 일: {task_count}개",
   "subtitle_task_completed": "완료한 일: {task_count}개",
   "create_error_empty": "할 일을 입력해주세요",
@@ -46,5 +47,6 @@
   "priority_low": "낮음",
   "guide_priority_title": "얼마나 중요한 일인가요?",
   "guide_priority_bold": "우선순위",
-  "guide_priority_body": "를 알려주세요"
+  "guide_priority_body": "를 알려주세요",
+  "priority": "우선순위"
 }

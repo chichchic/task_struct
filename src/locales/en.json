@@ -31,6 +31,7 @@
   "title_todo": "TO DO",
   "title_done": "DONE",
   "create_new": "Add a task",
+  "enroll_new": "Enroll a task",
   "subtitle_task_incomplete": "incomplete: {task_count}",
   "subtitle_task_completed": "complete: {task_count}개",
   "create_error_empty": "Write your task",

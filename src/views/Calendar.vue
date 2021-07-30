@@ -191,9 +191,9 @@ export default {
   methods: {
     guidePriorityText(value) {
       const list = {
-        High: 'default.guide_priority_high',
-        Mid: 'default.guide_priority_mid',
-        Low: 'default.guide_priority_low',
+        High: 'default.priority_high',
+        Mid: 'default.priority_mid',
+        Low: 'default.priority_low',
       };
       return list[value];
     },

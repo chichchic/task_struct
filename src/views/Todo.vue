@@ -36,7 +36,7 @@
       </li>
     </ul>
     <el-button class="add-button" type="primary" @click.prevent="addItem">{{
-      editIndex === null ? '+ 추가하기' : '등록하기'
+      editIndex === null ? `+ ${$t('default.create_new')}` : `+ ${$t('default.enroll_new')}`
     }}</el-button>
     <el-drawer
       v-model="prDrawer"
@@ -51,9 +51,9 @@
     >
       <template v-slot:title>
         <p class="priority-description">
-          {{ $t('default.guide_priority_body_front') }} <br />
+          {{ $t('default.guide_priority_title') }} <br />
           <strong> {{ $t('default.guide_priority_bold') }} </strong>
-          {{ $t('default.guide_priority_body_back') }}
+          {{ $t('default.guide_priority_body') }}
         </p>
       </template>
       <div class="vertical-align-center">
@@ -178,9 +178,9 @@ export default {
   methods: {
     guidePriorityText(value) {
       const list = {
-        High: 'default.guide_priority_high',
-        Mid: 'default.guide_priority_mid',
-        Low: 'default.guide_priority_low',
+        High: 'default.priority_high',
+        Mid: 'default.priority_mid',
+        Low: 'default.priority_low',
       };
       return list[value];
     },

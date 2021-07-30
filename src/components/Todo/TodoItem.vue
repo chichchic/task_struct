@@ -4,7 +4,7 @@
     <div class="input">
       <el-input
         v-if="edit"
-        placeholder="할 일을 입력해보세요"
+        :placeholder="$t('default.create_placeholder')"
         v-model="innerInput"
         ref="input"
         @focus="actionFocus"

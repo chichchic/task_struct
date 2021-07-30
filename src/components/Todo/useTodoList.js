@@ -58,7 +58,7 @@ export default function useTodoList() {
     }
   };
 
-  const pushTodoList = async () => {
+  const pushTodoList = async (status, date) => {
     try {
       const { uid } = store.state.user;
       if (uid === null) {
@@ -84,6 +84,7 @@ export default function useTodoList() {
           edit: 0,
           deletedAt: null,
         });
+      await fetchTodoList(status, date);
     } catch (error) {
       console.error(error);
     }

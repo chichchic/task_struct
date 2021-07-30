@@ -42,8 +42,7 @@
       v-model="prDrawer"
       @close="
         () => {
-          pushTodoList();
-          sorting();
+          pushTodoList(activeName === 'todo' ? 1 : 2);
         }
       "
       direction="btt"

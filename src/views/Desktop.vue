@@ -147,8 +147,7 @@ export default {
       await this.getDotAttributes({ year: this.currentYear, month: this.currentMonth }, true);
     },
     updateListData() {
-      this.pushTodoList();
-      this.sorting();
+      this.pushTodoList(this.activeName === 'todo' ? 1 : 2, this.selectedDate);
       this.editIndex = null;
       this.selectedPriority = 'Empty';
     },

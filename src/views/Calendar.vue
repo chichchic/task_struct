@@ -30,17 +30,14 @@
             />
           </template>
           <template v-slot:tail>
-            <div
-              v-if="activeName === 'todo'"
-              class="swiper-button edit"
-              data-icon="&#9997;"
-              @click="setEditIndex(index)"
-            ></div>
+            <div v-if="activeName === 'todo'" class="swiper-button edit" @click="setEditIndex(index)">
+              <mdicon name="pencil-outline" size="36" />
+            </div>
             <div v-else class="swiper-button edit" @click="repeatTodoList(index)">
-              <i class="el-icon-refresh"></i>
+              <mdicon name="autorenew" size="36" />
             </div>
             <div class="swiper-button delete" @click="removeList(index)">
-              <i class="el-icon-close"></i>
+              <mdicon name="close" size="36" />
             </div>
           </template>
         </Swiper>
@@ -330,7 +327,7 @@ export default {
     width: 62px;
     position: relative;
 
-    i {
+    span {
       position: absolute;
       top: 50%;
       left: 50%;
@@ -340,12 +337,12 @@ export default {
     }
 
     &::after {
-      content: attr(data-icon);
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
       font-size: 3rem;
+      color: white;
     }
 
     &.edit {

@@ -28,26 +28,26 @@
       </p>
       <p>
         문의하기
-        <span>
-          <i class="el-icon-arrow-right"></i>
+        <span class="icon">
+          <mdicon name="chevron-right" size="20" />
         </span>
       </p>
       <p>
         공지사항
-        <span>
-          <i class="el-icon-arrow-right"></i>
+        <span class="icon">
+          <mdicon name="chevron-right" size="20" />
         </span>
       </p>
       <p @click="deleteDrawer = true">
         계정삭제
-        <span>
-          <i class="el-icon-arrow-right"></i>
+        <span class="icon">
+          <mdicon name="chevron-right" size="20" />
         </span>
       </p>
       <p @click="doSignOut">
         로그아웃
-        <span>
-          <i class="el-icon-arrow-right"></i>
+        <span class="icon">
+          <mdicon name="chevron-right" size="20" />
         </span>
       </p>
     </div>
@@ -133,8 +133,11 @@ export default {
   }
 
   .el-icon-close::before {
-    content: '\2190';
-    font-size: 2.2rem;
+    font-family: 'Material Icons', sans-serif;
+    content: 'arrow_back';
+    -webkit-font-feature-settings: 'liga' 1;
+    -moz-font-feature-settings: 'liga' 1;
+    font-feature-settings: 'liga' 1;
   }
 }
 </style>
@@ -165,6 +168,10 @@ export default {
       font-size: 1.4rem;
       display: flex;
       justify-content: space-between;
+
+      .icon {
+        color: #d0d0d0;
+      }
     }
   }
 

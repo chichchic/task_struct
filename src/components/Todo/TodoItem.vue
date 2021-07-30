@@ -15,7 +15,9 @@
       <p class="input-text" v-else :class="{ 'line-through': lineThrough }">{{ input }}</p>
       <p class="priority" :class="priority.toLowerCase()">{{ $t(priorityText) }}</p>
     </div>
-    <i class="el-icon-arrow-right" @click.prevent="toggleSlider"></i>
+    <span class="icon" @click.prevent="toggleSlider">
+      <mdicon name="chevron-right" size="20" />
+    </span>
   </div>
 </template>
 <script>
@@ -169,7 +171,7 @@ export default {
     @include checkbox-color(#6880ff);
   }
 
-  i {
+  .icon {
     height: 42px;
     line-height: 42px;
     display: inline-block;

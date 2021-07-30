@@ -1,6 +1,5 @@
 <template>
   <section class="desktop">
-    <el-button class="add-button" size="mini" type="primary" round plain @click="addItem">추가</el-button>
     <article>
       <DatePicker
         v-model="selectedDate"
@@ -44,6 +43,7 @@
       <p class="todo-description" v-if="editIndex !== null && task_count <= 3 && activeName === 'todo'">
         {{ $t('default.create_guide_toast_PC') }}
       </p>
+      <el-button class="add-button" size="mini" type="primary" round plain @click="addItem">추가</el-button>
     </article>
   </section>
 </template>
@@ -294,9 +294,10 @@ export default {
   border-top: solid 1px #c4c4c4;
 
   .add-button {
-    position: fixed;
-    top: 1rem;
-    right: 4rem;
+    display: block;
+    width: 25rem;
+    height: 4.5rem;
+    margin: 0 auto;
   }
 
   .vc-container {
@@ -331,7 +332,7 @@ export default {
     overflow-y: hidden;
 
     .todo-list {
-      height: calc(100% - 60px);
+      height: calc(100% - 110px);
       overflow-y: scroll;
       -ms-overflow-style: none; /* IE and Edge */
       scrollbar-width: none; /* Firefox */

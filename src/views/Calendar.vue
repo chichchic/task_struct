@@ -175,16 +175,6 @@ export default {
         },
       };
     },
-    task_count() {
-      return this.todoList.filter(({ check }) => check).length;
-    },
-    subtitleTaskText() {
-      const list = {
-        todo: 'default.subtitle_task_incomplete',
-        done: 'default.subtitle_task_completed',
-      };
-      return list[this.activeName];
-    },
   },
   mounted() {
     this.$refs.swipeListener.addEventListener('touchstart', (e) => {

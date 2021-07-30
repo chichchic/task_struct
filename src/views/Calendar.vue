@@ -153,6 +153,7 @@ export default {
     async activeName() {
       await this.fetchTodoList(this.activeName === 'todo' ? 1 : 2, this.selectedDate);
       if (this.newAddItem) {
+        this.newAddItem = false;
         this.addItem();
       }
     },

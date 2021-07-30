@@ -64,14 +64,15 @@
       <div class="vertical-align-center">
         <article class="drawer">
           <el-button
-            v-for="{ backgroundColor, value, icon, size, fontSize } in priorities"
+            v-for="{ color, value, icon } in priorities"
             :key="value"
             class="priority-button"
-            :style="{ backgroundColor, height: size, width: size, fontSize }"
+            :style="{ backgroundColor: color, color }"
             circle
             @click="setPriority(value)"
             :data-label="$t(guidePriorityText(value))"
-            >{{ icon }}</el-button
+          >
+            <span>{{ $t(icon) }}</span></el-button
           >
         </article>
       </div>
@@ -158,9 +159,9 @@ export default {
   },
   data: () => ({
     priorities: [
-      { backgroundColor: '#f56e71', value: 'High', icon: 'H', size: '10rem', fontSize: '6rem' },
-      { backgroundColor: '#84d9a0', value: 'Mid', icon: 'M', size: '8rem', fontSize: '4rem' },
-      { backgroundColor: '#ffc678', value: 'Low', icon: 'L', size: '6rem', fontSize: '2rem' },
+      { color: '#F6797C', value: 'High', icon: 'default.priority_high_1' },
+      { color: '#8FDEAA ', value: 'Mid', icon: 'default.priority_mid_2' },
+      { color: '#FFE483', value: 'Low', icon: 'default.priority_low_3' },
     ],
     toggleIndex: null,
     tailWidth: 0,
@@ -369,17 +370,23 @@ export default {
       display: flex;
       justify-content: center;
       align-items: center;
-      color: white;
       border: none;
       position: relative;
+      width: 9rem;
+      height: 6rem;
+      border-radius: 2rem;
+
+      span {
+        color: white;
+      }
 
       &::after {
         position: absolute;
         bottom: 0;
         transform: translateY(120%);
         content: attr(data-label);
-        font-size: 1.5rem;
-        color: black;
+        font-size: 1.8rem;
+        font-weight: bold;
       }
     }
   }

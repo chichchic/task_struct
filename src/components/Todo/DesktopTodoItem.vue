@@ -4,7 +4,7 @@
     <div class="input">
       <el-input
         v-if="edit"
-        placeholder="Control + Enter 를 눌러 할 일을 등록해보세요"
+        :placeholder="$t('default.create_placeholder_pc')"
         v-model="innerInput"
         ref="input"
         @focus="actionFocus"
@@ -14,7 +14,7 @@
       />
       <p class="input-text" v-else :class="{ 'line-through': lineThrough }" @click="$emit('setEdit')">{{ input }}</p>
       <p class="priority" v-if="!edit" :class="priority.toLowerCase()">{{ $t(priorityText) }}</p>
-      <p v-else-if="input === ''">할 일을 입력 한 후 우선순위를 등록할 수 있어요!</p>
+      <p v-else-if="input === ''">{{ $t('default.create_error_empty') }}</p>
       <p v-else>
         <el-tag
           v-for="(val, index) in ['High', 'Mid', 'Low']"
@@ -33,7 +33,7 @@
         >
       </p>
     </div>
-    <el-button v-if="edit" @click="enroll">등록</el-button>
+    <el-button v-if="edit" @click="enroll">{{ $t('default.enroll_new') }}</el-button>
     <el-button v-else type="text" icon="el-icon-delete" circle @click="remove"></el-button>
   </div>
 </template>

@@ -37,7 +37,7 @@
   "create_error_empty": "Write your task",
   "create_placeholder": "Write your task here",
   "create_guide_toast_PC": "Register your task through Control + Enter and Set your priority with the Shift + numeric keys (1 ~ 3)",
-  "create_placeholder_pc": "Press Enter to add a task",
+  "create_placeholder_pc": "Press Control + Enter to add a task",
   "create_priority": "Priority",
   "priority_high_1": "1",
   "priority_high": "High",

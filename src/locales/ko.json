@@ -37,7 +37,7 @@
   "create_error_empty": "할 일을 입력해주세요",
   "create_placeholder": "할 일을 입력해보세요",
   "create_guide_toast_PC": "Control + Enter를 통해 할 일을 등록하고 Shift + 숫자키(1~3)를 통해 우선순위를 입력해보세요",
-  "create_placeholder_pc": "Enter를 눌러 할 일을 등록해보세요",
+  "create_placeholder_pc": "Control + Enter를 눌러 할 일을 등록해보세요",
   "create_priority": "우선순위",
   "priority_high_1": "1",
   "priority_high": "매우 높음",

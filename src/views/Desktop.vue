@@ -42,8 +42,7 @@
         </li>
       </ul>
       <p class="todo-description" v-if="editIndex !== null && task_count <= 3 && activeName === 'todo'">
-        Control + Enter를 통해 할 일을 등록하고<br />Shift + 숫자키(1~3)를 통해<br />
-        우선순위를 입력해보세요
+        {{ $t('default.create_guide_toast_PC') }}
       </p>
     </article>
   </section>
@@ -355,6 +354,7 @@ export default {
       left: 50%;
       bottom: 0;
       transform: translateX(-50%);
+      word-break: keep-all;
     }
   }
 }

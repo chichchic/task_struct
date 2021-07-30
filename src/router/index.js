@@ -13,7 +13,7 @@ const routes = [
     beforeEnter: (to, from, next) => {
       const { uid } = store.state.user;
       if (uid) {
-        next('/todo');
+        next('/desktop');
       } else {
         next('/signin');
       }

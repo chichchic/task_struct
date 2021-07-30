@@ -282,6 +282,14 @@ export default {
   }
 }
 </style>
+<style lang="scss">
+.calendar {
+  .el-tabs__item {
+    font-size: 2rem;
+    font-weight: bold;
+  }
+}
+</style>
 <style lang="scss" scoped>
 .calendar {
   height: calc(100% - 30px);

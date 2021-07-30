@@ -246,6 +246,9 @@ export default {
   }
 
   .el-tabs__item {
+    font-size: 2rem;
+    font-weight: bold;
+
     &:hover {
       color: $hover;
     }

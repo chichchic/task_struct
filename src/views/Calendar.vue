@@ -56,9 +56,9 @@
     >
       <template v-slot:title>
         <p class="priority-description">
-          {{ $t('default.guide_priority_body_front') }} <br />
+          {{ $t('default.guide_priority_title') }} <br />
           <strong> {{ $t('default.guide_priority_bold') }} </strong>
-          {{ $t('default.guide_priority_body_back') }}
+          {{ $t('default.guide_priority_body') }}
         </p>
       </template>
       <div class="vertical-align-center">

@@ -103,12 +103,11 @@ export default function useTodoList() {
     });
   };
 
-  const updateCheck = (value, index) => {
+  const updateCheck = (id, status, date) => {
     const { uid } = store.state.user;
     if (uid === null) {
       throw new Error('push function must have uid');
     }
-    const { id } = todoList.value[index];
     const updateListPromise = new Promise((resolve) => {
       $firestore
         .collection('users')
@@ -116,7 +115,7 @@ export default function useTodoList() {
         .collection('todoListItem')
         .doc(id)
         .update({
-          status: value ? 2 : 1,
+          status: 2,
           doneAt: firebase.firestore.FieldValue.arrayUnion(new Date()),
           lastDoneAt: new Date(),
         })
@@ -141,7 +140,7 @@ export default function useTodoList() {
     });
     return Promise.all([updateListPromise, increaseDoneCountPromise])
       .then(() => {
-        todoList.value.splice(index, 1);
+        fetchTodoList(status, date);
       })
       .catch((error) => {
         console.error(error);

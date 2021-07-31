@@ -84,8 +84,8 @@ export default {
     tagPriority: ['High', 'Mid', 'Low'],
   }),
   methods: {
-    updateCheck(value) {
-      this.$emit('updateCheck', value);
+    updateCheck() {
+      this.$emit('updateCheck');
     },
     actionFocus() {
       this.innerInput = this.input;

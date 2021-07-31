@@ -62,8 +62,8 @@ export default {
     innerInput: '',
   }),
   methods: {
-    updateCheck(value) {
-      this.$emit('updateCheck', value);
+    updateCheck() {
+      this.$emit('updateCheck');
     },
     updateInput(value) {
       this.$emit('updateInput', value);

@@ -19,7 +19,7 @@
         </el-tab-pane>
       </el-tabs>
       <ul class="todo-list">
-        <li v-for="({ check, input, priority }, index) in todoList" :key="index" :data-index="index">
+        <li v-for="({ check, input, priority, id }, index) in todoList" :key="index" :data-index="index">
           <DesktopTodoItem
             :check="check"
             :input="input"
@@ -28,7 +28,7 @@
             :lineThrough="activeName === 'done'"
             :edit="editIndex === index"
             :selectedPriority="selectedPriority"
-            @updateCheck="(value) => doUpdateCheck(value, index)"
+            @updateCheck="doUpdateCheck(id)"
             @updateInput="
               (value) => {
                 doUpdateInput(value, index);
@@ -142,8 +142,8 @@ export default {
       }
       this.updateListData();
     },
-    async doUpdateCheck(value, index) {
-      await this.updateCheck(value, index);
+    async doUpdateCheck(id) {
+      await this.updateCheck(id, this.activeName === 'todo' ? 1 : 2, this.selectedDate);
       await this.getDotAttributes({ year: this.currentYear, month: this.currentMonth }, true);
     },
     updateListData() {

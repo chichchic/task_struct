@@ -6,7 +6,7 @@
       </el-tab-pane>
     </el-tabs>
     <ul class="todo-list" ref="swipeListener">
-      <li v-for="({ check, input, priority }, index) in todoList" :key="index" :data-index="index">
+      <li v-for="({ check, input, priority, id }, index) in todoList" :key="index" :data-index="index">
         <Swiper :tailWidth="toggleIndex == index ? tailWidth : 0">
           <template v-slot:main>
             <TodoItem
@@ -15,7 +15,7 @@
               :priority="priority"
               :tab="'tab-' + activeName"
               :lineThrough="activeName === 'done'"
-              @updateCheck="(value) => updateCheck(value, index)"
+              @updateCheck="updateCheck(id, activeName === 'todo' ? 1 : 2)"
               @updateInput="(value) => updateInput(value, index)"
               @toggleSlider="toggleSlider(index)"
               :edit="editIndex === index"

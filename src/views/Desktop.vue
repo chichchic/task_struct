@@ -93,6 +93,7 @@ export default {
       }
     },
     activeName() {
+      this.editIndex = null;
       if (this.activeName === 'todo') {
         this.selectedDate = null;
         this.fetchTodoList(1);

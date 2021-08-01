@@ -149,6 +149,11 @@ export default {
     text-align: center;
   }
 
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+
   .el-drawer__body > p {
     font-size: 2.2rem;
     text-align: center;
@@ -177,6 +182,10 @@ export default {
 
   .selected-lang {
     color: #f56e71;
+  }
+
+  .pointer {
+    cursor: pointer;
   }
 }
 </style>

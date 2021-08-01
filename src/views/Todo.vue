@@ -23,13 +23,13 @@
           </template>
           <template v-slot:tail>
             <div v-if="activeName === 'todo'" class="swiper-button edit" @click="setEditIndex(index)">
-              <mdicon name="pencil-outline" size="36" />
+              <mdicon name="pencil-outline" size="30" />
             </div>
             <div v-else class="swiper-button edit" @click="repeatTodoList(index)">
-              <mdicon name="autorenew" size="36" />
+              <mdicon name="autorenew" size="30" />
             </div>
             <div class="swiper-button delete" @click="removeList(index)">
-              <mdicon name="close" size="36" />
+              <mdicon name="close" size="30" />
             </div>
           </template>
         </Swiper>
@@ -322,23 +322,11 @@ export default {
   .swiper-button {
     height: 100%;
     width: 62px;
-    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
     span {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 3rem;
-      color: white;
-    }
-
-    &::after {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 3.6rem;
       color: white;
     }
 

@@ -11,9 +11,10 @@
       :attributes="attributes"
       :masks="{ weekdays: 'WWW' }"
       is-expanded
+      @update:from-page="getDotAttributes"
     />
     <ul class="todo-list" ref="swipeListener">
-      <li v-for="({ check, input, priority }, index) in todoList" :key="index" :data-index="index">
+      <li v-for="({ check, input, priority, id }, index) in todoList" :key="index" :data-index="index">
         <Swiper :tailWidth="toggleIndex == index ? tailWidth : 0">
           <template v-slot:main>
             <TodoItem
@@ -22,24 +23,21 @@
               :priority="priority"
               :tab="'tab-' + activeName"
               :lineThrough="activeName === 'done'"
-              @updateCheck="(value) => updateCheck(value, index)"
+              @updateCheck="doUpdateCheck(id)"
               @updateInput="(value) => updateInput(value, index)"
               @toggleSlider="toggleSlider(index)"
               :edit="editIndex === index"
             />
           </template>
           <template v-slot:tail>
-            <div
-              v-if="activeName === 'todo'"
-              class="swiper-button edit"
-              data-icon="&#9997;"
-              @click="setEditIndex(index)"
-            ></div>
+            <div v-if="activeName === 'todo'" class="swiper-button edit" @click="setEditIndex(index)">
+              <mdicon name="pencil-outline" size="30" />
+            </div>
             <div v-else class="swiper-button edit" @click="repeatTodoList(index)">
-              <i class="el-icon-refresh"></i>
+              <mdicon name="autorenew" size="30" />
             </div>
             <div class="swiper-button delete" @click="removeList(index)">
-              <i class="el-icon-close"></i>
+              <mdicon name="close" size="30" />
             </div>
           </template>
         </Swiper>
@@ -50,8 +48,7 @@
       v-model="prDrawer"
       @close="
         () => {
-          pushTodoList();
-          sorting();
+          pushTodoList(activeName === 'todo' ? 1 : 2, selectedDate);
         }
       "
       direction="btt"
@@ -59,22 +56,23 @@
     >
       <template v-slot:title>
         <p class="priority-description">
-          {{ $t('default.guide_priority_body_front') }} <br />
+          {{ $t('default.guide_priority_title') }} <br />
           <strong> {{ $t('default.guide_priority_bold') }} </strong>
-          {{ $t('default.guide_priority_body_back') }}
+          {{ $t('default.guide_priority_body') }}
         </p>
       </template>
       <div class="vertical-align-center">
         <article class="drawer">
           <el-button
-            v-for="{ backgroundColor, value, icon, size, fontSize } in priorities"
+            v-for="{ color, value, icon } in priorities"
             :key="value"
             class="priority-button"
-            :style="{ backgroundColor, height: size, width: size, fontSize }"
+            :style="{ backgroundColor: color, color }"
             circle
             @click="setPriority(value)"
             :data-label="$t(guidePriorityText(value))"
-            >{{ icon }}</el-button
+          >
+            <span>{{ $t(icon) }}</span></el-button
           >
         </article>
       </div>
@@ -86,6 +84,7 @@ import TodoItem from '@/components/Todo/TodoItem.vue';
 import Swiper from '@/components/common/Swiper.vue';
 import useElTabs from '@/components/elementPlus/useElTabs';
 import useTodoList from '@/components/Todo/useTodoList';
+import useCalendar from '@/components/Todo/useCalendar.js';
 
 export default {
   components: {
@@ -120,6 +119,10 @@ export default {
       ],
       'todo'
     );
+    const { selectedDate, currentMonth, currentYear, monthDotAttributes, attributes, getDotAttributes } = useCalendar({
+      dotSize: '4px',
+      initSelectedDate: new Date(),
+    });
     return {
       todoList,
       prDrawer,
@@ -135,62 +138,47 @@ export default {
       sorting,
       tabs,
       activeName,
+      selectedDate,
+      currentMonth,
+      currentYear,
+      monthDotAttributes,
+      attributes,
+      getDotAttributes,
     };
   },
   watch: {
     selectedDate() {
       this.fetchTodoList(this.activeName === 'todo' ? 1 : 2, this.selectedDate);
     },
-    activeName() {
-      this.fetchTodoList(this.activeName === 'todo' ? 1 : 2, this.selectedDate);
+    async activeName() {
+      await this.fetchTodoList(this.activeName === 'todo' ? 1 : 2, this.selectedDate);
+      if (this.newAddItem) {
+        this.newAddItem = false;
+        this.addItem();
+      }
     },
   },
   data: () => ({
-    selectedDate: new Date(),
     priorities: [
-      { backgroundColor: '#f56e71', value: 'High', icon: 'H', size: '10rem', fontSize: '6rem' },
-      { backgroundColor: '#84d9a0', value: 'Mid', icon: 'M', size: '8rem', fontSize: '4rem' },
-      { backgroundColor: '#ffc678', value: 'Low', icon: 'L', size: '6rem', fontSize: '2rem' },
+      { color: '#F6797C', value: 'High', icon: 'default.priority_high_1' },
+      { color: '#8FDEAA ', value: 'Mid', icon: 'default.priority_mid_2' },
+      { color: '#FFE483', value: 'Low', icon: 'default.priority_low_3' },
     ],
     toggleIndex: null,
     tailWidth: 0,
     editIndex: null,
     addNewItem: false,
+    newAddItem: false,
   }),
   computed: {
-    attributes() {
-      const today = new Date();
-      const isTodaySelected =
-        today.getFullYear() === this.selectedDate?.getFullYear() &&
-        today.getMonth() === this.selectedDate?.getMonth() &&
-        today.getDate() === this.selectedDate?.getDate();
-      return [
-        {
-          highlight: {
-            contentStyle: { border: '1px solid #F6797C', color: isTodaySelected ? 'white' : 'inherit' },
-          },
-          dates: new Date(),
-        },
-      ];
-    },
     selectAttribute() {
       const backgroundColor = this.activeName === 'todo' ? '#FC9A9D' : '#7389FF';
       return {
         highlight: {
-          style: { backgroundColor },
+          style: { backgroundColor, width: '24px', height: '24px' },
           contentStyle: { color: 'white' },
         },
       };
-    },
-    task_count() {
-      return this.todoList.filter(({ check }) => check).length;
-    },
-    subtitleTaskText() {
-      const list = {
-        todo: 'default.subtitle_task_incomplete',
-        done: 'default.subtitle_task_completed',
-      };
-      return list[this.activeName];
     },
   },
   mounted() {
@@ -208,9 +196,9 @@ export default {
   methods: {
     guidePriorityText(value) {
       const list = {
-        High: 'default.guide_priority_high',
-        Mid: 'default.guide_priority_mid',
-        Low: 'default.guide_priority_low',
+        High: 'default.priority_high',
+        Mid: 'default.priority_mid',
+        Low: 'default.priority_low',
       };
       return list[value];
     },
@@ -235,8 +223,12 @@ export default {
       this.addNewItem = false;
     },
     addItem() {
-      if (this.editIndex === null) {
+      if (this.activeName === 'done') {
+        this.newAddItem = true;
         this.activeName = 'todo';
+        return;
+      }
+      if (this.editIndex === null) {
         this.addTodoList();
         this.editIndex = this.todoList.length - 1;
       } else {
@@ -248,6 +240,10 @@ export default {
           this.updateList(curIndex);
         });
       }
+    },
+    async doUpdateCheck(id) {
+      await this.updateCheck(id, this.activeName === 'todo' ? 1 : 2, this.selectedDate);
+      await this.getDotAttributes({ year: this.currentYear, month: this.currentMonth }, true);
     },
   },
 };
@@ -293,6 +289,18 @@ export default {
   .tab-done {
     @include el-tabs-color(#6880ff, #f56e71);
   }
+
+  .vc-day-layer.vc-day-box-center-bottom {
+    bottom: -2px;
+  }
+}
+</style>
+<style lang="scss">
+.calendar {
+  .el-tabs__item {
+    font-size: 2rem;
+    font-weight: bold;
+  }
 }
 </style>
 <style lang="scss" scoped>
@@ -330,7 +338,7 @@ export default {
     width: 62px;
     position: relative;
 
-    i {
+    span {
       position: absolute;
       top: 50%;
       left: 50%;
@@ -340,12 +348,12 @@ export default {
     }
 
     &::after {
-      content: attr(data-icon);
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
       font-size: 3rem;
+      color: white;
     }
 
     &.edit {
@@ -367,17 +375,23 @@ export default {
       display: flex;
       justify-content: center;
       align-items: center;
-      color: white;
       border: none;
       position: relative;
+      width: 9rem;
+      height: 6rem;
+      border-radius: 2rem;
+
+      span {
+        color: white;
+      }
 
       &::after {
         position: absolute;
         bottom: 0;
         transform: translateY(120%);
         content: attr(data-label);
-        font-size: 1.5rem;
-        color: black;
+        font-size: 1.8rem;
+        font-weight: bold;
       }
     }
   }

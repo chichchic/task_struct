@@ -1,13 +1,24 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Todo from '../views/Todo.vue';
 import Calendar from '../views/Calendar.vue';
-import Withdraw from '../views/Withdraw.vue';
 import SignIn from '../views/SignIn.vue';
 import Desktop from '../views/Desktop.vue';
 import store from '@/store/index.js';
-import Error404 from '../views/404.vue';
+import Error404 from '../views/Error404.vue';
 
 const routes = [
+  {
+    path: '/',
+    name: 'main',
+    beforeEnter: (to, from, next) => {
+      const { uid } = store.state.user;
+      if (uid) {
+        next('/desktop');
+      } else {
+        next('/signin');
+      }
+    },
+  },
   {
     path: '/todo',
     name: 'Todo',
@@ -49,11 +60,6 @@ const routes = [
         next('/signin');
       }
     },
-  },
-  {
-    path: '/withdraw',
-    name: 'Withdraw',
-    component: Withdraw,
   },
   {
     path: '/signin',

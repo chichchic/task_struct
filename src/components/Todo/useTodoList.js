@@ -21,6 +21,7 @@ export default function useTodoList() {
   let curIndex = null;
 
   const fetchTodoList = async (status, date) => {
+    store.commit('base/setLoading', true);
     const { uid } = store.state.user;
     if (uid === null) {
       return [];
@@ -40,7 +41,7 @@ export default function useTodoList() {
       const todoListItem = await query.get();
       todoList.value = [];
       todoListItem.forEach((doc) => {
-        const { priority, todoValue, status, repeat, edit } = doc.data();
+        const { priority, todoValue, status, repeat, edit, createAt, lastDoneAt } = doc.data();
         todoList.value.push({
           check: status === 1 ? false : true,
           input: todoValue,
@@ -48,21 +49,25 @@ export default function useTodoList() {
           repeat,
           edit,
           id: doc.id,
+          createAt: new Date(createAt.seconds),
+          lastDoneAt: lastDoneAt === null ? null : new Date(lastDoneAt.seconds),
         });
       });
       sorting();
     } catch (error) {
       console.error(error);
+    } finally {
+      store.commit('base/setLoading', false);
     }
   };
 
-  const pushTodoList = async () => {
+  const pushTodoList = async (status, date) => {
     try {
       const { uid } = store.state.user;
       if (uid === null) {
         throw new Error('push function must have uid');
       }
-      const { check, input, priority, id } = todoList.value[curIndex];
+      const { check, input, priority, id, createAt, lastDoneAt } = todoList.value[curIndex];
       if (id !== undefined) {
         fetchUpdateInput(curIndex);
         return;
@@ -77,29 +82,32 @@ export default function useTodoList() {
           todoValue: input,
           priority: priorityTable[priority],
           repeat: 0,
-          lastDoneAt: null,
-          createAt: new Date(),
+          createAt,
+          lastDoneAt,
           edit: 0,
           deletedAt: null,
         });
+      await fetchTodoList(status, date);
     } catch (error) {
       console.error(error);
     }
   };
-  // status, doneAt, todoValue, priority, repeat, createAt, edit, deletedAt
-  // check: true, input: '1', priority: 'High'
 
   const sorting = () => {
     const list = todoList.value;
-    list.sort((a, b) => priorityTable[a.priority] - priorityTable[b.priority]);
+    list.sort((a, b) => {
+      if (priorityTable[a.priority] === priorityTable[b.priority]) {
+        return a.createAt - b.createAt;
+      }
+      return priorityTable[a.priority] - priorityTable[b.priority];
+    });
   };
 
-  const updateCheck = (value, index) => {
+  const updateCheck = (id, status, date) => {
     const { uid } = store.state.user;
     if (uid === null) {
       throw new Error('push function must have uid');
     }
-    const { id } = todoList.value[index];
     const updateListPromise = new Promise((resolve) => {
       $firestore
         .collection('users')
@@ -107,7 +115,7 @@ export default function useTodoList() {
         .collection('todoListItem')
         .doc(id)
         .update({
-          status: value ? 2 : 1,
+          status: 2,
           doneAt: firebase.firestore.FieldValue.arrayUnion(new Date()),
           lastDoneAt: new Date(),
         })
@@ -130,9 +138,9 @@ export default function useTodoList() {
           throw error;
         });
     });
-    Promise.all([updateListPromise, increaseDoneCountPromise])
+    return Promise.all([updateListPromise, increaseDoneCountPromise])
       .then(() => {
-        todoList.value.splice(index, 1);
+        fetchTodoList(status, date);
       })
       .catch((error) => {
         console.error(error);
@@ -185,7 +193,7 @@ export default function useTodoList() {
   };
 
   const addTodoList = () => {
-    todoList.value.push({ check: false, input: '', priority: 'Empty' });
+    todoList.value.push({ check: false, input: '', priority: 'Empty', createAt: new Date(), lastDoneAt: null });
   };
   //FIXME: 너무 여러 역할을 가지고 있음. 추후에 분리할 것!
   const updateList = (index, enroll = true) => {

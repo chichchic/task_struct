@@ -6,7 +6,7 @@
       </el-tab-pane>
     </el-tabs>
     <ul class="todo-list" ref="swipeListener">
-      <li v-for="({ check, input, priority }, index) in todoList" :key="index" :data-index="index">
+      <li v-for="({ check, input, priority, id }, index) in todoList" :key="index" :data-index="index">
         <Swiper :tailWidth="toggleIndex == index ? tailWidth : 0">
           <template v-slot:main>
             <TodoItem
@@ -15,62 +15,60 @@
               :priority="priority"
               :tab="'tab-' + activeName"
               :lineThrough="activeName === 'done'"
-              @updateCheck="(value) => updateCheck(value, index)"
+              @updateCheck="updateCheck(id, activeName === 'todo' ? 1 : 2)"
               @updateInput="(value) => updateInput(value, index)"
               @toggleSlider="toggleSlider(index)"
               :edit="editIndex === index"
             />
           </template>
           <template v-slot:tail>
-            <div
-              v-if="activeName === 'todo'"
-              class="swiper-button edit"
-              data-icon="&#9997;"
-              @click="setEditIndex(index)"
-            ></div>
+            <div v-if="activeName === 'todo'" class="swiper-button edit" @click="setEditIndex(index)">
+              <mdicon name="pencil-outline" size="30" />
+            </div>
             <div v-else class="swiper-button edit" @click="repeatTodoList(index)">
-              <i class="el-icon-refresh"></i>
+              <mdicon name="autorenew" size="30" />
             </div>
             <div class="swiper-button delete" @click="removeList(index)">
-              <i class="el-icon-close"></i>
+              <mdicon name="close" size="30" />
             </div>
           </template>
         </Swiper>
       </li>
     </ul>
     <el-button class="add-button" type="primary" @click.prevent="addItem">{{
-      editIndex === null ? '+ 추가하기' : '등록하기'
+      editIndex === null ? `+ ${$t('default.create_new')}` : `+ ${$t('default.enroll_new')}`
     }}</el-button>
     <el-drawer
       v-model="prDrawer"
       @close="
         () => {
-          pushTodoList();
-          sorting();
+          pushTodoList(activeName === 'todo' ? 1 : 2);
         }
       "
       direction="btt"
       size="50%"
+      :show-close="false"
     >
       <template v-slot:title>
         <p class="priority-description">
-          {{ $t('default.guide_priority_body_front') }} <br />
+          {{ $t('default.guide_priority_title') }} <br />
           <strong> {{ $t('default.guide_priority_bold') }} </strong>
-          {{ $t('default.guide_priority_body_back') }}
+          {{ $t('default.guide_priority_body') }}
         </p>
       </template>
       <div class="vertical-align-center">
         <article class="drawer">
           <el-button
-            v-for="{ backgroundColor, value, icon, size, fontSize } in priorities"
+            v-for="{ color, value, icon } in priorities"
             :key="value"
             class="priority-button"
-            :style="{ backgroundColor, height: size, width: size, fontSize }"
+            :style="{ backgroundColor: color, color }"
             circle
             @click="setPriority(value)"
             :data-label="$t(guidePriorityText(value))"
-            >{{ icon }}</el-button
           >
+            <span>{{ $t(icon) }}</span>
+          </el-button>
         </article>
       </div>
     </el-drawer>
@@ -129,9 +127,9 @@ export default {
   },
   data: () => ({
     priorities: [
-      { backgroundColor: '#f56e71', value: 'High', icon: 'H', size: '10rem', fontSize: '6rem' },
-      { backgroundColor: '#84d9a0', value: 'Mid', icon: 'M', size: '8rem', fontSize: '4rem' },
-      { backgroundColor: '#ffc678', value: 'Low', icon: 'L', size: '6rem', fontSize: '2rem' },
+      { color: '#F6797C', value: 'High', icon: 'default.priority_high_1' },
+      { color: '#8FDEAA ', value: 'Mid', icon: 'default.priority_mid_2' },
+      { color: '#FFE483', value: 'Low', icon: 'default.priority_low_3' },
     ],
     toggleIndex: null,
     tailWidth: 0,
@@ -144,6 +142,12 @@ export default {
       this.tailWidth = dif < -124 ? -124 : dif;
     };
     const throttelTouchMove = this.throttle(touchmove, 50);
+    document.addEventListener('keydown', (e) => {
+      const { key } = e;
+      if (key === 'Enter') {
+        this.addItem();
+      }
+    });
     this.$refs.swipeListener.addEventListener('touchstart', (e) => {
       startPoint = e.touches[0].pageX;
       this.$refs.swipeListener.addEventListener('touchmove', throttelTouchMove);
@@ -168,7 +172,7 @@ export default {
   },
   computed: {
     task_count() {
-      return this.todoList.filter(({ check }) => check).length;
+      return this.todoList.filter(({ check }) => (this.activeName === 'todo' ? !check : check)).length;
     },
     subtitleTaskText() {
       const list = {
@@ -181,9 +185,9 @@ export default {
   methods: {
     guidePriorityText(value) {
       const list = {
-        High: 'default.guide_priority_high',
-        Mid: 'default.guide_priority_mid',
-        Low: 'default.guide_priority_low',
+        High: 'default.priority_high',
+        Mid: 'default.priority_mid',
+        Low: 'default.priority_low',
       };
       return list[value];
     },
@@ -247,6 +251,9 @@ export default {
   }
 
   .el-tabs__item {
+    font-size: 2rem;
+    font-weight: bold;
+
     &:hover {
       color: $hover;
     }
@@ -315,24 +322,12 @@ export default {
   .swiper-button {
     height: 100%;
     width: 62px;
-    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
-    i {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 3rem;
+    span {
       color: white;
-    }
-
-    &::after {
-      content: attr(data-icon);
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 3rem;
     }
 
     &.edit {
@@ -345,7 +340,7 @@ export default {
   }
 
   .todo-list {
-    height: calc(100% - 64px - 6rem);
+    height: calc(100% - 65px - 6rem);
     width: 100%;
     overflow-y: scroll;
   }
@@ -370,6 +365,8 @@ export default {
   .priority-description {
     font-size: 2rem;
     color: black;
+    text-align: center;
+    margin: 5rem 0;
 
     strong {
       font-size: 2.5rem;
@@ -386,17 +383,23 @@ export default {
       display: flex;
       justify-content: center;
       align-items: center;
-      color: white;
       border: none;
       position: relative;
+      width: 9rem;
+      height: 6rem;
+      border-radius: 2rem;
+
+      span {
+        color: white;
+      }
 
       &::after {
         position: absolute;
         bottom: 0;
         transform: translateY(120%);
         content: attr(data-label);
-        font-size: 1.5rem;
-        color: black;
+        font-size: 1.8rem;
+        font-weight: bold;
       }
     }
   }
@@ -404,7 +407,7 @@ export default {
   .vertical-align-center {
     height: 100%;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
   }
 }
 </style>

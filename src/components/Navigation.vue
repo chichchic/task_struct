@@ -1,14 +1,20 @@
 <template>
   <section class="navigation">
-    <div class="logo">LOGO</div>
-    <i icon class="el-icon-date" v-if="currentRouteName === 'Todo'" @click.prevent="$router.push('Calendar')"></i>
-    <i icon class="el-icon-tickets" v-else @click.prevent="$router.push('Todo')"></i>
-    <i
-      icon
-      class="el-icon-user-solid"
-      @click="drawerSetting = true"
-      :class="{ disable: $store.state.user.uid === null }"
-    ></i>
+    <div class="logo" @click.prevent="$router.push('/')">WillBeDone</div>
+    <p class="icon mr-1" v-if="isMobileSize && currentRouteName === 'Todo'" @click.prevent="$router.push('Calendar')">
+      <mdicon name="calendar-month" size="20" />
+    </p>
+    <p
+      class="icon mr-1"
+      v-else-if="isMobileSize && currentRouteName === 'Calendar'"
+      @click.prevent="$router.push('Todo')"
+    >
+      <mdicon name="text-box-outline" size="20" />
+    </p>
+    <p class="icon" @click="openDrawer" :class="{ disable: isDisable }">
+      <mdicon name="account" size="20" />
+    </p>
+
     <Setting :drawerSetting="drawerSetting" @close="drawerSetting = false" />
   </section>
 </template>
@@ -23,10 +29,21 @@ export default {
     currentRouteName() {
       return this.$route.name;
     },
+    isDisable() {
+      return this.$store.state.user.uid === null;
+    },
+    isMobileSize() {
+      return window.matchMedia('only screen and (max-width: 760px)').matches;
+    },
   },
   data: () => ({
     drawerSetting: false,
   }),
+  methods: {
+    openDrawer() {
+      if (!this.isDisable) this.drawerSetting = true;
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
@@ -38,24 +55,26 @@ export default {
   .logo {
     margin-left: 50%;
     margin-right: auto;
-    width: 5rem;
     transform: translateX(-50%);
     text-align: center;
+    cursor: pointer;
+    font-size: 2rem;
   }
 
-  i {
-    font-size: 20px;
-
-    &:not(:last-child) {
-      margin-right: 10px;
-    }
-
+  .icon {
     cursor: pointer;
 
     &.disable {
       cursor: inherit;
-      color: #c2c9d1;
+
+      span {
+        color: #c2c9d1;
+      }
     }
+  }
+
+  .mr-1 {
+    margin-right: 1rem;
   }
 }
 </style>

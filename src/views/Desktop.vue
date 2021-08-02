@@ -1,6 +1,5 @@
 <template>
   <section class="desktop">
-    <el-button class="add-button" size="mini" type="primary" round plain @click="addItem">추가</el-button>
     <article>
       <DatePicker
         v-model="selectedDate"
@@ -10,7 +9,7 @@
         :attributes="attributes"
         :masks="{ weekdays: 'WWW' }"
         @dayclick="onDayClick"
-        @update:from-page="page"
+        @update:from-page="getDotAttributes"
       />
     </article>
     <article class="todo-list-content">
@@ -20,7 +19,7 @@
         </el-tab-pane>
       </el-tabs>
       <ul class="todo-list">
-        <li v-for="({ check, input, priority }, index) in todoList" :key="index" :data-index="index">
+        <li v-for="({ check, input, priority, id }, index) in todoList" :key="index" :data-index="index">
           <DesktopTodoItem
             :check="check"
             :input="input"
@@ -29,7 +28,7 @@
             :lineThrough="activeName === 'done'"
             :edit="editIndex === index"
             :selectedPriority="selectedPriority"
-            @updateCheck="(value) => updateCheck(value, index)"
+            @updateCheck="doUpdateCheck(id)"
             @updateInput="
               (value) => {
                 doUpdateInput(value, index);
@@ -37,13 +36,14 @@
             "
             @setEdit="setEdit(index, priority)"
             @changeSelectedPriority="changeSelectedPriority"
+            @remove="removeList(index)"
           />
         </li>
       </ul>
       <p class="todo-description" v-if="editIndex !== null && task_count <= 3 && activeName === 'todo'">
-        Control + Enter를 통해 할 일을 등록하고<br />Shift + 숫자키(1~3)를 통해<br />
-        우선순위를 입력해보세요
+        {{ $t('default.create_guide_toast_PC') }}
       </p>
+      <el-button class="add-button" size="mini" type="primary" round plain @click="addItem">추가</el-button>
     </article>
   </section>
 </template>
@@ -51,21 +51,19 @@
 import DesktopTodoItem from '@/components/Todo/DesktopTodoItem.vue';
 import useTodoList from '@/components/Todo/useTodoList';
 import useElTabs from '@/components/elementPlus/useElTabs';
+import useCalendar from '@/components/Todo/useCalendar.js';
 
 export default {
   components: {
     DesktopTodoItem,
   },
   data: () => ({
-    selectedDate: null,
     selectedPriority: 'Empty',
     editIndex: null,
-    currentMonth: null,
-    monthDotAttrubutes: [],
   }),
   computed: {
     task_count() {
-      return this.todoList.filter(({ check }) => check).length;
+      return this.todoList.filter(({ check }) => (this.activeName === 'todo' ? !check : check)).length;
     },
     subtitleTaskText() {
       const list = {
@@ -74,22 +72,7 @@ export default {
       };
       return list[this.activeName];
     },
-    attributes() {
-      const today = new Date();
-      const isTodaySelected =
-        today.getFullYear() === this.selectedDate?.getFullYear() &&
-        today.getMonth() === this.selectedDate?.getMonth() &&
-        today.getDate() === this.selectedDate?.getDate();
-      return [
-        {
-          highlight: {
-            contentStyle: { border: '1px solid #F6797C', color: isTodaySelected ? 'white' : 'inherit' },
-          },
-          dates: new Date(),
-        },
-        ...this.monthDotAttrubutes,
-      ];
-    },
+
     selectAttribute() {
       const backgroundColor = this.activeName === 'todo' ? '#FC9A9D' : '#7389FF';
       return {
@@ -110,6 +93,7 @@ export default {
       }
     },
     activeName() {
+      this.editIndex = null;
       if (this.activeName === 'todo') {
         this.selectedDate = null;
         this.fetchTodoList(1);
@@ -134,7 +118,6 @@ export default {
         }
       }
     });
-    // TODO: 1,2,3입력으로 우선 순위 설정하기
     window.addEventListener('keydown', (e) => {
       const { code, shiftKey } = e;
       const keyMatch = { Digit1: 'High', Digit2: 'Mid', Digit3: 'Low' };
@@ -160,9 +143,12 @@ export default {
       }
       this.updateListData();
     },
+    async doUpdateCheck(id) {
+      await this.updateCheck(id, this.activeName === 'todo' ? 1 : 2, this.selectedDate);
+      await this.getDotAttributes({ year: this.currentYear, month: this.currentMonth }, true);
+    },
     updateListData() {
-      this.pushTodoList();
-      this.sorting();
+      this.pushTodoList(this.activeName === 'todo' ? 1 : 2, this.selectedDate);
       this.editIndex = null;
       this.selectedPriority = 'Empty';
     },
@@ -182,47 +168,6 @@ export default {
       this.activeName = 'todo';
       this.addTodoList();
       this.editIndex = this.todoList.length - 1;
-    },
-    async page(page) {
-      const { year, month } = page;
-      if (this.currentMonth === month) {
-        return;
-      }
-      const { uid } = this.$store.state.user;
-      const nextMonth = month === 12 ? 1 : month + 1;
-      const nextYear = month === 12 ? year + 1 : year;
-      this.currentMonth = month;
-      const currentDate = new Date(`${year}/${month}`);
-      const nextDate = new Date(`${nextYear}/${nextMonth}`);
-      const doneList = await this.$firestore
-        .collection('users')
-        .doc(uid)
-        .collection('todoListItem')
-        .where('status', '==', 2)
-        .where('createAt', '>', currentDate)
-        .where('createAt', '<', nextDate)
-        .get();
-      const doneDots = {};
-      const dotStyleList = [
-        { width: '15px', height: '15px', backgroundColor: '#F6797C' },
-        { width: '15px', height: '15px', backgroundColor: '#8FDEAA' },
-        { width: '15px', height: '15px', backgroundColor: '#FFE483' },
-      ];
-      doneList.forEach((doc) => {
-        const { lastDoneAt, priority } = doc.data();
-        const lastDoneDate = lastDoneAt.toDate();
-        const year = lastDoneDate.getFullYear();
-        const month = lastDoneDate.getMonth() + 1;
-        const date = lastDoneDate.getDate();
-        const fullDate = `${year}/${month}/${date}`;
-        if (doneDots[fullDate] === undefined || doneDots[fullDate] > priority) {
-          doneDots[fullDate] = priority;
-        }
-      });
-      this.monthDotAttrubutes = Object.keys(doneDots).map((key) => ({
-        dot: { style: dotStyleList[doneDots[key]] },
-        dates: [new Date(key)],
-      }));
     },
   },
   setup() {
@@ -247,6 +192,9 @@ export default {
       ],
       'todo'
     );
+    const { selectedDate, currentMonth, currentYear, monthDotAttributes, getDotAttributes, attributes } = useCalendar(
+      {}
+    );
     return {
       tabs,
       activeName,
@@ -262,6 +210,12 @@ export default {
       removeList,
       setPriority,
       sorting,
+      selectedDate,
+      currentMonth,
+      currentYear,
+      monthDotAttributes,
+      attributes,
+      getDotAttributes,
     };
   },
 };
@@ -273,6 +227,9 @@ export default {
   }
 
   .el-tabs__item {
+    font-size: 2rem;
+    font-weight: bold;
+
     &:hover {
       color: $hover;
     }
@@ -340,9 +297,10 @@ export default {
   border-top: solid 1px #c4c4c4;
 
   .add-button {
-    position: fixed;
-    top: 1rem;
-    right: 4rem;
+    display: block;
+    width: 25rem;
+    height: 4.5rem;
+    margin: 0 auto;
   }
 
   .vc-container {
@@ -377,7 +335,7 @@ export default {
     overflow-y: hidden;
 
     .todo-list {
-      height: calc(100% - 60px);
+      height: calc(100% - 110px);
       overflow-y: scroll;
       -ms-overflow-style: none; /* IE and Edge */
       scrollbar-width: none; /* Firefox */
@@ -400,6 +358,7 @@ export default {
       left: 50%;
       bottom: 0;
       transform: translateX(-50%);
+      word-break: keep-all;
     }
   }
 }

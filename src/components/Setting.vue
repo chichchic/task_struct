@@ -3,18 +3,18 @@
     custom-class="setting"
     :model-value="drawerSetting"
     @update:modelValue="$emit('close')"
-    direction="ltr"
-    size="100%"
+    direction="rtl"
+    :size="drawerSize"
   >
     <template v-slot:title>
-      <h1>설정</h1>
+      <h1>{{ $t('default.set_title') }}</h1>
     </template>
     <div class="menu">
       <p>
-        계정 <span>{{ $store.state.user.email }}</span>
+        {{ $t('default.set_account') }} <span>{{ $store.state.user.email }}</span>
       </p>
       <p>
-        언어
+        {{ $t('default.set_lang') }}
         <el-space spacer="|">
           <el-button
             type="text"
@@ -26,18 +26,34 @@
           >
         </el-space>
       </p>
-      <a href="https://open.kakao.com/o/spd4owqd" target="_blank">
-        <p class="pointer">문의하기</p>
-      </a>
-      <a href="https://carrote.notion.site/will-be-done-6543e1180b4847b88554ff63d66cd920" target="_blank">
-        <p class="pointer">공지사항</p>
-      </a>
-      <p class="pointer" @click="deleteDrawer = true">계정삭제</p>
-      <p class="pointer" @click="doSignOut">로그아웃</p>
+      <p>
+        {{ $t('default.set_inquiry') }}
+        <span class="icon">
+          <mdicon name="chevron-right" size="20" />
+        </span>
+      </p>
+      <p>
+        {{ $t('default.set_notice') }}
+        <span class="icon">
+          <mdicon name="chevron-right" size="20" />
+        </span>
+      </p>
+      <p @click="deleteDrawer = true">
+        {{ $t('default.set_withdraw') }}
+        <span class="icon">
+          <mdicon name="chevron-right" size="20" />
+        </span>
+      </p>
+      <p @click="doSignOut">
+        {{ $t('default.set_logout') }}
+        <span class="icon">
+          <mdicon name="chevron-right" size="20" />
+        </span>
+      </p>
     </div>
     <p>
-      지금 까지 will be done과 함께<br />
-      완료한 할 일 총 <span>{{ doneCount }}</span> 개
+      {{ $t('default.summary_text') }} <br />
+      {{ $t('default.summary_count', { doneCount }) }}
     </p>
   </el-drawer>
   <DeleteAccount :deleteDrawer="deleteDrawer" @close="deleteDrawer = false" />
@@ -64,6 +80,13 @@ export default {
   computed: {
     uid() {
       return this.$store.state.user.uid;
+    },
+    drawerSize() {
+      if (!window.matchMedia('only screen and (max-width: 760px)').matches) {
+        return '30%';
+      } else {
+        return '100%';
+      }
     },
   },
   data: () => ({
@@ -110,8 +133,11 @@ export default {
   }
 
   .el-icon-close::before {
-    content: '\2190';
-    font-size: 2.2rem;
+    font-family: 'Material Icons', sans-serif;
+    content: 'arrow_back';
+    -webkit-font-feature-settings: 'liga' 1;
+    -moz-font-feature-settings: 'liga' 1;
+    font-feature-settings: 'liga' 1;
   }
 }
 </style>
@@ -147,6 +173,10 @@ export default {
       font-size: 1.4rem;
       display: flex;
       justify-content: space-between;
+
+      .icon {
+        color: #d0d0d0;
+      }
     }
   }
 

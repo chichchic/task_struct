@@ -3,26 +3,33 @@
     custom-class="delete-account"
     :model-value="deleteDrawer"
     @update:modelValue="$emit('close')"
-    direction="ltr"
+    direction="rtl"
     size="100%"
   >
     <template v-slot:title>
-      <h1>계정 삭제</h1>
+      <h1>{{ $t('default.delete_account_title') }}</h1>
     </template>
     <p class="description">
-      계정을 삭제하시겠습니까?<br />
-      아래 유의사항을 반드시 확인해주세요.
+      {{ $t('default.delete_account_guide_0') }}<br />
+      {{ $t('default.delete_account_guide_1') }}
     </p>
     <ol>
-      <li>1. 지금까지 등록한 <strong>모든 할 일이 삭제</strong>됩니다.</li>
-      <li>2. 삭제된 할 일은 <strong>복구가 불가</strong>합니다.</li>
+      <li>
+        {{ $t('default.delete_account_guide_2') }} <strong>{{ $t('default.delete_account_guide_bold_0') }}</strong
+        >{{ $t('default.delete_account_guide_3') }}
+      </li>
+      <li>
+        {{ $t('default.delete_account_guide_4') }} <strong>{{ $t('default.delete_account_guide_bold_1') }}</strong
+        >{{ $t('default.delete_account_guide_5') }}
+      </li>
     </ol>
     <p class="warning">
-      “계정 삭제하기" 버튼을 누르시면<br />
-      계정이 <span class="red">바로 삭제</span>됩니다.
+      {{ $t('default.delete_account_guide_final_0') }}<br />
+      <span class="red">{{ $t('default.delete_account_guide_red') }}</span
+      >{{ $t('default.delete_account_guide_final_1') }}
     </p>
     <p class="button-content">
-      <button @click="deleteUserCollection">계정 삭제하기</button>
+      <button @click="deleteUserCollection">{{ $t('default.delete_account_btn') }}</button>
     </p>
   </el-drawer>
 </template>
@@ -80,8 +87,11 @@ export default {
   }
 
   .el-icon-close::before {
-    content: '\2190';
-    font-size: 2.2rem;
+    font-family: 'Material Icons', sans-serif;
+    content: 'arrow_back';
+    -webkit-font-feature-settings: 'liga' 1;
+    -moz-font-feature-settings: 'liga' 1;
+    font-feature-settings: 'liga' 1;
   }
 }
 </style>

@@ -4,7 +4,7 @@
     <div class="input">
       <el-input
         v-if="edit"
-        placeholder="Control + Enter 를 눌러 할 일을 등록해보세요"
+        :placeholder="$t('default.create_placeholder_pc')"
         v-model="innerInput"
         ref="input"
         @focus="actionFocus"
@@ -14,38 +14,27 @@
       />
       <p class="input-text" v-else :class="{ 'line-through': lineThrough }" @click="$emit('setEdit')">{{ input }}</p>
       <p class="priority" v-if="!edit" :class="priority.toLowerCase()">{{ $t(priorityText) }}</p>
-      <p v-else-if="input === ''">할 일을 입력 한 후 우선순위를 등록할 수 있어요!</p>
+      <p v-else-if="input === ''">{{ $t('default.create_error_empty') }}</p>
       <p v-else>
         <el-tag
-          @click="changeSelectedPriority('High')"
+          v-for="(val, index) in ['High', 'Mid', 'Low']"
+          :key="val"
+          @click="changeSelectedPriority(val)"
           effect="dark"
-          :class="{ 'selected-tag': isSelected('High') }"
+          :class="{
+            'selected-tag': isSelected(val),
+            [val.toLowerCase() + '-tag']: true,
+            'tag-opacity': setTagOpacity(val),
+          }"
           class="tag"
           type="danger"
           size="mini"
-          >1. High</el-tag
-        >
-        <el-tag
-          @click="changeSelectedPriority('Mid')"
-          effect="dark"
-          :class="{ 'selected-tag': isSelected('Mid') }"
-          class="tag mid-tag"
-          type="danger"
-          size="mini"
-          >2. Mid</el-tag
-        >
-        <el-tag
-          @click="changeSelectedPriority('Low')"
-          effect="dark"
-          :class="{ 'selected-tag': isSelected('Low') }"
-          class="tag low-tag"
-          type="danger"
-          size="mini"
-          >3. Low</el-tag
+          >{{ index + 1 }}. {{ val }}</el-tag
         >
       </p>
     </div>
-    <el-button v-if="edit" @click="enroll">등록</el-button>
+    <el-button v-if="edit" @click="enroll">{{ $t('default.enroll_new') }}</el-button>
+    <el-button v-else type="text" icon="el-icon-delete" circle @click="remove"></el-button>
   </div>
 </template>
 <script>
@@ -92,16 +81,20 @@ export default {
   },
   data: () => ({
     innerInput: '',
+    tagPriority: ['High', 'Mid', 'Low'],
   }),
   methods: {
-    updateCheck(value) {
-      this.$emit('updateCheck', value);
+    updateCheck() {
+      this.$emit('updateCheck');
     },
     actionFocus() {
       this.innerInput = this.input;
     },
     isSelected(value) {
       return this.selectedPriority === value;
+    },
+    setTagOpacity(value) {
+      return this.tagPriority.includes(this.selectedPriority) && this.selectedPriority !== value;
     },
     changeSelectedPriority(value) {
       this.$emit('updateInput', this.innerInput);
@@ -110,6 +103,9 @@ export default {
     enroll() {
       this.$emit('updateInput', this.innerInput);
       this.$refs.input.blur();
+    },
+    remove() {
+      this.$emit('remove');
     },
   },
 };
@@ -224,18 +220,32 @@ export default {
 </style>
 <style lang="scss" scoped>
 .todo-item {
+  .high-tag {
+    --color: #fc9a9d;
+    --highlight-color: #ff5b60;
+  }
+
   .mid-tag {
-    border: #6880ff;
-    background-color: #6880ff;
+    --color: #7389ff;
+    --highlight-color: #2547ff;
   }
 
   .low-tag {
-    border: rgb(248, 206, 141);
-    background-color: rgb(248, 206, 141);
+    --color: #ffcd83;
+    --highlight-color: #feb03b;
+  }
+
+  .tag {
+    border: var(--color);
+    background-color: var(--color);
   }
 
   .selected-tag {
-    box-shadow: 0 0 0 2px black;
+    box-shadow: 0 0 0 2px var(--highlight-color);
+  }
+
+  .tag-opacity {
+    opacity: 0.4;
   }
 }
 </style>

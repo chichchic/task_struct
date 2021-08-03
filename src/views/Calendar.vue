@@ -13,6 +13,8 @@
       :masks="{ weekdays: 'WWW' }"
       is-expanded
       @update:from-page="getDotAttributes"
+      :available-dates="{ start: null, end: new Date() }"
+      :max-date="new Date()"
     />
     <ul class="todo-list" ref="swipeListener">
       <li v-for="({ check, input, priority, id }, index) in todoList" :key="index" :data-index="index">

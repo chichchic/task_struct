@@ -9,8 +9,9 @@
         title-position="left"
         :attributes="attributes"
         :masks="{ weekdays: 'WWW' }"
-        @dayclick="onDayClick"
         @update:from-page="getDotAttributes"
+        :available-dates="{ start: null, end: new Date() }"
+        :max-date="new Date()"
       />
     </article>
     <article class="todo-list-content">
@@ -87,11 +88,13 @@ export default {
   watch: {
     // XXX: 2번 호출 될 수 있음.
     selectedDate() {
-      if (this.activeName === 'todo') {
-        this.fetchTodoList(1);
-      } else if (this.activeName === 'done') {
-        this.fetchTodoList(2, this.selectedDate);
+      if (this.selectedDate === null) {
+        return;
       }
+      if (this.activeName === 'todo') {
+        this.activeName = 'done';
+      }
+      this.fetchTodoList(2, this.selectedDate);
     },
     activeName() {
       this.editIndex = null;
@@ -128,9 +131,6 @@ export default {
     });
   },
   methods: {
-    onDayClick() {
-      this.activeName = 'done';
-    },
     changeSelectedPriority(value) {
       this.selectedPriority = value;
       this.setPriority(value);

@@ -102,6 +102,7 @@ export default {
         this.selectedDate = null;
         this.fetchTodoList(1);
       } else if (this.activeName === 'done') {
+        this.selectedDate = this.selectedDate ?? new Date();
         this.fetchTodoList(2, this.selectedDate);
       }
     },

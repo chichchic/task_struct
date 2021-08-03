@@ -206,8 +206,6 @@ export default {
   }
 
   i {
-    height: 42px;
-    line-height: 42px;
     display: inline-block;
     color: rgb(196, 196, 196);
   }

@@ -27,7 +27,7 @@
         </el-space>
       </p>
       <a href="https://open.kakao.com/o/spd4owqd" target="_blank">
-        <p>
+        <p class="cursor">
           {{ $t('default.set_inquiry') }}
           <span class="icon">
             <mdicon name="chevron-right" size="20" />
@@ -35,20 +35,20 @@
         </p>
       </a>
       <a href="https://carrote.notion.site/will-be-done-6543e1180b4847b88554ff63d66cd920" target="_blank">
-        <p>
+        <p class="cursor">
           {{ $t('default.set_notice') }}
           <span class="icon">
             <mdicon name="chevron-right" size="20" />
           </span>
         </p>
       </a>
-      <p @click="deleteDrawer = true">
+      <p class="cursor" @click="deleteDrawer = true">
         {{ $t('default.set_withdraw') }}
         <span class="icon">
           <mdicon name="chevron-right" size="20" />
         </span>
       </p>
-      <p @click="doSignOut">
+      <p class="cursor" @click="doSignOut">
         {{ $t('default.set_logout') }}
         <span class="icon">
           <mdicon name="chevron-right" size="20" />
@@ -177,7 +177,10 @@ export default {
       font-size: 1.4rem;
       display: flex;
       justify-content: space-between;
-      cursor: pointer;
+
+      &.cursor {
+        cursor: pointer;
+      }
 
       .icon {
         color: #d0d0d0;

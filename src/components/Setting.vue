@@ -26,12 +26,14 @@
           >
         </el-space>
       </p>
-      <p>
-        {{ $t('default.set_inquiry') }}
-        <span class="icon">
-          <mdicon name="chevron-right" size="20" />
-        </span>
-      </p>
+      <a href="https://open.kakao.com/o/spd4owqd" target="_blank">
+        <p>
+          {{ $t('default.set_inquiry') }}
+          <span class="icon">
+            <mdicon name="chevron-right" size="20" />
+          </span>
+        </p>
+      </a>
       <a href="https://carrote.notion.site/will-be-done-6543e1180b4847b88554ff63d66cd920" target="_blank">
         <p>
           {{ $t('default.set_notice') }}

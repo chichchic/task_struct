@@ -55,7 +55,7 @@
         </span>
       </p>
     </div>
-    <p>
+    <p class="summary">
       {{ $t('default.summary_text') }} <br />
       {{ $t('default.summary_count', { doneCount }) }}
     </p>
@@ -162,6 +162,10 @@ export default {
     font-size: 2.2rem;
     text-align: center;
     margin-top: 5rem;
+
+    &.summary {
+      font-size: 1.8rem;
+    }
 
     span {
       color: #f56e71;

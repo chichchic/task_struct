@@ -32,12 +32,14 @@
           <mdicon name="chevron-right" size="20" />
         </span>
       </p>
-      <p>
-        {{ $t('default.set_notice') }}
-        <span class="icon">
-          <mdicon name="chevron-right" size="20" />
-        </span>
-      </p>
+      <a href="https://carrote.notion.site/will-be-done-6543e1180b4847b88554ff63d66cd920" target="_blank">
+        <p>
+          {{ $t('default.set_notice') }}
+          <span class="icon">
+            <mdicon name="chevron-right" size="20" />
+          </span>
+        </p>
+      </a>
       <p @click="deleteDrawer = true">
         {{ $t('default.set_withdraw') }}
         <span class="icon">
@@ -173,6 +175,7 @@ export default {
       font-size: 1.4rem;
       display: flex;
       justify-content: space-between;
+      cursor: pointer;
 
       .icon {
         color: #d0d0d0;

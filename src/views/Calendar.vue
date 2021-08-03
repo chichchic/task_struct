@@ -6,6 +6,7 @@
       </el-tab-pane>
     </el-tabs>
     <DatePicker
+      :locale="$i18n.locale"
       :select-attribute="selectAttribute"
       v-model="selectedDate"
       :attributes="attributes"

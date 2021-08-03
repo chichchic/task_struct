@@ -2,6 +2,7 @@
   <section class="desktop">
     <article>
       <DatePicker
+        :locale="$i18n.locale"
         v-model="selectedDate"
         :select-attribute="selectAttribute"
         is-expanded

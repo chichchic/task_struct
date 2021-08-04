@@ -223,9 +223,12 @@ export default {
       this.toggleIndex = null;
       this.tailWidth = 0;
     },
-    addItem() {
+    async addItem() {
       if (this.editIndex === null) {
-        this.activeName = 'todo';
+        if (this.activeName === 'done') {
+          this.activeName = 'todo';
+          await this.fetchTodoList(1);
+        }
         this.addTodoList();
         this.editIndex = this.todoList.length - 1;
       } else {

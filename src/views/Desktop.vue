@@ -62,6 +62,7 @@ export default {
   data: () => ({
     selectedPriority: 'Empty',
     editIndex: null,
+    afterAdd: false,
   }),
   computed: {
     task_count() {
@@ -96,11 +97,15 @@ export default {
       }
       this.fetchTodoList(2, this.selectedDate);
     },
-    activeName() {
+    async activeName() {
       this.editIndex = null;
       if (this.activeName === 'todo') {
         this.selectedDate = null;
-        this.fetchTodoList(1);
+        await this.fetchTodoList(1);
+        if (this.afterAdd) {
+          this.appendItem();
+          this.afterAdd = false;
+        }
       } else if (this.activeName === 'done') {
         this.selectedDate = this.selectedDate ?? new Date();
         this.fetchTodoList(2, this.selectedDate);
@@ -164,10 +169,17 @@ export default {
       this.selectedPriority = priority;
     },
     addItem() {
+      if (this.activeName === 'done') {
+        this.afterAdd = true;
+        this.activeName = 'todo';
+        return;
+      }
+      this.appendItem();
+    },
+    appendItem() {
       if (this.editIndex !== null) {
         this.updateList(this.editIndex);
       }
-      this.activeName = 'todo';
       this.addTodoList();
       this.editIndex = this.todoList.length - 1;
     },

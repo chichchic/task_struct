@@ -34,7 +34,8 @@
       </p>
     </div>
     <el-button v-if="edit" @click="enroll">{{ $t('default.enroll_new') }}</el-button>
-    <el-button v-else type="text" icon="el-icon-delete" circle @click="remove"></el-button>
+    <el-button v-if="tab === 'tab-done'" type="text" icon="el-icon-refresh" circle @click="repeat"></el-button>
+    <el-button v-if="!edit" type="text" icon="el-icon-delete" circle @click="remove"></el-button>
   </div>
 </template>
 <script>
@@ -103,6 +104,9 @@ export default {
     enroll() {
       this.$emit('updateInput', this.innerInput);
       this.$refs.input.blur();
+    },
+    repeat() {
+      this.$emit('repeat');
     },
     remove() {
       this.$emit('remove');
@@ -213,6 +217,10 @@ export default {
   .tag {
     margin-right: 0.5rem;
     cursor: pointer;
+  }
+
+  .el-button + .el-button {
+    margin: 0;
   }
 }
 </style>

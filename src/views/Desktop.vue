@@ -36,8 +36,9 @@
                 doUpdateInput(value, index);
               }
             "
-            @setEdit="setEdit(index, priority)"
+            @setEdit="activeName === 'todo' && setEdit(index, priority)"
             @changeSelectedPriority="changeSelectedPriority"
+            @repeat="repeatTodoList(index)"
             @remove="removeList(index)"
           />
         </li>

@@ -131,14 +131,14 @@ export default {
 .todo-item {
   display: flex;
   align-items: center;
-  padding: 1rem;
+  padding: 0.3rem 1rem;
   padding-left: 1.8rem;
 
   .checkbox {
     position: relative;
 
     &::before {
-      padding: 31px 25px;
+      padding: 21px 15px;
       content: '';
       position: absolute;
       right: 0;

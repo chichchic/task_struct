@@ -2,6 +2,7 @@
   <section class="desktop">
     <article>
       <DatePicker
+        ref="datePicker"
         :locale="$i18n.locale"
         v-model="selectedDate"
         :select-attribute="selectAttribute"
@@ -108,7 +109,10 @@ export default {
           this.afterAdd = false;
         }
       } else if (this.activeName === 'done') {
-        this.selectedDate = this.selectedDate ?? new Date();
+        if (this.selectedDate === null) {
+          this.selectedDate = new Date();
+          this.$refs.datePicker.move(new Date());
+        }
         this.fetchTodoList(2, this.selectedDate);
       }
     },

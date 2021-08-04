@@ -39,8 +39,8 @@
             "
             @setEdit="activeName === 'todo' && setEdit(index, priority)"
             @changeSelectedPriority="changeSelectedPriority"
-            @repeat="repeatTodoList(index)"
-            @remove="removeList(index)"
+            @repeat="doRepeatTodoList(index)"
+            @remove="doRemoveList(index)"
           />
         </li>
       </ul>
@@ -187,6 +187,14 @@ export default {
       }
       this.addTodoList();
       this.editIndex = this.todoList.length - 1;
+    },
+    async doRepeatTodoList(index) {
+      await this.repeatTodoList(index);
+      await this.getDotAttributes({ year: this.currentYear, month: this.currentMonth }, true);
+    },
+    async doRemoveList(index) {
+      await this.removeList(index);
+      await this.getDotAttributes({ year: this.currentYear, month: this.currentMonth }, true);
     },
   },
   setup() {

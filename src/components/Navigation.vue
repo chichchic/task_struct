@@ -1,6 +1,8 @@
 <template>
   <section class="navigation">
-    <div class="logo" @click.prevent="$router.push('/')">WillBeDone</div>
+    <div class="logo" @click.prevent="$router.push('/')">
+      <img src="@/assets/images/log-willbedone.png" alt="willbedone" />
+    </div>
     <p class="icon mr-1" v-if="isMobileSize && currentRouteName === 'Todo'" @click.prevent="$router.push('Calendar')">
       <mdicon name="calendar-month" size="20" />
     </p>
@@ -59,6 +61,11 @@ export default {
     text-align: center;
     cursor: pointer;
     font-size: 2rem;
+    width: 200px;
+
+    img {
+      width: 100%;
+    }
   }
 
   .icon {

@@ -26,7 +26,7 @@
               :priority="priority"
               :tab="'tab-' + activeName"
               :lineThrough="activeName === 'done'"
-              @updateCheck="doUpdateCheck(id)"
+              @updateCheck="doUpdateCheck(id, priority)"
               @updateInput="(value) => updateInput(value, index)"
               @toggleSlider="toggleSlider(index)"
               :edit="editIndex === index"
@@ -185,6 +185,7 @@ export default {
     },
   },
   mounted() {
+    this.$analytics.logEvent('view_cal');
     this.$refs.swipeListener.addEventListener('touchstart', (e) => {
       const index = e.target.closest('li')?.dataset.index;
       if (this.editIndex !== null) {
@@ -244,8 +245,8 @@ export default {
         });
       }
     },
-    async doUpdateCheck(id) {
-      await this.updateCheck(id, this.activeName === 'todo' ? 1 : 2, this.selectedDate);
+    async doUpdateCheck(id, priority) {
+      await this.updateCheck(id, this.activeName === 'todo' ? 1 : 2, this.selectedDate, priority);
       await this.getDotAttributes({ year: this.currentYear, month: this.currentMonth }, true);
     },
   },

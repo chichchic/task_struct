@@ -4,6 +4,7 @@ import { ref } from 'vue';
 export default function useTodoList() {
   const store = useStore();
   const $firestore = firebase.firestore();
+  const $analytics = firebase.analytics();
   const priorityTable = {
     High: 0,
     Mid: 1,
@@ -53,6 +54,11 @@ export default function useTodoList() {
           lastDoneAt: lastDoneAt === null ? null : new Date(lastDoneAt.seconds),
         });
       });
+      if (status === 1) {
+        $analytics.logEvent('view_todo');
+      } else if (status === 2) {
+        $analytics.logEvent('view_done');
+      }
       sorting();
     } catch (error) {
       console.error(error);
@@ -87,6 +93,8 @@ export default function useTodoList() {
           edit: 0,
           deletedAt: null,
         });
+      $analytics.logEvent('create_task');
+      $analytics.logEvent('create_priority', { priority });
       await fetchTodoList(status, date);
     } catch (error) {
       console.error(error);
@@ -103,7 +111,7 @@ export default function useTodoList() {
     });
   };
 
-  const updateCheck = (id, status, date) => {
+  const updateCheck = (id, status, date, priority) => {
     const { uid } = store.state.user;
     if (uid === null) {
       throw new Error('push function must have uid');
@@ -140,6 +148,7 @@ export default function useTodoList() {
     });
     return Promise.all([updateListPromise, increaseDoneCountPromise])
       .then(() => {
+        $analytics.logEvent('complete', { priority });
         fetchTodoList(status, date);
       })
       .catch((error) => {
@@ -168,6 +177,7 @@ export default function useTodoList() {
           edit: edit + 1,
         });
       todoList.value[index].edit++;
+      $analytics.logEvent('edit');
     } catch (error) {
       console.error(error);
     }
@@ -219,6 +229,7 @@ export default function useTodoList() {
       throw new Error('push function must have uid');
     }
     const { id } = todoList.value[index];
+    console.log(todoList.value[index]);
     try {
       await $firestore
         .collection('users')
@@ -226,6 +237,7 @@ export default function useTodoList() {
         .collection('todoListItem')
         .doc(id)
         .update({ status: 0, deletedAt: new Date() });
+      $analytics.logEvent('delete', { status: todoList.value[index].check ? 'done' : 'todo' });
       todoList.value.splice(index, 1);
     } catch (error) {
       console.error(error);

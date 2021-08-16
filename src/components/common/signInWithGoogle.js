@@ -3,6 +3,7 @@ import { useStore } from 'vuex';
 export default function signInWithGoogle() {
   const store = useStore();
   const $firestore = firebase.firestore();
+  const $analytics = firebase.analytics();
   const signIn = async () => {
     const provider = new firebase.auth.GoogleAuthProvider();
     firebase.auth().languageCode = 'ko';
@@ -27,6 +28,7 @@ export default function signInWithGoogle() {
         const userData = doc.data();
         store.commit('user/setUserInfo', { ...userData, uid });
       }
+      $analytics.logEvent('signin');
     } catch (error) {
       console.error(error);
     } finally {
@@ -34,8 +36,13 @@ export default function signInWithGoogle() {
     }
   };
   const signOut = () => {
-    firebase.auth().signOut();
-    store.commit('user/setUserInfo', null);
+    try {
+      firebase.auth().signOut();
+      $analytics.logEvent('signout');
+      store.commit('user/setUserInfo', null);
+    } catch (error) {
+      console.error(error);
+    }
   };
   return {
     signIn,

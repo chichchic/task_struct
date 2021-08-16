@@ -42,7 +42,7 @@
           </span>
         </p>
       </a>
-      <p class="cursor" @click="deleteDrawer = true">
+      <p class="cursor" @click="openWithdrawer">
         {{ $t('default.set_withdraw') }}
         <span class="icon">
           <mdicon name="chevron-right" size="20" />
@@ -116,12 +116,17 @@ export default {
   },
   methods: {
     changeLang(lang) {
+      this.$analytics.logEvent('language', { language: lang });
       this.$i18n.locale = lang;
     },
     doSignOut() {
       this.$emit('close');
       this.signOut();
       this.$router.push('SignIn');
+    },
+    openWithdrawer() {
+      this.$analytics.logEvent('withdraw');
+      this.deleteDrawer = true;
     },
   },
 };

@@ -73,6 +73,7 @@ export default {
         //NOTE: 하위 collection은 지워지지 않음(todolistItem).
         //NOTE: 작업하지 못한 이유: https://firebase.google.com/docs/firestore/solutions/delete-collections.
         await $firestore.collection('users').doc(uid).delete();
+        this.$analytics.logEvent('withdraw_btn');
         this.$router.push('SignIn');
       } catch (e) {
         console.error(e);

@@ -30,5 +30,6 @@ app.use(mdiVue, {
 });
 app.component('DatePicker', DatePicker);
 app.config.globalProperties.$firestore = firebase.firestore();
+app.config.globalProperties.$analytics = firebase.analytics();
 installElementPlus(app);
 app.mount('#app');

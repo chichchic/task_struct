@@ -15,7 +15,7 @@
               :priority="priority"
               :tab="'tab-' + activeName"
               :lineThrough="activeName === 'done'"
-              @updateCheck="updateCheck(id, activeName === 'todo' ? 1 : 2)"
+              @updateCheck="updateCheck(id, activeName === 'todo' ? 1 : 2, null, priority)"
               @updateInput="(value) => updateInput(value, index)"
               @toggleSlider="toggleSlider(index)"
               :edit="editIndex === index"
@@ -136,6 +136,7 @@ export default {
     editIndex: null,
   }),
   mounted() {
+    this.$analytics.logEvent('view_list');
     let startPoint = null;
     const touchmove = (e) => {
       const dif = Math.floor(e.touches[0].pageX - startPoint);

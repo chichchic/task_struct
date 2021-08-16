@@ -31,7 +31,7 @@
             :lineThrough="activeName === 'done'"
             :edit="editIndex === index"
             :selectedPriority="selectedPriority"
-            @updateCheck="doUpdateCheck(id)"
+            @updateCheck="doUpdateCheck(id, priority)"
             @updateInput="
               (value) => {
                 doUpdateInput(value, index);
@@ -155,8 +155,8 @@ export default {
       }
       this.updateListData();
     },
-    async doUpdateCheck(id) {
-      await this.updateCheck(id, this.activeName === 'todo' ? 1 : 2, this.selectedDate);
+    async doUpdateCheck(id, priority) {
+      await this.updateCheck(id, this.activeName === 'todo' ? 1 : 2, this.selectedDate, priority);
       await this.getDotAttributes({ year: this.currentYear, month: this.currentMonth }, true);
     },
     updateListData() {

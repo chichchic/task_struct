@@ -321,7 +321,6 @@ export default {
   column-gap: 2rem;
   padding: 7rem 5rem 15rem;
   height: calc(100% - 30px);
-  border-top: solid 1px #c4c4c4;
 
   .add-button {
     display: block;

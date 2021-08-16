@@ -6,12 +6,12 @@ export default {
   },
   mutations: {
     setLoading(state, payload) {
-      if (!payload && state.$loading !== null) {
-        state.$loading.close();
-        state.$loading = null;
+      if (payload && state.$loading === null) {
+        state.$loading = ElLoading.service({ fullScreen: true });
         return;
       }
-      state.$loading = ElLoading.service({ fullScreen: true });
+      state.$loading?.close();
+      state.$loading = null;
     },
   },
   actions: {},

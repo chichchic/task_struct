@@ -42,8 +42,8 @@ export default function useCalendar({ dotSize = '15px', initSelectedDate = null 
       .doc(uid)
       .collection('todoListItem')
       .where('status', '==', 2)
-      .where('createAt', '>', currentDate)
-      .where('createAt', '<', nextDate)
+      .where('lastDoneAt', '>', currentDate)
+      .where('lastDoneAt', '<', nextDate)
       .get();
     const doneDots = {};
     const dotStyleList = [

@@ -36,17 +36,12 @@ export default {
 <style lang="scss" scoped>
 .swiper {
   width: 100%;
-  height: 62px;
-  position: relative;
   overflow-y: visible;
   overflow-x: hidden;
 
   .container {
     width: 100%;
     display: flex;
-    position: absolute;
-    left: 0;
-    top: 0;
     transition: transform 0.5s;
     will-change: transform;
 

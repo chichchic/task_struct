@@ -4,7 +4,7 @@
     :model-value="deleteDrawer"
     @update:modelValue="$emit('close')"
     direction="rtl"
-    size="100%"
+    :size="drawerSize"
   >
     <template v-slot:title>
       <h1>{{ $t('default.delete_account_title') }}</h1>
@@ -45,6 +45,13 @@ export default {
   computed: {
     uid() {
       return this.$store.state.user.uid;
+    },
+    drawerSize() {
+      if (!window.matchMedia('only screen and (max-width: 760px)').matches) {
+        return '30%';
+      } else {
+        return '100%';
+      }
     },
   },
   methods: {

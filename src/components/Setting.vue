@@ -26,32 +26,36 @@
           >
         </el-space>
       </p>
-      <p>
-        {{ $t('default.set_inquiry') }}
-        <span class="icon">
-          <mdicon name="chevron-right" size="20" />
-        </span>
-      </p>
-      <p>
-        {{ $t('default.set_notice') }}
-        <span class="icon">
-          <mdicon name="chevron-right" size="20" />
-        </span>
-      </p>
-      <p @click="deleteDrawer = true">
+      <a href="https://open.kakao.com/o/spd4owqd" target="_blank">
+        <p class="cursor">
+          {{ $t('default.set_inquiry') }}
+          <span class="icon">
+            <mdicon name="chevron-right" size="20" />
+          </span>
+        </p>
+      </a>
+      <a href="https://carrote.notion.site/will-be-done-6543e1180b4847b88554ff63d66cd920" target="_blank">
+        <p class="cursor">
+          {{ $t('default.set_notice') }}
+          <span class="icon">
+            <mdicon name="chevron-right" size="20" />
+          </span>
+        </p>
+      </a>
+      <p class="cursor" @click="deleteDrawer = true">
         {{ $t('default.set_withdraw') }}
         <span class="icon">
           <mdicon name="chevron-right" size="20" />
         </span>
       </p>
-      <p @click="doSignOut">
+      <p class="cursor" @click="doSignOut">
         {{ $t('default.set_logout') }}
         <span class="icon">
           <mdicon name="chevron-right" size="20" />
         </span>
       </p>
     </div>
-    <p>
+    <p class="summary">
       {{ $t('default.summary_text') }} <br />
       {{ $t('default.summary_count', { doneCount }) }}
     </p>
@@ -159,6 +163,10 @@ export default {
     text-align: center;
     margin-top: 5rem;
 
+    &.summary {
+      font-size: 1.8rem;
+    }
+
     span {
       color: #f56e71;
     }
@@ -173,6 +181,10 @@ export default {
       font-size: 1.4rem;
       display: flex;
       justify-content: space-between;
+
+      &.cursor {
+        cursor: pointer;
+      }
 
       .icon {
         color: #d0d0d0;

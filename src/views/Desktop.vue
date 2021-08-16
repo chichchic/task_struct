@@ -2,14 +2,17 @@
   <section class="desktop">
     <article>
       <DatePicker
+        ref="datePicker"
+        :locale="$i18n.locale"
         v-model="selectedDate"
         :select-attribute="selectAttribute"
         is-expanded
         title-position="left"
         :attributes="attributes"
         :masks="{ weekdays: 'WWW' }"
-        @dayclick="onDayClick"
         @update:from-page="getDotAttributes"
+        :available-dates="{ start: null, end: new Date() }"
+        :max-date="new Date()"
       />
     </article>
     <article class="todo-list-content">
@@ -34,9 +37,10 @@
                 doUpdateInput(value, index);
               }
             "
-            @setEdit="setEdit(index, priority)"
+            @setEdit="activeName === 'todo' && setEdit(index, priority)"
             @changeSelectedPriority="changeSelectedPriority"
-            @remove="removeList(index)"
+            @repeat="doRepeatTodoList(index)"
+            @remove="doRemoveList(index)"
           />
         </li>
       </ul>
@@ -60,6 +64,7 @@ export default {
   data: () => ({
     selectedPriority: 'Empty',
     editIndex: null,
+    afterAdd: false,
   }),
   computed: {
     task_count() {
@@ -86,18 +91,28 @@ export default {
   watch: {
     // XXX: 2번 호출 될 수 있음.
     selectedDate() {
-      if (this.activeName === 'todo') {
-        this.fetchTodoList(1);
-      } else if (this.activeName === 'done') {
-        this.fetchTodoList(2, this.selectedDate);
+      if (this.selectedDate === null) {
+        return;
       }
+      if (this.activeName === 'todo') {
+        this.activeName = 'done';
+      }
+      this.fetchTodoList(2, this.selectedDate);
     },
-    activeName() {
+    async activeName() {
       this.editIndex = null;
       if (this.activeName === 'todo') {
         this.selectedDate = null;
-        this.fetchTodoList(1);
+        await this.fetchTodoList(1);
+        if (this.afterAdd) {
+          this.appendItem();
+          this.afterAdd = false;
+        }
       } else if (this.activeName === 'done') {
+        if (this.selectedDate === null) {
+          this.selectedDate = new Date();
+          this.$refs.datePicker.move(new Date());
+        }
         this.fetchTodoList(2, this.selectedDate);
       }
     },
@@ -127,9 +142,6 @@ export default {
     });
   },
   methods: {
-    onDayClick() {
-      this.activeName = 'done';
-    },
     changeSelectedPriority(value) {
       this.selectedPriority = value;
       this.setPriority(value);
@@ -162,12 +174,27 @@ export default {
       this.selectedPriority = priority;
     },
     addItem() {
+      if (this.activeName === 'done') {
+        this.afterAdd = true;
+        this.activeName = 'todo';
+        return;
+      }
+      this.appendItem();
+    },
+    appendItem() {
       if (this.editIndex !== null) {
         this.updateList(this.editIndex);
       }
-      this.activeName = 'todo';
       this.addTodoList();
       this.editIndex = this.todoList.length - 1;
+    },
+    async doRepeatTodoList(index) {
+      await this.repeatTodoList(index);
+      await this.getDotAttributes({ year: this.currentYear, month: this.currentMonth }, true);
+    },
+    async doRemoveList(index) {
+      await this.removeList(index);
+      await this.getDotAttributes({ year: this.currentYear, month: this.currentMonth }, true);
     },
   },
   setup() {

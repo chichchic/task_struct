@@ -18,6 +18,14 @@ export default {
       this.drawer = status;
     },
   },
+  watch: {
+    "$i18n.locale": function (newData) {
+      document.documentElement.lang = newData;
+      if (newData === "ar") {
+        document.documentElement.style.setProperty("direction", "rtl");
+      }
+    },
+  },
   mounted() {
     document.documentElement.style.setProperty(
       "--vh",

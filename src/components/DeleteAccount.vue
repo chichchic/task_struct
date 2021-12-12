@@ -7,29 +7,33 @@
     :size="drawerSize"
   >
     <template v-slot:title>
-      <h1>{{ $t('default.delete_account_title') }}</h1>
+      <h1>{{ $t("default.delete_account_title") }}</h1>
     </template>
     <p class="description">
-      {{ $t('default.delete_account_guide_0') }}<br />
-      {{ $t('default.delete_account_guide_1') }}
+      {{ $t("default.delete_account_guide_0") }}<br />
+      {{ $t("default.delete_account_guide_1") }}
     </p>
     <ol>
       <li>
-        {{ $t('default.delete_account_guide_2') }} <strong>{{ $t('default.delete_account_guide_bold_0') }}</strong
-        >{{ $t('default.delete_account_guide_3') }}
+        {{ $t("default.delete_account_guide_2") }}
+        <strong>{{ $t("default.delete_account_guide_bold_0") }}</strong
+        >{{ $t("default.delete_account_guide_3") }}
       </li>
       <li>
-        {{ $t('default.delete_account_guide_4') }} <strong>{{ $t('default.delete_account_guide_bold_1') }}</strong
-        >{{ $t('default.delete_account_guide_5') }}
+        {{ $t("default.delete_account_guide_4") }}
+        <strong>{{ $t("default.delete_account_guide_bold_1") }}</strong
+        >{{ $t("default.delete_account_guide_5") }}
       </li>
     </ol>
     <p class="warning">
-      {{ $t('default.delete_account_guide_final_0') }}<br />
-      <span class="red">{{ $t('default.delete_account_guide_red') }}</span
-      >{{ $t('default.delete_account_guide_final_1') }}
+      {{ $t("default.delete_account_guide_final_0") }}<br />
+      <span class="red">{{ $t("default.delete_account_guide_red") }}</span
+      >{{ $t("default.delete_account_guide_final_1") }}
     </p>
     <p class="button-content">
-      <button @click="deleteUserCollection">{{ $t('default.delete_account_btn') }}</button>
+      <button @click="deleteUserCollection">
+        {{ $t("default.delete_account_btn") }}
+      </button>
     </p>
   </el-drawer>
 </template>
@@ -41,44 +45,51 @@ export default {
       required: true,
     },
   },
-  emits: ['close'],
+  emits: ["close"],
   computed: {
     uid() {
       return this.$store.state.user.uid;
     },
     drawerSize() {
-      if (!window.matchMedia('only screen and (max-width: 760px)').matches) {
-        return '30%';
+      if (!window.matchMedia("only screen and (max-width: 760px)").matches) {
+        return "30%";
       } else {
-        return '100%';
+        return "100%";
       }
     },
   },
   methods: {
     async getWithdrawStatic() {
       const { $firestore, uid } = this;
-      const userInfo = await $firestore.collection('users').doc(uid).get();
-      const todoList = await $firestore.collection('users').doc(uid).collection('todoListItem').get();
+      const userInfo = await $firestore.collection("users").doc(uid).get();
+      const todoList = await $firestore
+        .collection("users")
+        .doc(uid)
+        .collection("todoListItem")
+        .get();
       const createdAt = new Date(userInfo.data().createdAt.seconds);
       const withdrawAt = new Date();
       const doneCount = userInfo.data().doneCount;
       const listCount = todoList.size;
-      await $firestore.collection('withdrawStatic').doc().set({ createdAt, withdrawAt, doneCount, listCount });
+      await $firestore
+        .collection("withdrawStatic")
+        .doc()
+        .set({ createdAt, withdrawAt, doneCount, listCount });
     },
     async deleteUserCollection() {
       const { $firestore, uid, $store } = this;
-      $store.commit('base/setLoading', true);
+      $store.commit("base/setLoading", true);
       try {
         await this.getWithdrawStatic();
         //NOTE: 하위 collection은 지워지지 않음(todolistItem).
         //NOTE: 작업하지 못한 이유: https://firebase.google.com/docs/firestore/solutions/delete-collections.
-        await $firestore.collection('users').doc(uid).delete();
-        this.$analytics.logEvent('withdraw_btn');
-        this.$router.push('SignIn');
+        await $firestore.collection("users").doc(uid).delete();
+        this.$analytics.logEvent("withdraw_btn");
+        this.$router.push("SignIn");
       } catch (e) {
         console.error(e);
       } finally {
-        $store.commit('base/setLoading', false);
+        $store.commit("base/setLoading", false);
       }
     },
   },
@@ -95,11 +106,11 @@ export default {
   }
 
   .el-icon-close::before {
-    font-family: 'Material Icons', sans-serif;
-    content: 'arrow_back';
-    -webkit-font-feature-settings: 'liga' 1;
-    -moz-font-feature-settings: 'liga' 1;
-    font-feature-settings: 'liga' 1;
+    font-family: "Material Icons", sans-serif;
+    content: "arrow_back";
+    -webkit-font-feature-settings: "liga" 1;
+    -moz-font-feature-settings: "liga" 1;
+    font-feature-settings: "liga" 1;
   }
 }
 </style>

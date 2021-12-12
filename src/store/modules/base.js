@@ -1,4 +1,4 @@
-import { ElLoading } from 'element-plus';
+import { ElLoading } from "element-plus";
 export default {
   namespaced: true,
   state: {

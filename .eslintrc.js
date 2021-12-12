@@ -5,16 +5,18 @@ module.exports = {
     browser: true,
   },
   extends: [
-    'plugin:vue/vue3-essential',
     'eslint:recommended',
+    'plugin:vue/vue3-essential',
     'plugin:prettier/recommended',
     'plugin:prettier/recommended',
+    'prettier/prettier'
   ],
   parserOptions: {
     parser: 'babel-eslint',
   },
   plugins: ['prettier'],
   rules: {
+    'vue/script-setup-uses-vars': 'off',
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     semi: 0,
@@ -27,11 +29,10 @@ module.exports = {
       {
         tabWidth: 2,
         semi: true,
-        singleQuote: true,
+        singleQuote: false,
         endOfLine: 'lf',
         trailingComma: 'es5',
         bracketSpacing: true,
-        printWidth: 120,
         jsxBracketSameLine: false,
         jsxSingleQuote: false,
         quoteProps: 'as-needed',

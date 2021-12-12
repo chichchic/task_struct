@@ -9,13 +9,14 @@ import {
   ElDrawer,
   ElSpace,
   ElTag,
-} from 'element-plus';
-import lang from 'element-plus/lib/locale/lang/ko';
-import locale from 'element-plus/lib/locale';
-import '@/assets/style/element-variables.scss';
+} from "element-plus";
+import ko from "element-plus/lib/locale/lang/ko";
+import ar from "element-plus/lib/locale/lang/ar";
+import "@/assets/style/element-variables.scss";
 
 export default (app) => {
-  locale.use(lang);
+  app.use(ko);
+  app.use(ar);
   app.use(ElCheckbox);
   app.use(ElCheckboxButton);
   app.use(ElCheckboxGroup);

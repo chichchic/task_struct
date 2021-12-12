@@ -1,7 +1,7 @@
-import { createStore } from 'vuex';
-import createPersistedState from 'vuex-persistedstate';
+import { createStore } from "vuex";
+import createPersistedState from "vuex-persistedstate";
 
-const moduleList = ['base', 'user'];
+const moduleList = ["base", "user"];
 
 const modules = {};
 
@@ -17,7 +17,7 @@ export default createStore({
   modules,
   plugins: [
     createPersistedState({
-      paths: ['user'],
+      paths: ["user"],
     }),
   ],
 });

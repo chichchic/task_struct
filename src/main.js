@@ -1,14 +1,14 @@
-import { createApp } from 'vue';
-import App from '@/App.vue';
-import router from './router';
-import store from './store';
-import installElementPlus from './plugins/element';
-import { DatePicker } from 'v-calendar';
-import '@/assets/style/main.scss';
-import i18n from './i18n';
-import firebase from 'firebase';
-import mdiVue from 'mdi-vue/v3';
-import * as mdijs from '@mdi/js';
+import { createApp } from "vue";
+import App from "@/App.vue";
+import router from "./router";
+import store from "./store";
+import installElementPlus from "./plugins/element";
+import { DatePicker } from "v-calendar";
+import "@/assets/style/main.scss";
+import i18n from "./i18n";
+import firebase from "firebase";
+import mdiVue from "mdi-vue/v3";
+import * as mdijs from "@mdi/js";
 
 const firebaseConfig = {
   apiKey: process.env.VUE_APP_API_KEY,
@@ -28,8 +28,8 @@ app.use(store).use(router).use(i18n);
 app.use(mdiVue, {
   icons: mdijs,
 });
-app.component('DatePicker', DatePicker);
+app.component("DatePicker", DatePicker);
 app.config.globalProperties.$firestore = firebase.firestore();
 app.config.globalProperties.$analytics = firebase.analytics();
 installElementPlus(app);
-app.mount('#app');
+app.mount("#app");

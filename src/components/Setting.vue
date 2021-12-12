@@ -7,14 +7,15 @@
     :size="drawerSize"
   >
     <template v-slot:title>
-      <h1>{{ $t('default.set_title') }}</h1>
+      <h1>{{ $t("default.set_title") }}</h1>
     </template>
     <div class="menu">
       <p>
-        {{ $t('default.set_account') }} <span>{{ $store.state.user.email }}</span>
+        {{ $t("default.set_account") }}
+        <span>{{ $store.state.user.email }}</span>
       </p>
       <p>
-        {{ $t('default.set_lang') }}
+        {{ $t("default.set_lang") }}
         <el-space spacer="|">
           <el-button
             type="text"
@@ -28,49 +29,52 @@
       </p>
       <a href="https://open.kakao.com/o/spd4owqd" target="_blank">
         <p class="cursor">
-          {{ $t('default.set_inquiry') }}
+          {{ $t("default.set_inquiry") }}
           <span class="icon">
             <mdicon name="chevron-right" size="20" />
           </span>
         </p>
       </a>
-      <a href="https://carrote.notion.site/will-be-done-6543e1180b4847b88554ff63d66cd920" target="_blank">
+      <a
+        target="_blank"
+        href="https://carrote.notion.site/will-be-done-6543e1180b4847b88554ff63d66cd920"
+      >
         <p class="cursor">
-          {{ $t('default.set_notice') }}
+          {{ $t("default.set_notice") }}
           <span class="icon">
             <mdicon name="chevron-right" size="20" />
           </span>
         </p>
       </a>
       <p class="cursor" @click="openWithdrawer">
-        {{ $t('default.set_withdraw') }}
+        {{ $t("default.set_withdraw") }}
         <span class="icon">
           <mdicon name="chevron-right" size="20" />
         </span>
       </p>
       <p class="cursor" @click="doSignOut">
-        {{ $t('default.set_logout') }}
+        {{ $t("default.set_logout") }}
         <span class="icon">
           <mdicon name="chevron-right" size="20" />
         </span>
       </p>
     </div>
     <p class="summary">
-      {{ $t('default.summary_text') }} <br />
-      {{ $t('default.summary_count', { doneCount }) }}
+      {{ $t("default.summary_text") }} <br />
+      {{ $t("default.summary_count", { doneCount }) }}
     </p>
   </el-drawer>
   <DeleteAccount :deleteDrawer="deleteDrawer" @close="deleteDrawer = false" />
 </template>
 <script>
-import signInWithGoogle from '@/components/common/signInWithGoogle.js';
+import signInWithGoogle from "@/components/common/signInWithGoogle.js";
 
-import DeleteAccount from '@/components/DeleteAccount.vue';
+import DeleteAccount from "@/components/DeleteAccount.vue";
 export default {
   components: {
     DeleteAccount,
   },
-  emits: ['close'],
+  emits: ["close"],
   props: {
     drawerSetting: {
       type: Boolean,
@@ -86,18 +90,18 @@ export default {
       return this.$store.state.user.uid;
     },
     drawerSize() {
-      if (!window.matchMedia('only screen and (max-width: 760px)').matches) {
-        return '30%';
+      if (!window.matchMedia("only screen and (max-width: 760px)").matches) {
+        return "30%";
       } else {
-        return '100%';
+        return "100%";
       }
     },
   },
   data: () => ({
     doneCount: 0,
     langList: [
-      { label: '한국어', lang: 'ko' },
-      { label: 'English', lang: 'en' },
+      { label: "Korean", lang: "ko" },
+      { label: "English", lang: "en" },
     ],
     deleteDrawer: false,
   }),
@@ -106,7 +110,7 @@ export default {
       if (val) {
         try {
           const { $firestore, uid } = this;
-          const userData = await $firestore.collection('users').doc(uid).get();
+          const userData = await $firestore.collection("users").doc(uid).get();
           this.doneCount = userData.data().doneCount;
         } catch (error) {
           console.error(error);
@@ -116,16 +120,16 @@ export default {
   },
   methods: {
     changeLang(lang) {
-      this.$analytics.logEvent('language', { language: lang });
+      this.$analytics.logEvent("language", { language: lang });
       this.$i18n.locale = lang;
     },
     doSignOut() {
-      this.$emit('close');
+      this.$emit("close");
       this.signOut();
-      this.$router.push('SignIn');
+      this.$router.push("SignIn");
     },
     openWithdrawer() {
-      this.$analytics.logEvent('withdraw');
+      this.$analytics.logEvent("withdraw");
       this.deleteDrawer = true;
     },
   },
@@ -142,11 +146,11 @@ export default {
   }
 
   .el-icon-close::before {
-    font-family: 'Material Icons', sans-serif;
-    content: 'arrow_back';
-    -webkit-font-feature-settings: 'liga' 1;
-    -moz-font-feature-settings: 'liga' 1;
-    font-feature-settings: 'liga' 1;
+    font-family: "Material Icons", sans-serif;
+    content: "arrow_back";
+    -webkit-font-feature-settings: "liga" 1;
+    -moz-font-feature-settings: "liga" 1;
+    font-feature-settings: "liga" 1;
   }
 }
 </style>

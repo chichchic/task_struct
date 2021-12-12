@@ -1,84 +1,88 @@
-import { createRouter, createWebHistory } from 'vue-router';
-import Todo from '../views/Todo.vue';
-import Calendar from '../views/Calendar.vue';
-import SignIn from '../views/SignIn.vue';
-import Desktop from '../views/Desktop.vue';
-import store from '@/store/index.js';
-import Error404 from '../views/Error404.vue';
+import { createRouter, createWebHistory } from "vue-router";
+import Todo from "../views/Todo.vue";
+import Calendar from "../views/Calendar.vue";
+import SignIn from "../views/SignIn.vue";
+import Desktop from "../views/Desktop.vue";
+import store from "@/store/index.js";
+import Error404 from "../views/Error404.vue";
 
 const routes = [
   {
-    path: '/',
-    name: 'main',
+    path: "/",
+    name: "main",
     beforeEnter: (to, from, next) => {
       const { uid } = store.state.user;
       if (uid) {
-        next('/desktop');
+        next("/desktop");
       } else {
-        next('/signin');
+        next("/signin");
       }
     },
   },
   {
-    path: '/todo',
-    name: 'Todo',
+    path: "/todo",
+    name: "Todo",
     component: Todo,
     beforeEnter: (to, from, next) => {
       const { uid } = store.state.user;
       if (uid) {
         next();
       } else {
-        next('/signin');
+        next("/signin");
       }
     },
   },
   {
-    path: '/desktop',
-    name: 'Desktop',
+    path: "/desktop",
+    name: "Desktop",
     component: Desktop,
     beforeEnter: (to, from, next) => {
       const { uid } = store.state.user;
-      const ismobild = window.matchMedia('only screen and (max-width: 760px)').matches;
+      const ismobild = window.matchMedia(
+        "only screen and (max-width: 760px)"
+      ).matches;
       if (!uid) {
-        next('/signin');
+        next("/signin");
       } else if (ismobild) {
-        next('/todo');
+        next("/todo");
       } else {
         next();
       }
     },
   },
   {
-    path: '/calendar',
-    name: 'Calendar',
+    path: "/calendar",
+    name: "Calendar",
     component: Calendar,
     beforeEnter: (to, from, next) => {
       const { uid } = store.state.user;
       if (uid) {
         next();
       } else {
-        next('/signin');
+        next("/signin");
       }
     },
   },
   {
-    path: '/signin',
-    name: 'SignIn',
+    path: "/signin",
+    name: "SignIn",
     component: SignIn,
     beforeEnter: (to, from, next) => {
       const { uid } = store.state.user;
-      const ismobild = window.matchMedia('only screen and (max-width: 760px)').matches;
+      const ismobild = window.matchMedia(
+        "only screen and (max-width: 760px)"
+      ).matches;
       if (!uid) {
         next();
       } else if (ismobild) {
-        next('/todo');
+        next("/todo");
       } else {
-        next('/desktop');
+        next("/desktop");
       }
     },
   },
   {
-    path: '/:catchAll(.*)*',
+    path: "/:catchAll(.*)*",
     component: Error404,
   },
 ];

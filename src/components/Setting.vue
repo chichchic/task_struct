@@ -102,6 +102,7 @@ export default {
     langList: [
       { label: "Korean", lang: "ko" },
       { label: "English", lang: "en" },
+      { label: "Arabic", lang: "ar" },
     ],
     deleteDrawer: false,
   }),

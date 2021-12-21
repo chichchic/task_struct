@@ -22,11 +22,19 @@ export default {
     "$i18n.locale": function (newData) {
       document.documentElement.lang = newData;
       if (newData === "ar") {
-        document.documentElement.style.setProperty("direction", "rtl");
+        document.documentElement.dir = "rtl";
+      } else {
+        document.documentElement.dir = "ltr";
       }
     },
   },
   mounted() {
+    document.documentElement.lang = this.$i18n.locale;
+    if (this.$i18n.locale === "ar") {
+      document.documentElement.dir = "rtl";
+    } else {
+      document.documentElement.dir = "ltr";
+    }
     document.documentElement.style.setProperty(
       "--vh",
       `${window.innerHeight / 100}px`

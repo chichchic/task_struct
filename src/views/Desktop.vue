@@ -1,6 +1,6 @@
 <template>
   <section class="desktop">
-    <article>
+    <article class="date-picker">
       <DatePicker
         ref="datePicker"
         :locale="$i18n.locale"
@@ -17,12 +17,23 @@
     </article>
     <article class="todo-list-content">
       <el-tabs :class="`tab-${activeName}`" v-model="activeName" stretch>
-        <el-tab-pane v-for="{ label, name } in tabs" :key="name" :label="label" :name="name">
-          <p class="subtitle_task">{{ $t(subtitleTaskText, { task_count }) }}</p>
+        <el-tab-pane
+          v-for="{ label, name } in tabs"
+          :key="name"
+          :label="label"
+          :name="name"
+        >
+          <p class="subtitle_task">
+            {{ $t(subtitleTaskText, { task_count }) }}
+          </p>
         </el-tab-pane>
       </el-tabs>
       <ul class="todo-list">
-        <li v-for="({ check, input, priority, id }, index) in todoList" :key="index" :data-index="index">
+        <li
+          v-for="({ check, input, priority, id }, index) in todoList"
+          :key="index"
+          :data-index="index"
+        >
           <DesktopTodoItem
             :check="check"
             :input="input"
@@ -44,46 +55,60 @@
           />
         </li>
       </ul>
-      <p class="todo-description" v-if="editIndex !== null && task_count <= 3 && activeName === 'todo'">
-        {{ $t('default.create_guide_toast_PC') }}
+      <p
+        class="todo-description"
+        v-if="editIndex !== null && task_count <= 3 && activeName === 'todo'"
+      >
+        {{ $t("default.create_guide_toast_PC") }}
       </p>
-      <el-button class="add-button" size="mini" type="primary" round plain @click="addItem">추가</el-button>
+      <el-button
+        class="add-button"
+        size="mini"
+        type="primary"
+        round
+        plain
+        @click="addItem"
+        >추가</el-button
+      >
     </article>
   </section>
 </template>
 <script>
-import DesktopTodoItem from '@/components/Todo/DesktopTodoItem.vue';
-import useTodoList from '@/components/Todo/useTodoList';
-import useElTabs from '@/components/elementPlus/useElTabs';
-import useCalendar from '@/components/Todo/useCalendar.js';
+import DesktopTodoItem from "@/components/Todo/DesktopTodoItem.vue";
+import useTodoList from "@/components/Todo/useTodoList";
+import useElTabs from "@/components/elementPlus/useElTabs";
+import useCalendar from "@/components/Todo/useCalendar.js";
 
 export default {
   components: {
     DesktopTodoItem,
   },
   data: () => ({
-    selectedPriority: 'Empty',
+    selectedPriority: "Empty",
     editIndex: null,
     afterAdd: false,
   }),
   computed: {
     task_count() {
-      return this.todoList.filter(({ check }) => (this.activeName === 'todo' ? !check : check)).length;
+      return this.todoList.filter(({ check }) =>
+        this.activeName === "todo" ? !check : check
+      ).length;
     },
     subtitleTaskText() {
       const list = {
-        todo: 'default.subtitle_task_incomplete',
-        done: 'default.subtitle_task_completed',
+        todo: "default.subtitle_task_incomplete",
+        done: "default.subtitle_task_completed",
       };
       return list[this.activeName];
     },
 
     selectAttribute() {
-      const backgroundColor = this.activeName === 'todo' ? '#FC9A9D' : '#7389FF';
+      const backgroundColor =
+        this.activeName === "todo" ? "#FC9A9D" : "#7389FF";
       return {
         highlight: {
           style: { backgroundColor },
-          contentStyle: { color: 'white' },
+          contentStyle: { color: "white" },
         },
       };
     },
@@ -94,21 +119,21 @@ export default {
       if (this.selectedDate === null) {
         return;
       }
-      if (this.activeName === 'todo') {
-        this.activeName = 'done';
+      if (this.activeName === "todo") {
+        this.activeName = "done";
       }
       this.fetchTodoList(2, this.selectedDate);
     },
     async activeName() {
       this.editIndex = null;
-      if (this.activeName === 'todo') {
+      if (this.activeName === "todo") {
         this.selectedDate = null;
         await this.fetchTodoList(1);
         if (this.afterAdd) {
           this.appendItem();
           this.afterAdd = false;
         }
-      } else if (this.activeName === 'done') {
+      } else if (this.activeName === "done") {
         if (this.selectedDate === null) {
           this.selectedDate = new Date();
           this.$refs.datePicker.move(new Date());
@@ -119,23 +144,23 @@ export default {
   },
   mounted() {
     this.fetchTodoList(1);
-    this.$el.addEventListener('click', (e) => {
-      if (e.target.classList.contains('todo-list')) {
+    this.$el.addEventListener("click", (e) => {
+      if (e.target.classList.contains("todo-list")) {
         if (this.editIndex !== null) {
-          if (this.selectedPriority === 'Empty') {
-            this.todoList[this.editIndex].input = '';
+          if (this.selectedPriority === "Empty") {
+            this.todoList[this.editIndex].input = "";
           }
           this.updateList(this.editIndex);
           this.editIndex = null;
-          this.selectedPriority = 'Empty';
+          this.selectedPriority = "Empty";
         } else {
           this.addItem();
         }
       }
     });
-    window.addEventListener('keydown', (e) => {
+    window.addEventListener("keydown", (e) => {
       const { code, shiftKey } = e;
-      const keyMatch = { Digit1: 'High', Digit2: 'Mid', Digit3: 'Low' };
+      const keyMatch = { Digit1: "High", Digit2: "Mid", Digit3: "Low" };
       if (shiftKey && code in keyMatch) {
         this.changeSelectedPriority(keyMatch[code]);
       }
@@ -150,19 +175,27 @@ export default {
     doUpdateInput(value, index) {
       this.updateInput(value, index);
       this.updateList(index);
-      if (this.selectedPriority === 'Empty') {
+      if (this.selectedPriority === "Empty") {
         return;
       }
       this.updateListData();
     },
     async doUpdateCheck(id, priority) {
-      await this.updateCheck(id, this.activeName === 'todo' ? 1 : 2, this.selectedDate, priority);
-      await this.getDotAttributes({ year: this.currentYear, month: this.currentMonth }, true);
+      await this.updateCheck(
+        id,
+        this.activeName === "todo" ? 1 : 2,
+        this.selectedDate,
+        priority
+      );
+      await this.getDotAttributes(
+        { year: this.currentYear, month: this.currentMonth },
+        true
+      );
     },
     updateListData() {
-      this.pushTodoList(this.activeName === 'todo' ? 1 : 2, this.selectedDate);
+      this.pushTodoList(this.activeName === "todo" ? 1 : 2, this.selectedDate);
       this.editIndex = null;
-      this.selectedPriority = 'Empty';
+      this.selectedPriority = "Empty";
     },
     // NOTE: 수정 실행할 때 사용되는 함수
     setEdit(index, priority) {
@@ -174,9 +207,9 @@ export default {
       this.selectedPriority = priority;
     },
     addItem() {
-      if (this.activeName === 'done') {
+      if (this.activeName === "done") {
         this.afterAdd = true;
-        this.activeName = 'todo';
+        this.activeName = "todo";
         return;
       }
       this.appendItem();
@@ -190,11 +223,17 @@ export default {
     },
     async doRepeatTodoList(index) {
       await this.repeatTodoList(index);
-      await this.getDotAttributes({ year: this.currentYear, month: this.currentMonth }, true);
+      await this.getDotAttributes(
+        { year: this.currentYear, month: this.currentMonth },
+        true
+      );
     },
     async doRemoveList(index) {
       await this.removeList(index);
-      await this.getDotAttributes({ year: this.currentYear, month: this.currentMonth }, true);
+      await this.getDotAttributes(
+        { year: this.currentYear, month: this.currentMonth },
+        true
+      );
     },
   },
   setup() {
@@ -214,14 +253,19 @@ export default {
     } = useTodoList();
     const { tabs, activeName } = useElTabs(
       [
-        { label: 'TODO', name: 'todo' },
-        { label: 'DONE', name: 'done' },
+        { label: "TODO", name: "todo" },
+        { label: "DONE", name: "done" },
       ],
-      'todo'
+      "todo"
     );
-    const { selectedDate, currentMonth, currentYear, monthDotAttributes, getDotAttributes, attributes } = useCalendar(
-      {}
-    );
+    const {
+      selectedDate,
+      currentMonth,
+      currentYear,
+      monthDotAttributes,
+      getDotAttributes,
+      attributes,
+    } = useCalendar({});
     return {
       tabs,
       activeName,

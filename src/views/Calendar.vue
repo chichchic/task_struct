@@ -1,7 +1,17 @@
 <template>
   <section class="calendar">
-    <el-tabs :class="`tab-${activeName}`" v-model="activeName" @tab-click="changeTab" stretch>
-      <el-tab-pane v-for="{ label, name } in tabs" :key="name" :label="label" :name="name">
+    <el-tabs
+      :class="`tab-${activeName}`"
+      v-model="activeName"
+      @tab-click="changeTab"
+      stretch
+    >
+      <el-tab-pane
+        v-for="{ label, name } in tabs"
+        :key="name"
+        :label="label"
+        :name="name"
+      >
         <div class="el-tab-pane-space"></div>
       </el-tab-pane>
     </el-tabs>
@@ -17,7 +27,11 @@
       :max-date="new Date()"
     />
     <ul class="todo-list" ref="swipeListener">
-      <li v-for="({ check, input, priority, id }, index) in todoList" :key="index" :data-index="index">
+      <li
+        v-for="({ check, input, priority, id }, index) in todoList"
+        :key="index"
+        :data-index="index"
+      >
         <Swiper :tailWidth="toggleIndex == index ? tailWidth : 0">
           <template v-slot:main>
             <TodoItem
@@ -33,10 +47,18 @@
             />
           </template>
           <template v-slot:tail>
-            <div v-if="activeName === 'todo'" class="swiper-button edit" @click="setEditIndex(index)">
+            <div
+              v-if="activeName === 'todo'"
+              class="swiper-button edit"
+              @click="setEditIndex(index)"
+            >
               <mdicon name="pencil-outline" size="30" />
             </div>
-            <div v-else class="swiper-button edit" @click="repeatTodoList(index)">
+            <div
+              v-else
+              class="swiper-button edit"
+              @click="repeatTodoList(index)"
+            >
               <mdicon name="autorenew" size="30" />
             </div>
             <div class="swiper-button delete" @click="removeList(index)">
@@ -46,7 +68,9 @@
         </Swiper>
       </li>
     </ul>
-    <button class="todo-btn" @click.prevent="addItem">{{ editIndex === null ? '+추가하기' : '등록하기' }}</button>
+    <button class="todo-btn" @click.prevent="addItem">
+      {{ editIndex === null ? "+추가하기" : "등록하기" }}
+    </button>
     <el-drawer
       v-model="prDrawer"
       @close="
@@ -59,9 +83,9 @@
     >
       <template v-slot:title>
         <p class="priority-description">
-          {{ $t('default.guide_priority_title') }} <br />
-          <strong> {{ $t('default.guide_priority_bold') }} </strong>
-          {{ $t('default.guide_priority_body') }}
+          {{ $t("default.guide_priority_title") }} <br />
+          <strong> {{ $t("default.guide_priority_bold") }} </strong>
+          {{ $t("default.guide_priority_body") }}
         </p>
       </template>
       <div class="vertical-align-center">
@@ -83,11 +107,11 @@
   </section>
 </template>
 <script>
-import TodoItem from '@/components/Todo/TodoItem.vue';
-import Swiper from '@/components/common/Swiper.vue';
-import useElTabs from '@/components/elementPlus/useElTabs';
-import useTodoList from '@/components/Todo/useTodoList';
-import useCalendar from '@/components/Todo/useCalendar.js';
+import TodoItem from "@/components/Todo/TodoItem.vue";
+import Swiper from "@/components/common/Swiper.vue";
+import useElTabs from "@/components/elementPlus/useElTabs";
+import useTodoList from "@/components/Todo/useTodoList";
+import useCalendar from "@/components/Todo/useCalendar.js";
 
 export default {
   components: {
@@ -109,21 +133,28 @@ export default {
       setPriority,
       sorting,
     } = useTodoList([
-      { check: true, input: '1', priority: 'High' },
-      { check: true, input: '2', priority: 'Mid' },
-      { check: false, input: '3', priority: 'Low' },
-      { check: true, input: '4', priority: 'High' },
-      { check: true, input: '5', priority: 'Mid' },
+      { check: true, input: "1", priority: "High" },
+      { check: true, input: "2", priority: "Mid" },
+      { check: false, input: "3", priority: "Low" },
+      { check: true, input: "4", priority: "High" },
+      { check: true, input: "5", priority: "Mid" },
     ]);
     const { tabs, activeName } = useElTabs(
       [
-        { label: 'TODO', name: 'todo' },
-        { label: 'DONE', name: 'done' },
+        { label: "TODO", name: "todo" },
+        { label: "DONE", name: "done" },
       ],
-      'todo'
+      "todo"
     );
-    const { selectedDate, currentMonth, currentYear, monthDotAttributes, attributes, getDotAttributes } = useCalendar({
-      dotSize: '4px',
+    const {
+      selectedDate,
+      currentMonth,
+      currentYear,
+      monthDotAttributes,
+      attributes,
+      getDotAttributes,
+    } = useCalendar({
+      dotSize: "4px",
       initSelectedDate: new Date(),
     });
     return {
@@ -151,10 +182,13 @@ export default {
   },
   watch: {
     selectedDate() {
-      this.fetchTodoList(this.activeName === 'todo' ? 1 : 2, this.selectedDate);
+      this.fetchTodoList(this.activeName === "todo" ? 1 : 2, this.selectedDate);
     },
     async activeName() {
-      await this.fetchTodoList(this.activeName === 'todo' ? 1 : 2, this.selectedDate);
+      await this.fetchTodoList(
+        this.activeName === "todo" ? 1 : 2,
+        this.selectedDate
+      );
       if (this.newAddItem) {
         this.newAddItem = false;
         this.addItem();
@@ -163,9 +197,9 @@ export default {
   },
   data: () => ({
     priorities: [
-      { color: '#F6797C', value: 'High', icon: 'default.priority_high_1' },
-      { color: '#8FDEAA ', value: 'Mid', icon: 'default.priority_mid_2' },
-      { color: '#FFE483', value: 'Low', icon: 'default.priority_low_3' },
+      { color: "#F6797C", value: "High", icon: "default.priority_high_1" },
+      { color: "#8FDEAA ", value: "Mid", icon: "default.priority_mid_2" },
+      { color: "#FFE483", value: "Low", icon: "default.priority_low_3" },
     ],
     toggleIndex: null,
     tailWidth: 0,
@@ -175,19 +209,20 @@ export default {
   }),
   computed: {
     selectAttribute() {
-      const backgroundColor = this.activeName === 'todo' ? '#FC9A9D' : '#7389FF';
+      const backgroundColor =
+        this.activeName === "todo" ? "#FC9A9D" : "#7389FF";
       return {
         highlight: {
-          style: { backgroundColor, width: '24px', height: '24px' },
-          contentStyle: { color: 'white' },
+          style: { backgroundColor, width: "24px", height: "24px" },
+          contentStyle: { color: "white" },
         },
       };
     },
   },
   mounted() {
-    this.$analytics.logEvent('view_cal');
-    this.$refs.swipeListener.addEventListener('touchstart', (e) => {
-      const index = e.target.closest('li')?.dataset.index;
+    this.$analytics.logEvent("view_cal");
+    this.$refs.swipeListener.addEventListener("touchstart", (e) => {
+      const index = e.target.closest("li")?.dataset.index;
       if (this.editIndex !== null) {
         this.updateList(this.editIndex, false);
         this.editIndex = null;
@@ -195,14 +230,14 @@ export default {
       this.toggleIndex = index;
       this.tailWidth = 0;
     });
-    this.fetchTodoList(this.activeName === 'todo' ? 1 : 2, new Date());
+    this.fetchTodoList(this.activeName === "todo" ? 1 : 2, new Date());
   },
   methods: {
     guidePriorityText(value) {
       const list = {
-        High: 'default.priority_high',
-        Mid: 'default.priority_mid',
-        Low: 'default.priority_low',
+        High: "default.priority_high",
+        Mid: "default.priority_mid",
+        Low: "default.priority_low",
       };
       return list[value];
     },
@@ -227,9 +262,9 @@ export default {
       this.addNewItem = false;
     },
     addItem() {
-      if (this.activeName === 'done') {
+      if (this.activeName === "done") {
         this.newAddItem = true;
-        this.activeName = 'todo';
+        this.activeName = "todo";
         return;
       }
       if (this.editIndex === null) {
@@ -246,8 +281,16 @@ export default {
       }
     },
     async doUpdateCheck(id, priority) {
-      await this.updateCheck(id, this.activeName === 'todo' ? 1 : 2, this.selectedDate, priority);
-      await this.getDotAttributes({ year: this.currentYear, month: this.currentMonth }, true);
+      await this.updateCheck(
+        id,
+        this.activeName === "todo" ? 1 : 2,
+        this.selectedDate,
+        priority
+      );
+      await this.getDotAttributes(
+        { year: this.currentYear, month: this.currentMonth },
+        true
+      );
     },
   },
 };

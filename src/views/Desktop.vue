@@ -356,9 +356,19 @@ export default {
       }
     }
   }
+
+  .vc-svg-icon {
+    transform: rotate(180deg);
+  }
 }
 </style>
 <style lang="scss" scoped>
+html[dir="rtl"] .desktop {
+  grid-auto-flow: dense;
+  .date-picker {
+    grid-column: 2/3;
+  }
+}
 .desktop {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -403,7 +413,7 @@ export default {
   .todo-list-content {
     position: relative;
     overflow-y: hidden;
-
+    padding-bottom: 1px;
     .todo-list {
       height: calc(100% - 110px);
       overflow-y: scroll;

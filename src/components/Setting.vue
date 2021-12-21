@@ -154,6 +154,16 @@ export default {
     font-feature-settings: "liga" 1;
   }
 }
+html[dir="rtl"] {
+  .setting {
+    svg {
+      transform: rotate(180deg);
+    }
+    i {
+      transform: rotate(180deg);
+    }
+  }
+}
 </style>
 
 <style lang="scss" scoped>

@@ -88,4 +88,9 @@ export default {
     margin-right: 1rem;
   }
 }
+html[dir="rtl"] {
+  .navigation {
+    flex-direction: row-reverse;
+  }
+}
 </style>

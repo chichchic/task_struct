@@ -255,6 +255,18 @@ export default {
     margin: 0;
   }
 }
+
+html[dir="rtl"] {
+  .tab-done .el-tabs__active-bar {
+    transform: translateX(0) !important;
+  }
+  .tab-todo .el-tabs__active-bar {
+    transform: translateX(116%) !important;
+  }
+  .todo-item {
+    flex-direction: row-reverse;
+  }
+}
 </style>
 <style lang="scss" scoped>
 .todo-item {

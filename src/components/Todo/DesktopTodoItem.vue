@@ -210,6 +210,9 @@ export default {
   .input {
     margin: 0 0 0 1rem;
     flex-grow: 1;
+    textarea {
+      padding: 0 0.5rem;
+    }
   }
 
   .el-textarea__inner {

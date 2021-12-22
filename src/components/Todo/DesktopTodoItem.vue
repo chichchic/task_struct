@@ -260,12 +260,6 @@ export default {
 }
 
 html[dir="rtl"] {
-  .tab-done .el-tabs__active-bar {
-    transform: translateX(0) !important;
-  }
-  .tab-todo .el-tabs__active-bar {
-    transform: translateX(116%) !important;
-  }
   .todo-item {
     flex-direction: row-reverse;
   }

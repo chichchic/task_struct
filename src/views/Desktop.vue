@@ -315,6 +315,14 @@ export default {
   }
 }
 
+html[dir="rtl"] {
+  .desktop {
+    .el-tabs__nav.is-stretch {
+      flex-direction: row-reverse;
+    }
+  }
+}
+
 .desktop {
   .vc-day-content:focus {
     background-color: inherit !important;

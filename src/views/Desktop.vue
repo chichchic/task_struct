@@ -68,8 +68,8 @@
         round
         plain
         @click="addItem"
-        >추가</el-button
-      >
+        >{{ $t("default.create_new") }}
+      </el-button>
     </article>
   </section>
 </template>

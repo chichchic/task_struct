@@ -317,6 +317,13 @@ export default {
     @include el-tabs-color(#6880ff, #f56e71);
   }
 }
+html[dir="rtl"] {
+  .todo {
+    .el-tabs__nav.is-stretch {
+      flex-direction: row-reverse;
+    }
+  }
+}
 </style>
 <style lang="scss" scoped>
 .todo {

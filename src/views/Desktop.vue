@@ -320,6 +320,9 @@ html[dir="rtl"] {
     .el-tabs__nav.is-stretch {
       flex-direction: row-reverse;
     }
+    .vc-svg-icon {
+      transform: rotate(180deg);
+    }
   }
 }
 
@@ -363,10 +366,6 @@ html[dir="rtl"] {
         }
       }
     }
-  }
-
-  .vc-svg-icon {
-    transform: rotate(180deg);
   }
 }
 </style>

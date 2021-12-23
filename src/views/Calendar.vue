@@ -353,6 +353,16 @@ export default {
     font-weight: bold;
   }
 }
+html[dir="rtl"] {
+  .calendar {
+    .el-tabs__nav.is-stretch {
+      flex-direction: row-reverse;
+    }
+    .vc-svg-icon {
+      transform: rotate(180deg);
+    }
+  }
+}
 </style>
 <style lang="scss" scoped>
 .calendar {

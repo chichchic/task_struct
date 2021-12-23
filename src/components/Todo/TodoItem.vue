@@ -1,6 +1,11 @@
 <template>
   <div class="todo-item" :class="{ [tab]: true, focus: edit }">
-    <el-checkbox class="checkbox" :modelValue="check" @change="updateCheck" :disabled="lineThrough" />
+    <el-checkbox
+      class="checkbox"
+      :modelValue="check"
+      @change="updateCheck"
+      :disabled="lineThrough"
+    />
     <div class="input">
       <el-input
         v-if="edit"
@@ -12,8 +17,12 @@
         :autosize="true"
         type="textarea"
       />
-      <p class="input-text" v-else :class="{ 'line-through': lineThrough }">{{ input }}</p>
-      <p class="priority" :class="priority.toLowerCase()">{{ $t(priorityText) }}</p>
+      <p class="input-text" v-else :class="{ 'line-through': lineThrough }">
+        {{ input }}
+      </p>
+      <p class="priority" :class="priority.toLowerCase()">
+        {{ $t(priorityText) }}
+      </p>
     </div>
     <span class="icon" @click.prevent="toggleSlider">
       <mdicon name="chevron-right" size="20" />
@@ -45,34 +54,34 @@ export default {
   computed: {
     priorityText() {
       const list = {
-        High: 'default.priority_high',
-        Mid: 'default.priority_mid',
-        Low: 'default.priority_low',
-        Empty: 'default.priority',
+        High: "default.priority_high",
+        Mid: "default.priority_mid",
+        Low: "default.priority_low",
+        Empty: "default.priority",
       };
       return list[this.priority];
     },
   },
   mounted() {
-    if (this.input === '') {
+    if (this.input === "") {
       this.$refs.input.focus();
     }
   },
   data: () => ({
-    innerInput: '',
+    innerInput: "",
   }),
   methods: {
     updateCheck() {
-      this.$emit('updateCheck');
+      this.$emit("updateCheck");
     },
     updateInput(value) {
-      this.$emit('updateInput', value);
+      this.$emit("updateInput", value);
     },
     actionFocus() {
       this.innerInput = this.input;
     },
     toggleSlider() {
-      this.$emit('toggleSlider');
+      this.$emit("toggleSlider");
     },
   },
 };
@@ -106,7 +115,7 @@ export default {
 
     &::before {
       padding: 31px 25px;
-      content: '';
+      content: "";
       position: absolute;
       right: 0;
       top: 50%;

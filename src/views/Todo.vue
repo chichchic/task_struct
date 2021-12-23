@@ -1,12 +1,26 @@
 <template>
   <section class="todo">
-    <el-tabs :class="`tab-${activeName}`" v-model="activeName" @tab-click="changeTab" stretch>
-      <el-tab-pane v-for="{ label, name } in tabs" :key="name" :label="label" :name="name">
+    <el-tabs
+      :class="`tab-${activeName}`"
+      v-model="activeName"
+      @tab-click="changeTab"
+      stretch
+    >
+      <el-tab-pane
+        v-for="{ label, name } in tabs"
+        :key="name"
+        :label="label"
+        :name="name"
+      >
         <p class="subtitle_task">{{ $t(subtitleTaskText, { task_count }) }}</p>
       </el-tab-pane>
     </el-tabs>
     <ul class="todo-list" ref="swipeListener">
-      <li v-for="({ check, input, priority, id }, index) in todoList" :key="index" :data-index="index">
+      <li
+        v-for="({ check, input, priority, id }, index) in todoList"
+        :key="index"
+        :data-index="index"
+      >
         <Swiper :tailWidth="toggleIndex == index ? tailWidth : 0">
           <template v-slot:main>
             <TodoItem
@@ -15,17 +29,27 @@
               :priority="priority"
               :tab="'tab-' + activeName"
               :lineThrough="activeName === 'done'"
-              @updateCheck="updateCheck(id, activeName === 'todo' ? 1 : 2, null, priority)"
+              @updateCheck="
+                updateCheck(id, activeName === 'todo' ? 1 : 2, null, priority)
+              "
               @updateInput="(value) => updateInput(value, index)"
               @toggleSlider="toggleSlider(index)"
               :edit="editIndex === index"
             />
           </template>
           <template v-slot:tail>
-            <div v-if="activeName === 'todo'" class="swiper-button edit" @click="setEditIndex(index)">
+            <div
+              v-if="activeName === 'todo'"
+              class="swiper-button edit"
+              @click="setEditIndex(index)"
+            >
               <mdicon name="pencil-outline" size="30" />
             </div>
-            <div v-else class="swiper-button edit" @click="repeatTodoList(index)">
+            <div
+              v-else
+              class="swiper-button edit"
+              @click="repeatTodoList(index)"
+            >
               <mdicon name="autorenew" size="30" />
             </div>
             <div class="swiper-button delete" @click="removeList(index)">
@@ -36,7 +60,9 @@
       </li>
     </ul>
     <el-button class="add-button" type="primary" @click.prevent="addItem">{{
-      editIndex === null ? `+ ${$t('default.create_new')}` : `+ ${$t('default.enroll_new')}`
+      editIndex === null
+        ? `+ ${$t("default.create_new")}`
+        : `+ ${$t("default.enroll_new")}`
     }}</el-button>
     <el-drawer
       v-model="prDrawer"
@@ -51,9 +77,9 @@
     >
       <template v-slot:title>
         <p class="priority-description">
-          {{ $t('default.guide_priority_title') }} <br />
-          <strong> {{ $t('default.guide_priority_bold') }} </strong>
-          {{ $t('default.guide_priority_body') }}
+          {{ $t("default.guide_priority_title") }} <br />
+          <strong> {{ $t("default.guide_priority_bold") }} </strong>
+          {{ $t("default.guide_priority_body") }}
         </p>
       </template>
       <div class="vertical-align-center">
@@ -75,10 +101,10 @@
   </section>
 </template>
 <script>
-import TodoItem from '@/components/Todo/TodoItem.vue';
-import useTodoList from '@/components/Todo/useTodoList';
-import useElTabs from '@/components/elementPlus/useElTabs';
-import Swiper from '@/components/common/Swiper.vue';
+import TodoItem from "@/components/Todo/TodoItem.vue";
+import useTodoList from "@/components/Todo/useTodoList";
+import useElTabs from "@/components/elementPlus/useElTabs";
+import Swiper from "@/components/common/Swiper.vue";
 
 //NOTE: 데이터베이스와 연결한 후 refresh button 로직 구현하기.
 export default {
@@ -103,10 +129,10 @@ export default {
     } = useTodoList();
     const { tabs, activeName } = useElTabs(
       [
-        { label: 'TODO', name: 'todo' },
-        { label: 'DONE', name: 'done' },
+        { label: "TODO", name: "todo" },
+        { label: "DONE", name: "done" },
       ],
-      'todo'
+      "todo"
     );
     return {
       todoList,
@@ -127,58 +153,60 @@ export default {
   },
   data: () => ({
     priorities: [
-      { color: '#F6797C', value: 'High', icon: 'default.priority_high_1' },
-      { color: '#8FDEAA ', value: 'Mid', icon: 'default.priority_mid_2' },
-      { color: '#FFE483', value: 'Low', icon: 'default.priority_low_3' },
+      { color: "#F6797C", value: "High", icon: "default.priority_high_1" },
+      { color: "#8FDEAA ", value: "Mid", icon: "default.priority_mid_2" },
+      { color: "#FFE483", value: "Low", icon: "default.priority_low_3" },
     ],
     toggleIndex: null,
     tailWidth: 0,
     editIndex: null,
   }),
   mounted() {
-    this.$analytics.logEvent('view_list');
+    this.$analytics.logEvent("view_list");
     let startPoint = null;
     const touchmove = (e) => {
       const dif = Math.floor(e.touches[0].pageX - startPoint);
       this.tailWidth = dif < -124 ? -124 : dif;
     };
     const throttelTouchMove = this.throttle(touchmove, 50);
-    document.addEventListener('keydown', (e) => {
+    document.addEventListener("keydown", (e) => {
       const { key } = e;
-      if (key === 'Enter') {
+      if (key === "Enter") {
         this.addItem();
       }
     });
-    this.$refs.swipeListener.addEventListener('touchstart', (e) => {
+    this.$refs.swipeListener.addEventListener("touchstart", (e) => {
       startPoint = e.touches[0].pageX;
-      this.$refs.swipeListener.addEventListener('touchmove', throttelTouchMove);
-      const index = e.target.closest('li')?.dataset.index;
+      this.$refs.swipeListener.addEventListener("touchmove", throttelTouchMove);
+      const index = e.target.closest("li")?.dataset.index;
       //FIXME: editmode 해제시키는 부분 분리해서 관리하기
-      if (this.editIndex !== null && !e.target.closest('.enroll')) {
+      if (this.editIndex !== null && !e.target.closest(".enroll")) {
         this.updateList(this.editIndex, false);
         this.editIndex = null;
       }
       this.toggleIndex = index;
       this.tailWidth = 0;
     });
-    this.$refs.swipeListener.addEventListener('touchend', () => {
-      this.$refs.swipeListener.removeEventListener('touchmove', touchmove);
+    this.$refs.swipeListener.addEventListener("touchend", () => {
+      this.$refs.swipeListener.removeEventListener("touchmove", touchmove);
       if (this.tailWidth < -30) {
         this.tailWidth = -124;
       } else {
         this.tailWidth = 0;
       }
     });
-    this.fetchTodoList(this.activeName === 'todo' ? 1 : 2);
+    this.fetchTodoList(this.activeName === "todo" ? 1 : 2);
   },
   computed: {
     task_count() {
-      return this.todoList.filter(({ check }) => (this.activeName === 'todo' ? !check : check)).length;
+      return this.todoList.filter(({ check }) =>
+        this.activeName === "todo" ? !check : check
+      ).length;
     },
     subtitleTaskText() {
       const list = {
-        todo: 'default.subtitle_task_incomplete',
-        done: 'default.subtitle_task_completed',
+        todo: "default.subtitle_task_incomplete",
+        done: "default.subtitle_task_completed",
       };
       return list[this.activeName];
     },
@@ -186,9 +214,9 @@ export default {
   methods: {
     guidePriorityText(value) {
       const list = {
-        High: 'default.priority_high',
-        Mid: 'default.priority_mid',
-        Low: 'default.priority_low',
+        High: "default.priority_high",
+        Mid: "default.priority_mid",
+        Low: "default.priority_low",
       };
       return list[value];
     },
@@ -217,7 +245,7 @@ export default {
       this.toggleIndex = null;
       this.tailWidth = 0;
       this.editIndex = null;
-      this.fetchTodoList(this.activeName === 'todo' ? 1 : 2);
+      this.fetchTodoList(this.activeName === "todo" ? 1 : 2);
     },
     setEditIndex(index) {
       this.editIndex = index;
@@ -226,8 +254,8 @@ export default {
     },
     async addItem() {
       if (this.editIndex === null) {
-        if (this.activeName === 'done') {
-          this.activeName = 'todo';
+        if (this.activeName === "done") {
+          this.activeName = "todo";
           await this.fetchTodoList(1);
         }
         this.addTodoList();

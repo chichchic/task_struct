@@ -1,7 +1,10 @@
-import firebase from 'firebase';
-import { useStore } from 'vuex';
-import { ref, computed } from 'vue';
-export default function useCalendar({ dotSize = '15px', initSelectedDate = null }) {
+import firebase from "firebase";
+import { useStore } from "vuex";
+import { ref, computed } from "vue";
+export default function useCalendar({
+  dotSize = "15px",
+  initSelectedDate = null,
+}) {
   const $store = useStore();
   const $firestore = firebase.firestore();
   const selectedDate = ref(initSelectedDate);
@@ -18,7 +21,10 @@ export default function useCalendar({ dotSize = '15px', initSelectedDate = null 
     return [
       {
         highlight: {
-          contentStyle: { border: '1px solid #F6797C', color: isTodaySelected ? 'white' : 'inherit' },
+          contentStyle: {
+            border: "1px solid #F6797C",
+            color: isTodaySelected ? "white" : "inherit",
+          },
         },
         dates: new Date(),
       },
@@ -38,18 +44,18 @@ export default function useCalendar({ dotSize = '15px', initSelectedDate = null 
     const currentDate = new Date(`${year}/${month}`);
     const nextDate = new Date(`${nextYear}/${nextMonth}`);
     const doneList = await $firestore
-      .collection('users')
+      .collection("users")
       .doc(uid)
-      .collection('todoListItem')
-      .where('status', '==', 2)
-      .where('lastDoneAt', '>', currentDate)
-      .where('lastDoneAt', '<', nextDate)
+      .collection("todoListItem")
+      .where("status", "==", 2)
+      .where("lastDoneAt", ">", currentDate)
+      .where("lastDoneAt", "<", nextDate)
       .get();
     const doneDots = {};
     const dotStyleList = [
-      { width: dotSize, height: dotSize, backgroundColor: '#F6797C' },
-      { width: dotSize, height: dotSize, backgroundColor: '#8FDEAA' },
-      { width: dotSize, height: dotSize, backgroundColor: '#FFE483' },
+      { width: dotSize, height: dotSize, backgroundColor: "#F6797C" },
+      { width: dotSize, height: dotSize, backgroundColor: "#8FDEAA" },
+      { width: dotSize, height: dotSize, backgroundColor: "#FFE483" },
     ];
     doneList.forEach((doc) => {
       const { lastDoneAt, priority } = doc.data();

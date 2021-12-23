@@ -54,4 +54,14 @@ export default {
     }
   }
 }
+html[dir="rtl"] {
+  .swiper {
+    .container {
+      flex-direction: row-reverse;
+      .tail {
+        flex-direction: row-reverse;
+      }
+    }
+  }
+}
 </style>

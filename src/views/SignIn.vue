@@ -1,14 +1,16 @@
 <template>
   <section class="sign-in">
-    <h1 class="mb-9"><img src="@/assets/images/logo-willbedone2.png" alt="willbedone" /></h1>
+    <h1 class="mb-9">
+      <img src="@/assets/images/logo-willbedone2.png" alt="willbedone" />
+    </h1>
     <p class="mb-9">
-      {{ $t('default.login_wecolme_text1') }}
+      {{ $t("default.login_wecolme_text1") }}
       <br />
       <br />
-      <b>{{ $t('default.login_wecolme_text2_bold') }}</b
-      >{{ $t('default.login_wecolme_text2') }}
+      <b>{{ $t("default.login_wecolme_text2_bold") }}</b
+      >{{ $t("default.login_wecolme_text2") }}
       <br />
-      {{ $t('default.login_wecolme_text3') }}
+      {{ $t("default.login_wecolme_text3") }}
     </p>
 
     <button class="sign-in-button" @click="redirectSignIn">
@@ -18,7 +20,7 @@
   </section>
 </template>
 <script>
-import signInWithGoogle from '@/components/common/signInWithGoogle.js';
+import signInWithGoogle from "@/components/common/signInWithGoogle.js";
 export default {
   setup() {
     const { signIn, signOut } = signInWithGoogle();
@@ -26,13 +28,15 @@ export default {
   },
   methods: {
     async redirectSignIn() {
-      const ismobild = window.matchMedia('only screen and (max-width: 760px)').matches;
+      const ismobild = window.matchMedia(
+        "only screen and (max-width: 760px)"
+      ).matches;
       try {
         await this.signIn();
         if (ismobild) {
-          this.$router.push('Todo');
+          this.$router.push("Todo");
         } else {
-          this.$router.push('Desktop');
+          this.$router.push("Desktop");
         }
       } catch (e) {
         console.error(e);
@@ -72,7 +76,7 @@ export default {
     }
 
     &:hover .img-overlay {
-      content: '';
+      content: "";
       position: absolute;
       top: 0;
       left: 0;

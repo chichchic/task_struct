@@ -1,6 +1,11 @@
 <template>
   <div class="todo-item" :class="{ [tab]: true, focus: edit }">
-    <el-checkbox class="checkbox" :modelValue="check" @change="updateCheck" :disabled="lineThrough" />
+    <el-checkbox
+      class="checkbox"
+      :modelValue="check"
+      @change="updateCheck"
+      :disabled="lineThrough"
+    />
     <div class="input">
       <el-input
         v-if="edit"
@@ -12,9 +17,18 @@
         :autosize="true"
         type="textarea"
       />
-      <p class="input-text" v-else :class="{ 'line-through': lineThrough }" @click="$emit('setEdit')">{{ input }}</p>
-      <p class="priority" v-if="!edit" :class="priority.toLowerCase()">{{ $t(priorityText) }}</p>
-      <p v-else-if="input === ''">{{ $t('default.create_error_empty') }}</p>
+      <p
+        class="input-text"
+        v-else
+        :class="{ 'line-through': lineThrough }"
+        @click="$emit('setEdit')"
+      >
+        {{ input }}
+      </p>
+      <p class="priority" v-if="!edit" :class="priority.toLowerCase()">
+        {{ $t(priorityText) }}
+      </p>
+      <p v-else-if="input === ''">{{ $t("default.create_error_empty") }}</p>
       <p v-else>
         <el-tag
           v-for="(val, index) in ['High', 'Mid', 'Low']"
@@ -33,9 +47,23 @@
         >
       </p>
     </div>
-    <el-button v-if="edit" @click="enroll">{{ $t('default.enroll_new') }}</el-button>
-    <el-button v-if="tab === 'tab-done'" type="text" icon="el-icon-refresh" circle @click="repeat"></el-button>
-    <el-button v-if="!edit" type="text" icon="el-icon-delete" circle @click="remove"></el-button>
+    <el-button v-if="edit" @click="enroll">{{
+      $t("default.enroll_new")
+    }}</el-button>
+    <el-button
+      v-if="tab === 'tab-done'"
+      type="text"
+      icon="el-icon-refresh"
+      circle
+      @click="repeat"
+    ></el-button>
+    <el-button
+      v-if="!edit"
+      type="text"
+      icon="el-icon-delete"
+      circle
+      @click="remove"
+    ></el-button>
   </div>
 </template>
 <script>
@@ -61,32 +89,32 @@ export default {
   computed: {
     priorityText() {
       const list = {
-        High: 'default.priority_high',
-        Mid: 'default.priority_mid',
-        Low: 'default.priority_low',
-        Empty: 'default.priority',
+        High: "default.priority_high",
+        Mid: "default.priority_mid",
+        Low: "default.priority_low",
+        Empty: "default.priority",
       };
       return list[this.priority];
     },
   },
   mounted() {
-    if (this.input === '') {
+    if (this.input === "") {
       this.$refs.input.focus();
     }
-    this.$el.addEventListener('keydown', (e) => {
+    this.$el.addEventListener("keydown", (e) => {
       const { code, ctrlKey, metaKey } = e;
-      if ((ctrlKey || metaKey) && code === 'Enter') {
+      if ((ctrlKey || metaKey) && code === "Enter") {
         this.enroll();
       }
     });
   },
   data: () => ({
-    innerInput: '',
-    tagPriority: ['High', 'Mid', 'Low'],
+    innerInput: "",
+    tagPriority: ["High", "Mid", "Low"],
   }),
   methods: {
     updateCheck() {
-      this.$emit('updateCheck');
+      this.$emit("updateCheck");
     },
     actionFocus() {
       this.innerInput = this.input;
@@ -95,21 +123,24 @@ export default {
       return this.selectedPriority === value;
     },
     setTagOpacity(value) {
-      return this.tagPriority.includes(this.selectedPriority) && this.selectedPriority !== value;
+      return (
+        this.tagPriority.includes(this.selectedPriority) &&
+        this.selectedPriority !== value
+      );
     },
     changeSelectedPriority(value) {
-      this.$emit('updateInput', this.innerInput);
-      this.$emit('changeSelectedPriority', value);
+      this.$emit("updateInput", this.innerInput);
+      this.$emit("changeSelectedPriority", value);
     },
     enroll() {
-      this.$emit('updateInput', this.innerInput);
+      this.$emit("updateInput", this.innerInput);
       this.$refs.input.blur();
     },
     repeat() {
-      this.$emit('repeat');
+      this.$emit("repeat");
     },
     remove() {
-      this.$emit('remove');
+      this.$emit("remove");
     },
   },
 };
@@ -143,7 +174,8 @@ export default {
 
     &::before {
       padding: 21px 15px;
-      content: '';
+
+      content: "";
       position: absolute;
       right: 0;
       top: 50%;
@@ -178,6 +210,9 @@ export default {
   .input {
     margin: 0 0 0 1rem;
     flex-grow: 1;
+    textarea {
+      padding: 0 0.5rem;
+    }
   }
 
   .el-textarea__inner {
@@ -221,6 +256,12 @@ export default {
 
   .el-button + .el-button {
     margin: 0;
+  }
+}
+
+html[dir="rtl"] {
+  .todo-item {
+    flex-direction: row-reverse;
   }
 }
 </style>

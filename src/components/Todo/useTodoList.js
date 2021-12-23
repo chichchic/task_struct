@@ -1,9 +1,10 @@
-import firebase from 'firebase';
-import { useStore } from 'vuex';
-import { ref } from 'vue';
+import firebase from "firebase";
+import { useStore } from "vuex";
+import { ref } from "vue";
 export default function useTodoList() {
   const store = useStore();
   const $firestore = firebase.firestore();
+  const $analytics = firebase.analytics();
   const priorityTable = {
     High: 0,
     Mid: 1,
@@ -21,27 +22,43 @@ export default function useTodoList() {
   let curIndex = null;
 
   const fetchTodoList = async (status, date) => {
-    store.commit('base/setLoading', true);
+    store.commit("base/setLoading", true);
     const { uid } = store.state.user;
     if (uid === null) {
       return [];
     }
     try {
-      let query = $firestore.collection('users').doc(uid).collection('todoListItem').where('status', '==', status);
+      let query = $firestore
+        .collection("users")
+        .doc(uid)
+        .collection("todoListItem")
+        .where("status", "==", status);
       if (date instanceof Date) {
         const beginTime = new Date(date.toDateString());
         const nextDay = beginTime.getTime() + 24 * 60 * 60 * 1000;
         const endTime = new Date(nextDay);
         if (status === 1) {
-          query = query.where('createAt', '>', beginTime).where('createAt', '<', endTime);
+          query = query
+            .where("createAt", ">", beginTime)
+            .where("createAt", "<", endTime);
         } else if (status === 2) {
-          query = query.where('lastDoneAt', '>', beginTime).where('lastDoneAt', '<', endTime);
+          query = query
+            .where("lastDoneAt", ">", beginTime)
+            .where("lastDoneAt", "<", endTime);
         }
       }
       const todoListItem = await query.get();
       todoList.value = [];
       todoListItem.forEach((doc) => {
-        const { priority, todoValue, status, repeat, edit, createAt, lastDoneAt } = doc.data();
+        const {
+          priority,
+          todoValue,
+          status,
+          repeat,
+          edit,
+          createAt,
+          lastDoneAt,
+        } = doc.data();
         todoList.value.push({
           check: status === 1 ? false : true,
           input: todoValue,
@@ -53,11 +70,16 @@ export default function useTodoList() {
           lastDoneAt: lastDoneAt === null ? null : new Date(lastDoneAt.seconds),
         });
       });
+      if (status === 1) {
+        $analytics.logEvent("view_todo");
+      } else if (status === 2) {
+        $analytics.logEvent("view_done");
+      }
       sorting();
     } catch (error) {
       console.error(error);
     } finally {
-      store.commit('base/setLoading', false);
+      store.commit("base/setLoading", false);
     }
   };
 
@@ -65,17 +87,18 @@ export default function useTodoList() {
     try {
       const { uid } = store.state.user;
       if (uid === null) {
-        throw new Error('push function must have uid');
+        throw new Error("push function must have uid");
       }
-      const { check, input, priority, id, createAt, lastDoneAt } = todoList.value[curIndex];
+      const { check, input, priority, id, createAt, lastDoneAt } =
+        todoList.value[curIndex];
       if (id !== undefined) {
         fetchUpdateInput(curIndex);
         return;
       }
       await $firestore
-        .collection('users')
+        .collection("users")
         .doc(uid)
-        .collection('todoListItem')
+        .collection("todoListItem")
         .add({
           status: check ? 2 : 1,
           doneAt: [],
@@ -87,6 +110,8 @@ export default function useTodoList() {
           edit: 0,
           deletedAt: null,
         });
+      $analytics.logEvent("create_task");
+      $analytics.logEvent("create_priority", { priority });
       await fetchTodoList(status, date);
     } catch (error) {
       console.error(error);
@@ -103,16 +128,16 @@ export default function useTodoList() {
     });
   };
 
-  const updateCheck = (id, status, date) => {
+  const updateCheck = (id, status, date, priority) => {
     const { uid } = store.state.user;
     if (uid === null) {
-      throw new Error('push function must have uid');
+      throw new Error("push function must have uid");
     }
     const updateListPromise = new Promise((resolve) => {
       $firestore
-        .collection('users')
+        .collection("users")
         .doc(uid)
-        .collection('todoListItem')
+        .collection("todoListItem")
         .doc(id)
         .update({
           status: 2,
@@ -128,7 +153,7 @@ export default function useTodoList() {
     });
     const increaseDoneCountPromise = new Promise((resolve) => {
       $firestore
-        .collection('users')
+        .collection("users")
         .doc(uid)
         .update({ doneCount: firebase.firestore.FieldValue.increment(1) })
         .then(() => {
@@ -140,6 +165,7 @@ export default function useTodoList() {
     });
     return Promise.all([updateListPromise, increaseDoneCountPromise])
       .then(() => {
+        $analytics.logEvent("complete", { priority });
         fetchTodoList(status, date);
       })
       .catch((error) => {
@@ -153,14 +179,14 @@ export default function useTodoList() {
   const fetchUpdateInput = async (index) => {
     const { uid } = store.state.user;
     if (uid === null) {
-      throw new Error('push function must have uid');
+      throw new Error("push function must have uid");
     }
     const { id, priority, input, edit } = todoList.value[index];
     try {
       await $firestore
-        .collection('users')
+        .collection("users")
         .doc(uid)
-        .collection('todoListItem')
+        .collection("todoListItem")
         .doc(id)
         .update({
           todoValue: input,
@@ -168,6 +194,7 @@ export default function useTodoList() {
           edit: edit + 1,
         });
       todoList.value[index].edit++;
+      $analytics.logEvent("edit");
     } catch (error) {
       console.error(error);
     }
@@ -176,14 +203,14 @@ export default function useTodoList() {
   const repeatTodoList = async (index) => {
     const { uid } = store.state.user;
     if (uid === null) {
-      throw new Error('push function must have uid');
+      throw new Error("push function must have uid");
     }
     const { id, repeat } = todoList.value[index];
     try {
       await $firestore
-        .collection('users')
+        .collection("users")
         .doc(uid)
-        .collection('todoListItem')
+        .collection("todoListItem")
         .doc(id)
         .update({ status: 1, repeat: repeat + 1 });
       todoList.value.splice(index, 1);
@@ -193,13 +220,19 @@ export default function useTodoList() {
   };
 
   const addTodoList = () => {
-    todoList.value.push({ check: false, input: '', priority: 'Empty', createAt: new Date(), lastDoneAt: null });
+    todoList.value.push({
+      check: false,
+      input: "",
+      priority: "Empty",
+      createAt: new Date(),
+      lastDoneAt: null,
+    });
   };
   //FIXME: 너무 여러 역할을 가지고 있음. 추후에 분리할 것!
   const updateList = (index, enroll = true) => {
     const { input } = todoList.value[index];
     const trimedInput = input.trim();
-    if (trimedInput === '') {
+    if (trimedInput === "") {
       todoList.value.splice(index, 1);
       return;
     }
@@ -208,24 +241,28 @@ export default function useTodoList() {
     }
     curIndex = index;
     todoList.value[index].input = trimedInput;
-    if (todoList.value[index].priority === 'Empty') {
-      todoList.value[index].priority = 'Mid';
+    if (todoList.value[index].priority === "Empty") {
+      todoList.value[index].priority = "Mid";
     }
     prDrawer.value = true;
   };
   const removeList = async (index) => {
     const { uid } = store.state.user;
     if (uid === null) {
-      throw new Error('push function must have uid');
+      throw new Error("push function must have uid");
     }
     const { id } = todoList.value[index];
+    console.log(todoList.value[index]);
     try {
       await $firestore
-        .collection('users')
+        .collection("users")
         .doc(uid)
-        .collection('todoListItem')
+        .collection("todoListItem")
         .doc(id)
         .update({ status: 0, deletedAt: new Date() });
+      $analytics.logEvent("delete", {
+        status: todoList.value[index].check ? "done" : "todo",
+      });
       todoList.value.splice(index, 1);
     } catch (error) {
       console.error(error);

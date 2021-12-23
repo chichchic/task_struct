@@ -3,7 +3,11 @@
     <div class="logo" @click.prevent="$router.push('/')">
       <img src="@/assets/images/log-willbedone.png" alt="willbedone" />
     </div>
-    <p class="icon mr-1" v-if="isMobileSize && currentRouteName === 'Todo'" @click.prevent="$router.push('Calendar')">
+    <p
+      class="icon mr-1"
+      v-if="isMobileSize && currentRouteName === 'Todo'"
+      @click.prevent="$router.push('Calendar')"
+    >
       <mdicon name="calendar-month" size="20" />
     </p>
     <p
@@ -21,7 +25,7 @@
   </section>
 </template>
 <script>
-import Setting from '@/components/Setting.vue';
+import Setting from "@/components/Setting.vue";
 
 export default {
   components: {
@@ -35,7 +39,7 @@ export default {
       return this.$store.state.user.uid === null;
     },
     isMobileSize() {
-      return window.matchMedia('only screen and (max-width: 760px)').matches;
+      return window.matchMedia("only screen and (max-width: 760px)").matches;
     },
   },
   data: () => ({
@@ -82,6 +86,11 @@ export default {
 
   .mr-1 {
     margin-right: 1rem;
+  }
+}
+html[dir="rtl"] {
+  .navigation {
+    flex-direction: row-reverse;
   }
 }
 </style>

@@ -69,7 +69,11 @@
       </li>
     </ul>
     <button class="todo-btn" @click.prevent="addItem">
-      {{ editIndex === null ? "+추가하기" : "등록하기" }}
+      {{
+        editIndex === null
+          ? `+${$t("default.create_new")}`
+          : $t("default.enroll_new")
+      }}
     </button>
     <el-drawer
       v-model="prDrawer"
